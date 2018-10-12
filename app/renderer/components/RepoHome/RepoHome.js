@@ -1,8 +1,11 @@
 import React from 'react';
+import SideBar from './SideBar/SideBar';
 
 class RepoHome extends React.Component {
   render() {
-    return <div>This is repo home</div>;
+    return <div>
+        <SideBar></SideBar>
+    </div>;
   }
 }
 
