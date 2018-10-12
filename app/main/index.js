@@ -1,48 +1,16 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu } from 'electron';
 import { ipcMain } from 'electron';
-import { openDialogue,executeCmd } from './menu-functions';
-import fs from 'fs';
-import { GitProcess, GitError, IGitResult } from 'dugite'
+import { gitLog, gitInit } from './menu-functions';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 let mainWindow = null;
 let forceQuit = false;
 
-// ipcMain.on('execute-command', async function (event, arg) {
-//  try {
-//    const res = await executeCmd(arg);
-//    event.returnValue = res;
-//  } catch(error) {
-//    event.returnValue = error;
-//  }
-// });
+ipcMain.on('git-log', async (event) => { event.returnValue = await gitLog(); });
 
-ipcMain.on('execute-command', async function (event, arg) {
-  try {
-    const res = await GitProcess.exec(['log'],__dirname);
-    console.log(res);
-    event.returnValue = res.stdout;
-  } catch(error) {
-    event.returnValue = error;
-  }
- });
- 
-
-
-ipcMain.on('git-init', async (event)=>{
- const selectedFile = openDialogue();
- const returnData =await executeCmd(`cd ${selectedFile[0]} && git init`)
- let log = '';
- try {
-   log = await executeCmd(`cd ${selectedFile[0]} && git log`);
- } catch(error){
-   log = error;
- }
- fs.writeFileSync(__dirname+"/.file-name",selectedFile[0]);
- event.returnValue=({ repo: returnData, log });
-});
+ipcMain.on('git-init', async (event) => { event.returnValue = await gitInit(); });
 
 const installExtensions = async () => {
  const installer = require('electron-devtools-installer');

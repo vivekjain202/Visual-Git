@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ipcRenderer } from 'electron';
-let res = '';
 const rootElement = document.querySelector(document.currentScript.getAttribute('data-container'));
 
  class App extends React.Component {
    constructor() {
      super();
      this.state = {
-       cmd: '',
-       res: '',
        repoInfo: '',
        log:''
      };
@@ -23,9 +20,9 @@ const rootElement = document.querySelector(document.currentScript.getAttribute('
    }
 
    handleClick() {
-     const res = ipcRenderer.sendSync('execute-command',this.state.cmd);
-     console.log(res);
-     this.setState({res:res.toString()});
+     const log = ipcRenderer.sendSync('git-log',this.state.cmd);
+     console.log(log);
+     this.setState({log:log.toString()});
    }
 
    openDialogue() {
@@ -36,12 +33,8 @@ const rootElement = document.querySelector(document.currentScript.getAttribute('
    render() {
      return (
        <div>
-       <input type="text" onChange={this.handleChange}/>
-       <input type="button" value="RUN" onClick={this.handleClick} />
+       <input type="button" value="GET LOG" onClick={this.handleClick} />
        <input type="button" value="INITIALIZE REPO" onClick={this.openDialogue} />
-       <p>
-         {this.state.res}
-       </p>
        <p>
          {this.state.repoInfo}
        </p>

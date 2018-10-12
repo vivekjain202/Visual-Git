@@ -1,22 +1,50 @@
 import { dialog } from 'electron';
-import { exec } from 'child_process';
+import fs from 'fs';
+import { GitProcess, GitError, IGitResult } from 'dugite'
 
 export const openDialogue = () => {
  return dialog.showOpenDialog({ properties:['openDirectory'] });
 }
 
-export const executeCmd = async (cmd) => {
- return new Promise((resolve, reject) => {
-   exec(cmd, (err,stdout,stderr) => {
-     if(err) {
-       console.log(err);
-       reject(err);
-     } else if(stderr) {
-       console.log(stderr);
-       reject(stderr);
-     } else {
-       resolve(stdout);
-     }
-   })
- })
+export const getFilePath = () => {
+  return new Promise ((resolve, reject) => {
+    fs.readFile(__dirname+"/.file-name", "utf8", (err,data) => {
+      if(err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  })
 }
+
+export const gitLog =  async function () {
+  try {
+    let filePath;
+    try {
+      filePath = await getFilePath();
+    } catch(error) {
+      return error;
+    }
+    const res = await GitProcess.exec(['log'],filePath);
+    return res.stdout;
+  } catch(error) {
+    return error;
+  }
+ }
+
+ export const gitInit = async ()=> {
+  const selectedFile = openDialogue();
+  let log = '';
+  let res = '';
+  if(selectedFile !== undefined) {
+    try {
+     res = await GitProcess.exec(['init'],selectedFile[0]);
+    } catch(error){
+      log = error;
+    }
+    log = await gitLog();
+    fs.writeFileSync(__dirname+"/.file-name",selectedFile[0]);
+    return { repo: res.stdout, log };   
+  }
+  return { repo: res, log };
+ }
