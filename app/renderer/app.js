@@ -23,13 +23,14 @@ const rootElement = document.querySelector(document.currentScript.getAttribute('
    }
 
    handleClick() {
-     res = ipcRenderer.sendSync('execute-command',this.state.cmd);
+     const res = ipcRenderer.sendSync('execute-command',this.state.cmd);
+     console.log(res);
      this.setState({res:res.toString()});
    }
 
    openDialogue() {
      const repoInfo = ipcRenderer.sendSync('git-init');
-     this.setState({ repoInfo: repoInfo.repo, log:repoInfo.log });
+     this.setState({ repoInfo: repoInfo.repo.toString(), log:repoInfo.log.toString() });
    }
 
    render() {

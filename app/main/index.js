@@ -3,20 +3,33 @@ import { app, crashReporter, BrowserWindow, Menu } from 'electron';
 import { ipcMain } from 'electron';
 import { openDialogue,executeCmd } from './menu-functions';
 import fs from 'fs';
+import { GitProcess, GitError, IGitResult } from 'dugite'
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 let mainWindow = null;
 let forceQuit = false;
 
+// ipcMain.on('execute-command', async function (event, arg) {
+//  try {
+//    const res = await executeCmd(arg);
+//    event.returnValue = res;
+//  } catch(error) {
+//    event.returnValue = error;
+//  }
+// });
+
 ipcMain.on('execute-command', async function (event, arg) {
- try {
-   const res = await executeCmd(arg);
-   event.returnValue = res;
- } catch(error) {
-   event.returnValue = error;
- }
-});
+  try {
+    const res = await GitProcess.exec(['log'],__dirname);
+    console.log(res);
+    event.returnValue = res.stdout;
+  } catch(error) {
+    event.returnValue = error;
+  }
+ });
+ 
+
 
 ipcMain.on('git-init', async (event)=>{
  const selectedFile = openDialogue();
