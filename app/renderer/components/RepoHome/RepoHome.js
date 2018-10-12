@@ -1,8 +1,12 @@
-import React from 'react';
-
+import React, { Fragment } from 'react';
+import SelectionBar from './SelectionBar/SelectionBar'
 class RepoHome extends React.Component {
   render() {
-    return <div>This is repo home</div>;
+    return(
+      <Fragment>
+        <SelectionBar />
+      </Fragment>
+    )
   }
 }
 
