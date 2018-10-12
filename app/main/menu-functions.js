@@ -1,6 +1,6 @@
 import { dialog } from 'electron';
 import fs from 'fs';
-import { GitProcess, GitError, IGitResult } from 'dugite'
+import simpleGit from 'simple-git/promise';
 
 export const openDialogue = () => {
  return dialog.showOpenDialog({ properties:['openDirectory'] });
@@ -25,8 +25,8 @@ export const gitLog =  async function () {
     } catch(error) {
       return error;
     }
-    const res = await GitProcess.exec(['log'],filePath);
-    return res.stdout;
+    const res = await simpleGit(filePath).log();
+    return res.all;
   } catch(error) {
     return error;
   }
@@ -38,13 +38,23 @@ export const gitLog =  async function () {
   let res = '';
   if(selectedFile !== undefined) {
     try {
-     res = await GitProcess.exec(['init'],selectedFile[0]);
+      await simpleGit(selectedFile[0]).init(0);
     } catch(error){
       log = error;
     }
     log = await gitLog();
     fs.writeFileSync(__dirname+"/.file-name",selectedFile[0]);
-    return { repo: res.stdout, log };   
+    return { repo: res, log };   
   }
   return { repo: res, log };
+ }
+
+ export const gitClone = () => {
+  const remote = `https://github.com/theia-ide/dugite-extra.git`;
+  return new Promise((resolve,reject) => {
+    simpleGit('/home/dev/Desktop/temp')
+  .clone(remote)
+  .then(() => {  console.log('finished clone'); resolve('finished'); })
+  .catch((err) => { reject(err); console.error('failed: ', err)})
+  });
  }

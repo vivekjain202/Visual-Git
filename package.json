@@ -46,7 +46,8 @@
     "npm-run-all": "^4.0.1",
     "prettier": "^1.13.7",
     "redux-mock-store": "^1.2.2",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.5.4",
+    "simple-git": "^1.105.0"
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
