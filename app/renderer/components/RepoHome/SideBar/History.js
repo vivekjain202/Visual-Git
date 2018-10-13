@@ -1,17 +1,32 @@
 import React from 'react';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import ThreeSixtyIcon from '@material-ui/icons/ThreeSixty';
+import { List, ListItem, ListItemIcon, ListItemText, Icon, withStyles } from '@material-ui/core';
+
+const styles = {
+  listItem: {
+    padding: '0',
+    paddingLeft: '10px',
+  },
+  listItemText: {
+    padding: '0',
+  },
+};
 
 class History extends React.Component {
   render() {
+    const { classes } = this.props;
     return (
       <React.Fragment>
         <List component="nav">
-          <ListItem button>
+          <ListItem className={classes.listItem} button>
             <ListItemIcon>
-                <ThreeSixtyIcon></ThreeSixtyIcon>
+              <Icon className="fa fa-gitter" />
             </ListItemIcon>
-            <ListItemText primary="initial commit" />
+            <ListItemText
+              className={classes.listItemText}
+              primary="initial commit"
+              secondary="Jan 9, 2014"
+              title="src/components/mycomponent/app.js"
+            />
           </ListItem>
         </List>
       </React.Fragment>
@@ -19,4 +34,4 @@ class History extends React.Component {
   }
 }
 
-export default History;
+export default withStyles(styles)(History);

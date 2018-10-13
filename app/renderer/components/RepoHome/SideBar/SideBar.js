@@ -7,6 +7,7 @@ import History from './History';
 const styles = (theme) => ({
   sidebar: {
     width: 250,
+    height: 'calc(100vh - 48px)',
   },
   root: {
     flexGrow: 1,
