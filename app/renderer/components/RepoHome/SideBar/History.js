@@ -19,27 +19,29 @@ class History extends React.Component {
     return (
       <React.Fragment>
         <List component="nav">
-          {commits && commits.length > 0
-            ? commits.map((commit) => (
-                <ListItem
-                  key={commit.hash}
-                  className={classes.listItem}
-                  onClick={onSelectCommit}
-                  button>
-                  <ListItemIcon>
-                    <Icon className="fa fa-gitter" />
-                  </ListItemIcon>
-                  <ListItemText
-                    className={classes.listItemText}
-                    primary={commit.message}
-                    secondary={`on ${new Date(commit.date).toDateString()} by ${
-                      commit.author_name
-                    }`}
-                    title={commit.message}
-                  />
-                </ListItem>
-              ))
-            : null}
+          {commits && commits.length > 0 ? (
+            commits.map((commit) => (
+              <ListItem
+                key={commit.hash}
+                className={classes.listItem}
+                onClick={() => onSelectCommit(commit.hash)}
+                button>
+                <ListItemIcon>
+                  <Icon className="fa fa-gitter" />
+                </ListItemIcon>
+                <ListItemText
+                  className={classes.listItemText}
+                  primary={commit.message}
+                  secondary={`on ${new Date(commit.date).toDateString()} by ${commit.author_name}`}
+                  title={commit.message}
+                />
+              </ListItem>
+            ))
+          ) : (
+            <ListItem className={classes.listItem}>
+              <ListItemText className={classes.listItemText} primary="No commits yet." />
+            </ListItem>
+          )}
         </List>
       </React.Fragment>
     );
@@ -47,12 +49,12 @@ class History extends React.Component {
 }
 function mapStateToProps(state) {
   return {
-    commits: state.commits.commits,
+    commits: state.commits ? state.commits.commits : [],
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectCommit: (id) => dispatch({ type: COMMIT_SELECTED, payload: { commitId: id } }),
+    onSelectCommit: (hash) => dispatch({ type: COMMIT_SELECTED, payload: { hash } }),
   };
 }
 export default connect(

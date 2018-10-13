@@ -14,18 +14,30 @@ const styles = {
 
 class Changes extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, files, onSelectFile } = this.props;
     return (
       <React.Fragment>
         <List component="nav">
-          <ListItem className={classes.listItem} button>
-            <Checkbox tabIndex={-1} disableRipple />
-            <ListItemText
-              className={classes.listItemText}
-              primary="src/components..."
-              title="src/components/mycomponent/app.js"
-            />
-          </ListItem>
+          {files && files.length > 0 ? (
+            files.map((fileItem) => (
+              <ListItem
+                key={fileItem.file}
+                className={classes.listItem}
+                onClick={() => onSelectFile(fileItem.file)}
+                button>
+                <Checkbox tabIndex={-1} disableRipple />
+                <ListItemText
+                  className={classes.listItemText}
+                  primary={fileItem.file}
+                  title={fileItem.file}
+                />
+              </ListItem>
+            ))
+          ) : (
+            <ListItem className={classes.listItem}>
+              <ListItemText className={classes.listItemText} primary="No files have changes." />
+            </ListItem>
+          )}
         </List>
       </React.Fragment>
     );
@@ -34,12 +46,12 @@ class Changes extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    commits: state.commits.commits,
+    files: state.files ? state.files.files : [],
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectCommit: (hash) => dispatch({ type: FILE_SELECTED, payload: { hash } }),
+    onSelectFile: (file) => dispatch({ type: FILE_SELECTED, payload: { file } }),
   };
 }
 
