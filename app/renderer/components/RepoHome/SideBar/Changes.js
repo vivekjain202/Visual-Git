@@ -1,11 +1,19 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, Icon } from '@material-ui/core';
 
 class Changes extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Typography>Changes works</Typography>
+        <List component="nav">
+          <ListItem button>
+            <ListItemIcon>
+              <Icon className="fa fa-file-code" />
+            </ListItemIcon>
+            <ListItemText primary="app.js" />
+            <ListItemText secondary="~/home/balaji/own/..." />
+          </ListItem>
+        </List>
       </React.Fragment>
     );
   }
