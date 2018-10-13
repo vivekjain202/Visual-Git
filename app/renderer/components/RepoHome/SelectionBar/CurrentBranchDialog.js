@@ -2,12 +2,24 @@ import React, { Fragment } from 'react'
 import { Dialog, TextField, DialogActions, DialogContentText, Button, DialogContent, ListItemText, Divider, List, ListItem } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 import { connect } from 'react-redux'
-import { CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY } from '../../../constants/actions'
-class CurrentRepoDialog extends React.Component {
+import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS } from '../../../constants/actions'
+
+const mapStateToProps = state => {
+    return {
+        branches: state.global.branches
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
+        changeBranchCommits: (branchName) => dispatch({ type: CHANGE_BRANCH_COMMITS, payload: branchName })
+    }
+}
+class CurrentBranchDialog extends React.Component {
     state = {
         open: this.props.openStatus,
         filterText: "",
-        repos: [{ id: 1, name: 'master', selected: true }, { id: 2, name: 'UI-1', selected: false }, { id: 3, name: 'UI-2', selected: false }]
+        branches: [{ id: 1, name: 'master', selected: true }, { id: 2, name: 'UI-1', selected: false }, { id: 3, name: 'UI-2', selected: false }]
     }
     handleClose = () => {
         this.setState({ open: false });
@@ -16,15 +28,13 @@ class CurrentRepoDialog extends React.Component {
     handleRepo = () => {
 
     }
-    handleRepoClick = (name) => {
-        console.log(name, 'repository name')
-        console.log(this.props)
-        this.props.changeRepo(name)
-        this.props.changeBranches()
-
-    }
     componentDidMount() {
-        console.log(this.props)
+        this.setState({
+            branches: this.props.branches,
+        })
+    }
+    handleBranchClick = (name) => {
+        this.props.branchName(name)
     }
     render() {
         return (
@@ -43,17 +53,18 @@ class CurrentRepoDialog extends React.Component {
                             id="repoName"
                             label="Filter"
                             type="text"
+                            maxWidth={'lg'}
                             fullWidth
                         />
                     </DialogContent>
                     <DialogContentText>Other</DialogContentText>
                     <Divider />
                     <List style={{ maxHeight: 200, overflow: 'auto' }}>
-                        {this.state.repos.map((repo) => {
-                            const iconDisplay = repo.selected ? <CheckIcon></CheckIcon> : <span></span>
-                            return <ListItem key={repo.id} button onClick={() => this.handleRepoClick(name)}>
+                        {this.state.branches.map((branch) => {
+                            const iconDisplay = branch.selected ? <CheckIcon></CheckIcon> : <span></span>
+                            return <ListItem key={branch.id} button onClick={() => this.handleBranchClick(branch.name)}>
                                 {iconDisplay}
-                                <ListItemText primary={repo.name}></ListItemText>
+                                <ListItemText primary={branch.name}></ListItemText>
                             </ListItem>
                         })}
                     </List>
@@ -70,15 +81,5 @@ class CurrentRepoDialog extends React.Component {
         )
     }
 }
-const mapStateToProps = state => {
-    return {
-        branches: state.branches.currentRepoBranches
-    }
-}
-const mapDispatchToProps = dispatch => {
-    return {
-        changeRepo: (repoName) => dispatch({ type: CHANGE_REPOSITORY, payload: repoName }),
-        changeBranches: () => dispatch({ type: CHANGE_REPOSITORY_BRANCHES })
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentRepoDialog)
+
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentBranchDialog)
