@@ -1,7 +1,7 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu } from 'electron';
 import { ipcMain } from 'electron';
-import { gitLog, gitInit, gitClone } from './menu-functions';
+import { gitLog, gitInit, gitClone, gitBranch } from './menu-functions';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -13,6 +13,8 @@ ipcMain.on('git-log', async (event) => { event.returnValue = await gitLog(); });
 ipcMain.on('git-init', async (event) => { event.returnValue = await gitInit(); });
 
 ipcMain.on('git-clone', async (event) => { try { event.returnValue = await gitClone(); } catch(err){ event.returnValue = err; } });
+
+ipcMain.on('git-branch', async (event) => { try { event.returnValue = await gitBranch(); } catch(err){ event.returnValue = err; } });
 
 const installExtensions = async () => {
  const installer = require('electron-devtools-installer');

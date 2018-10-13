@@ -32,6 +32,22 @@ export const gitLog =  async function () {
   }
  }
 
+export const gitBranch =  async function () {
+  try {
+    let filePath;
+    try {
+      filePath = await getFilePath();
+    } catch(error) {
+      return error;
+    }
+    const res = await simpleGit(filePath).branchLocal();
+    return res;
+  } catch(error) {
+    return error;
+  }
+ }
+
+
  export const gitInit = async ()=> {
   const selectedFile = openDialogue();
   let log = '';

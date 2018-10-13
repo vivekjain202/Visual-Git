@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "description": "electron-react-redux-boilerplate",
   "main": "init.js",
-  "author": {
-    "name": "Jordan Schroter",
-    "email": "email@author.com"
+  "author": "Jordan Schroter <email@author.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jschr/electron-react-redux-boilerplate.git"
   },
-  "repository": "https://github.com/jschr/electron-react-redux-boilerplate",
   "license": "MIT",
   "dependencies": {
+    "ajv": "^6.5.4",
     "babel-runtime": "^6.26.0",
     "history": "^4.6.3",
     "prop-types": "^15.5.10",
@@ -69,5 +70,12 @@
     "private:compile": "babel app/ --copy-files --out-dir build",
     "private:clean": "rimraf build",
     "private:format": "prettier \"scripts/*.js\" \"app/**/*.js\" \"test/**/*.js\""
+  },
+  "bugs": {
+    "url": "https://github.com/jschr/electron-react-redux-boilerplate/issues"
+  },
+  "homepage": "https://github.com/jschr/electron-react-redux-boilerplate#readme",
+  "directories": {
+    "test": "test"
   }
 }

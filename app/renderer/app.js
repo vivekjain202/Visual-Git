@@ -14,7 +14,8 @@ const rootElement = document.querySelector(document.currentScript.getAttribute('
      this.handleClick = this.handleClick.bind(this);
      this.openDialogue = this.openDialogue.bind(this);
      this.handleClickClone = this.handleClickClone.bind(this);
-   }
+     this.getBranch = this.getBranch.bind(this);
+  }
 
    handleChange(event) {
      this.setState({cmd: event.target.value});
@@ -30,25 +31,24 @@ const rootElement = document.querySelector(document.currentScript.getAttribute('
     const log = ipcRenderer.sendSync('git-clone');
     console.log(log);
   }
+   
+   getBranch() {
+    const branch = ipcRenderer.sendSync('git-branch');
+    console.log(branch);
+  }
+
    openDialogue() {
      const repoInfo = ipcRenderer.sendSync('git-init');
      this.setState({ repoInfo: repoInfo.repo.toString(), log:repoInfo.log.toString() });
    }
 
    render() {
-     const log = (this.state.log == {})?'Nothing to show':this.state.log;
      return (
        <div>
        <input type="button" value="GET LOG" onClick={this.handleClick} />
        <input type="button" value="INITIALIZE REPO" onClick={this.openDialogue} />
-       <input type="button" value="Clone" onClick={this.handleClickClone} />
-       <p>
-         {this.state.repoInfo}
-       </p>
-       <p>
-         Git log:<br />
-         {log}
-       </p>
+       <input type="button" value="CLONE" onClick={this.handleClickClone} />
+       <input type="button" value="BRANCH" onClick={this.getBranch} />
      </div>
      );
    }
