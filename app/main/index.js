@@ -59,6 +59,114 @@ app.on('ready', async () => {
     // 1. App should not terminate if window has been closed
     // 2. Click on icon in dock should re-open the window
     // 3. ⌘+Q should close the window and quit the app
+    const template=[
+      {
+        label:'File',
+        submenu:[
+          {
+            label:"New repository",
+            accelerator:"CmdorCtrl + N",
+            click: ()=>{
+              console.log('git init');
+            },
+          },
+          {
+            label:"New local repository",
+            accelerator:"CmdorCtrl + O",
+            click: ()=>{
+              console.log('git init');
+            },
+          },
+          {
+            label:"Clone repository",
+            accelerator:"CmdorCtrl + C + L",
+            click: function () {
+              console.log('Clone repo clicked');
+              }
+          },
+          {
+            role:"quit",
+          }
+        ]
+      },
+      {
+        label:"View",
+        submenu:[
+          {role:"zoomIn"},
+          {role:"zoomOut"},
+          {role:'reload'},
+          {role:'toggleFullScreen'},
+          {role: "toggleDevTools"}
+        ]
+      },
+      {
+        label:"Repository",
+        submenu:[
+          {
+            label:"New repository",
+            click: ()=>{
+              console.log('git init');
+            },
+          },
+          {
+            label:"Rename repository",
+            click: function () {
+              console.log('Rename clicked');
+              }
+          },
+          {
+            label:"Delete repository",
+            click: function () {
+              console.log('Delete repo clicked');
+              }
+          },
+        ]
+      },
+      {
+        label:"Branch",
+        submenu:[
+          {
+            label:"New branch",
+            click: function () {
+              console.log('Create new branch clicked');
+              }
+          },
+          {
+            label:"Switch branch",
+            click: function () {
+              console.log('Switch branch clicked');
+              }
+          },
+          {
+            label:"Delete branch",
+            click: function () {
+              console.log('Delete branch clicked');
+              }
+          },
+          {
+            label:"Rename branch",
+            click: function () {
+              console.log('Rename branch clicked');
+              }
+          },
+        ]
+      },
+      {
+        label:"Help",
+        submenu:[
+          {
+            label:"Documentation",
+            accelerator:"CmdorCtrl + H",
+            click: function () {
+              console.log('Documentation me clicked');
+              }
+          },
+        ]
+      }
+    ];
+ // Attaching Menu
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
     if (process.platform === 'darwin') {
       mainWindow.on('close', function(e) {
         if (!forceQuit) {
