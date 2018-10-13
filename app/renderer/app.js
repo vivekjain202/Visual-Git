@@ -10,45 +10,54 @@ const rootElement = document.querySelector(document.currentScript.getAttribute('
        repoInfo: '',
        log:''
      };
-     this.handleChange = this.handleChange.bind(this);
-     this.handleClick = this.handleClick.bind(this);
-     this.openDialogue = this.openDialogue.bind(this);
-     this.handleClickClone = this.handleClickClone.bind(this);
-     this.getBranch = this.getBranch.bind(this);
+     this.gitLog = this.gitLog.bind(this);
+     this.gitInit = this.gitInit.bind(this);
+     this.gitClone = this.gitClone.bind(this);
+     this.gitBranch = this.gitBranch.bind(this);
+     this.gitDiff = this.gitDiff.bind(this);
+     this.gitDiffSummary = this.gitDiffSummary.bind(this);
   }
 
-   handleChange(event) {
-     this.setState({cmd: event.target.value});
-   }
-
-   handleClick() {
+   gitLog() {
      const log = ipcRenderer.sendSync('git-log');
      console.log(log);
      this.setState({log:log.toString()});
    }
 
-   handleClickClone() {
+   gitClone() {
     const log = ipcRenderer.sendSync('git-clone');
     console.log(log);
   }
-   
-   getBranch() {
+
+   gitBranch() {
     const branch = ipcRenderer.sendSync('git-branch');
     console.log(branch);
   }
 
-   openDialogue() {
-     const repoInfo = ipcRenderer.sendSync('git-init');
-     this.setState({ repoInfo: repoInfo.repo.toString(), log:repoInfo.log.toString() });
-   }
+  gitDiff() {
+    const diff = ipcRenderer.sendSync('git-diff');
+    console.log(diff.toString());
+  }
+
+  gitDiffSummary() {
+    const diff = ipcRenderer.sendSync('git-diff-summary');
+    console.log(diff);
+  }
+
+  gitInit() {
+    const repoInfo = ipcRenderer.sendSync('git-init');
+    this.setState({ repoInfo: repoInfo.repo.toString(), log:repoInfo.log.toString() });
+  }
 
    render() {
      return (
        <div>
-       <input type="button" value="GET LOG" onClick={this.handleClick} />
-       <input type="button" value="INITIALIZE REPO" onClick={this.openDialogue} />
-       <input type="button" value="CLONE" onClick={this.handleClickClone} />
-       <input type="button" value="BRANCH" onClick={this.getBranch} />
+       <input type="button" value="GET LOG" onClick={this.gitLog} />
+       <input type="button" value="INITIALIZE REPO" onClick={this.gitInit} />
+       <input type="button" value="CLONE" onClick={this.gitClone} />
+       <input type="button" value="BRANCH" onClick={this.gitBranch} />
+       <input type="button" value="DIFF" onClick={this.gitDiff} />
+       <input type="button" value="DIFF SUMMARY" onClick={this.gitDiffSummary} />
      </div>
      );
    }

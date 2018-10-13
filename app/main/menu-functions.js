@@ -3,7 +3,11 @@ import fs from 'fs';
 import simpleGit from 'simple-git/promise';
 
 export const openDialogue = () => {
- return dialog.showOpenDialog({ properties:['openDirectory'] });
+ return new Promise((resolve, reject) => dialog.showOpenDialog({ properties:['openDirectory'] },(path) => {
+  if(path !== undefined)
+      resolve(path);
+  reject('error');
+}));
 }
 
 export const getFilePath = () => {
@@ -47,26 +51,56 @@ export const gitBranch =  async function () {
   }
  }
 
-
- export const gitInit = async ()=> {
-  const selectedFile = openDialogue();
-  let log = '';
-  let res = '';
-  if(selectedFile !== undefined) {
+ export const gitDiff =  async function () {
+  try {
+    let filePath;
     try {
-      await simpleGit(selectedFile[0]).init(0);
-    } catch(error){
-      log = error;
+      filePath = await getFilePath();
+    } catch(error) {
+      return error;
     }
-    log = await gitLog();
-    fs.writeFileSync(__dirname+"/.file-name",selectedFile[0]);
-    return { repo: res, log };   
+    const res = await simpleGit(filePath).diff();
+    return res;
+  } catch(error) {
+    return error;
   }
-  return { repo: res, log };
  }
 
- export const gitClone = () => {
-  const remote = `https://github.com/theia-ide/dugite-extra.git`;
+ export const gitDiffSummary =  async function () {
+  try {
+    let filePath;
+    try {
+      filePath = await getFilePath();
+    } catch(error) {
+      return error;
+    }
+    const res = await simpleGit(filePath).diffSummary();
+    return res;
+  } catch(error) {
+    return error;
+  }
+ }
+
+ export const gitInit = async (mainWindow)=> {
+  let selectedFile;
+  let log = '';
+  let res = '';
+  try{
+    selectedFile = await openDialogue(mainWindow);
+      try {
+        await simpleGit(selectedFile[0]).init(0);
+      } catch(error){
+        log = error;
+      }
+      log = await gitLog();
+      fs.writeFileSync(__dirname+"/.file-name",selectedFile[0]);
+      return { repo: res, log };
+  } catch(e) {
+    return { repo: res, log };
+  }
+ }
+
+ export const gitClone = (remote) => {
   return new Promise((resolve,reject) => {
     simpleGit('/home/dev/Desktop/temp')
   .clone(remote)

@@ -1,7 +1,7 @@
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu } from 'electron';
+import { app, crashReporter, BrowserWindow, Menu, Tray } from 'electron';
 import { ipcMain } from 'electron';
-import { gitLog, gitInit, gitClone, gitBranch } from './menu-functions';
+import { gitLog, gitInit, gitClone, gitBranch, gitDiff, gitDiffSummary } from './menu-functions';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -10,11 +10,15 @@ let forceQuit = false;
 
 ipcMain.on('git-log', async (event) => { event.returnValue = await gitLog(); });
 
-ipcMain.on('git-init', async (event) => { event.returnValue = await gitInit(); });
+ipcMain.on('git-init', async (event) => { event.returnValue = await gitInit(mainWindow); });
 
-ipcMain.on('git-clone', async (event) => { try { event.returnValue = await gitClone(); } catch(err){ event.returnValue = err; } });
+ipcMain.on('git-clone', async (event, remoteUrl) => { try { event.returnValue = await gitClone(remoteUrl); } catch(err){ event.returnValue = err; } });
 
 ipcMain.on('git-branch', async (event) => { try { event.returnValue = await gitBranch(); } catch(err){ event.returnValue = err; } });
+
+ipcMain.on('git-diff', async (event) => { try { event.returnValue = await gitDiff(); } catch(err){ event.returnValue = err; } });
+
+ipcMain.on('git-diff-summary', async (event) => { try { event.returnValue = await gitDiffSummary(); } catch(err){ event.returnValue = err; } });
 
 const installExtensions = async () => {
  const installer = require('electron-devtools-installer');
@@ -47,15 +51,17 @@ app.on('ready', async () => {
   if (isDevelopment) {
     await installExtensions();
   }
- 
+  const iconPath = path.join(__dirname,'../icon/visualGit.png');
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
     minWidth: 640,
     minHeight: 480,
     show: false,
+    center: true,
+    icon: iconPath,
   });
- 
+  mainWindow.maximize();
   mainWindow.loadFile(path.resolve(path.join(__dirname, '../renderer/index.html')));
  
   // show window once on first load
@@ -75,22 +81,22 @@ app.on('ready', async () => {
         submenu:[
           {
             label:"New repository",
+            accelerator:"CmdorCtrl + N",
             click: gitInit,
           },
           {
             label:"New local repository",
-            click: function () {
-              console.log('Create new local repo clicked');
-              }
+            accelerator:"CmdorCtrl + O",
+            click: gitInit,
           },
           {
             label:"Clone repository",
+            accelerator:"CmdorCtrl + C + L",
             click: function () {
               console.log('Clone repo clicked');
               }
           },
           {
-            label:"Exit",
             role:"quit",
           }
         ]
@@ -98,39 +104,28 @@ app.on('ready', async () => {
       {
         label:"View",
         submenu:[
-          {
-            label:"Zoom in",
-            role:"zoomIn"
-          },
-          {
-            label:"Zoom out",
-            role:"zoomOut"
-          },
+          {role:"zoomIn"},
+          {role:"zoomOut"},
           {role:'reload'},
           {role:'toggleFullScreen'},
-          {
-            label:"Open dev tools",
-            click:()=>{
-              mainWindow.webContents.openDevTools();
-            }
-          }
+          {role: "toggleDevTools"}
         ]
       },
       {
         label:"Repository",
         submenu:[
           {
-            label:"New",
+            label:"New repository",
             click: gitInit,
           },
           {
-            label:"Remove",
+            label:"Rename repository",
             click: function () {
-              console.log('Remove clicked');
+              console.log('Rename clicked');
               }
           },
           {
-            label:"Delete",
+            label:"Delete repository",
             click: function () {
               console.log('Delete repo clicked');
               }
@@ -141,25 +136,25 @@ app.on('ready', async () => {
         label:"Branch",
         submenu:[
           {
-            label:"New",
+            label:"New branch",
             click: function () {
               console.log('Create new branch clicked');
               }
           },
           {
-            label:"Switch",
+            label:"Switch branch",
             click: function () {
               console.log('Switch branch clicked');
               }
           },
           {
-            label:"Delete",
+            label:"Delete branch",
             click: function () {
               console.log('Delete branch clicked');
               }
           },
           {
-            label:"Rename",
+            label:"Rename branch",
             click: function () {
               console.log('Rename branch clicked');
               }
@@ -170,9 +165,10 @@ app.on('ready', async () => {
         label:"Help",
         submenu:[
           {
-            label:"Help me",
+            label:"Documentation",
+            accelerator:"CmdorCtrl + H",
             click: function () {
-              console.log('Help me clicked');
+              console.log('Documentation me clicked');
               }
           },
         ]
@@ -182,6 +178,19 @@ app.on('ready', async () => {
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
  
+// Tray Configuration 
+    const tray = new Tray(iconPath);
+      const trayTemplate =[
+      {
+        label:'Restore',
+        click: ()=>mainWindow.show()
+      },
+      {
+        role:'quit'
+      },
+      ];
+      const ctxMenu = Menu.buildFromTemplate(trayTemplate);
+      tray.setContextMenu(ctxMenu); 
     if (process.platform === 'darwin') {
       mainWindow.on('close', function(e) {
         if (!forceQuit) {
