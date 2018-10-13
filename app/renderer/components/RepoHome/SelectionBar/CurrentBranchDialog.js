@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Dialog, TextField, DialogActions, DialogContentText, Button, DialogContent, ListItemText, Divider, List, ListItem } from '@material-ui/core'
+import { Dialog, TextField, DialogContentText, DialogContent, ListItemText, Divider, List, ListItem } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 import { connect } from 'react-redux'
 import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS } from '../../../constants/actions'
@@ -19,7 +19,8 @@ class CurrentBranchDialog extends React.Component {
     state = {
         open: this.props.openStatus,
         filterText: "",
-        branches: [{ id: 1, name: 'master', selected: true }, { id: 2, name: 'UI-1', selected: false }, { id: 3, name: 'UI-2', selected: false }]
+        branches: [],
+        default:'Master'
     }
     handleClose = () => {
         this.setState({ open: false });
@@ -34,7 +35,12 @@ class CurrentBranchDialog extends React.Component {
         })
     }
     handleBranchClick = (name) => {
-        this.props.branchName(name)
+        this.props.changeBranch(name)
+        this.props.changeBranchCommits()
+        this.setState({
+            default: name!=='Master' ? name : 'Master',
+        })
+        this.handleClose()
     }
     render() {
         return (
@@ -43,7 +49,6 @@ class CurrentBranchDialog extends React.Component {
                     open={this.state.open}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title"
-                    onBackdropClick='false'
                 >
 
                     <DialogContent>
@@ -61,21 +66,21 @@ class CurrentBranchDialog extends React.Component {
                     <Divider />
                     <List style={{ maxHeight: 200, overflow: 'auto' }}>
                         {this.state.branches.map((branch) => {
-                            const iconDisplay = branch.selected ? <CheckIcon></CheckIcon> : <span></span>
+                            const iconDisplay = branch.selected || branch.name==='Master' ? <CheckIcon></CheckIcon> : <span></span>
                             return <ListItem key={branch.id} button onClick={() => this.handleBranchClick(branch.name)}>
                                 {iconDisplay}
                                 <ListItemText primary={branch.name}></ListItemText>
                             </ListItem>
                         })}
                     </List>
-                    <DialogActions>
+                    {/* <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
                         </Button>
                         <Button onClick={this.handleClose} color="primary">
                             Select
                         </Button>
-                    </DialogActions>
+                    </DialogActions> */}
                 </Dialog>
             </Fragment>
         )

@@ -32,6 +32,9 @@ class SelectionBar extends Component {
       isCurrentRepoOpen: !this.state.isCurrentRepoOpen
     })
   }
+  componentDidUpdate(prevProps){
+    if(prevProps.branchName!==this.props.branchName) this.setState({currentBranchName: this.props.branchName})
+  }
   handleClickCloseCurrentRepo = () => {
     this.setState({
       isCurrentRepoOpen: false,
