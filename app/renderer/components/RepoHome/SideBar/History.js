@@ -1,5 +1,6 @@
 import React from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Icon, withStyles } from '@material-ui/core';
+import {connect} from 'react-redux'
 
 const styles = {
   listItem: {
@@ -33,5 +34,14 @@ class History extends React.Component {
     );
   }
 }
-
-export default withStyles(styles)(History);
+function mapStateToProps(state){
+  return{
+    commits: state.commits.commits
+  }
+}
+function mapDispatchToProps(dispatch){
+  return{
+    onSelectCommit:(id)=> dispatch({type:"COMMIT_SELECTED", payload: {commitId:id}})
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(History));

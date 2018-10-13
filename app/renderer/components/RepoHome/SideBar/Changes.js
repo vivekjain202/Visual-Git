@@ -1,5 +1,6 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Checkbox, withStyles } from '@material-ui/core';
+import {connect} from 'react-redux'
 
 const styles = {
   listItem: {
@@ -30,4 +31,15 @@ class Changes extends React.Component {
   }
 }
 
-export default withStyles(styles)(Changes);
+function mapStateToProps(state){
+  return{
+    commits: state.commits.commits
+  }
+}
+function mapDispatchToProps(dispatch){
+  return{
+    onSelectCommit:(id)=> dispatch({type:"File_SELECTED", payload: {commitId:id}})
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(Changes));
