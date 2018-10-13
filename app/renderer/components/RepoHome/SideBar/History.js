@@ -31,7 +31,7 @@ class History extends React.Component {
                 </ListItemIcon>
                 <ListItemText
                   className={classes.listItemText}
-                  primary={commit.message}
+                  primary={commit.message.length > 18 ? commit.message.substring(0,20)+"..." : commit.message}
                   secondary={`on ${new Date(commit.date).toDateString()} by ${commit.author_name}`}
                   title={commit.message}
                 />
