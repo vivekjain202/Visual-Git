@@ -6,12 +6,12 @@ import History from './History';
 
 const styles = (theme) => ({
   sidebar: {
-    width: 250,
+    width: 272.17,
     height: 'calc(100vh - 48px)',
   },
   childPage:{
     overflow: 'auto',
-    height: `calc(100vh - 96px)`
+    height: `calc(100vh - 97px)`
   },
   root: {
     flexGrow: 1,
