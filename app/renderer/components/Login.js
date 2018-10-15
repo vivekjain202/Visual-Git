@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ipcRenderer } from 'electron';
 import dialogs from 'dialogs';
 const { dialog } = require('electron').remote;
+import path from 'path';
 
 ipcRenderer.on('git-init-appmenu', () => {
   const temp = ipcRenderer.sendSync('git-init');
@@ -25,7 +26,7 @@ ipcRenderer.on('clone-repo-appmenu', async () => {
       try {
         if (gitUrl != undefined) {
           const destination = dialog.showOpenDialog({ properties: ['openDirectory'] });
-          if (destination !== undefined) { const temp = ipcRenderer.sendSync('git-clone', [gitUrl, destination]); }
+          if (destination !== undefined) { ipcRenderer.sendSync('git-clone', [gitUrl, destination]); }
           else {
             throw "Select Proper Destinantion Path";
           }
@@ -58,8 +59,24 @@ ipcRenderer.on('git-repo-delete-appmenu', () => {
 })
 
 ipcRenderer.on('git-new-branch-appmenu', () => {
-  const temp = ipcRenderer.sendSync('git-new-branch');
-  console.log(temp)
+  try {
+    let branchName = '';
+    let d = dialogs({ ok: 'ok', cancel: 'cancel' });
+    d.prompt('Enter new branch name', function (ok) {
+      console.log(ok);
+      branchName = ok;
+      try {
+        const branches = ipcRenderer.sendSync('git-new-branch',path.join(__dirname,'../../../'),branchName);
+        console.log(branches)
+      }
+      catch (error) {
+        console.log(error);
+      }
+    })
+  }
+  catch (error) {
+    console.log(error);
+  }
 })
 
 ipcRenderer.on('git-switch-branch-appmenu', () => {
@@ -77,31 +94,27 @@ ipcRenderer.on('git-rename-branch-appmenu', () => {
   console.log(temp)
 })
 
-
 export default class Login extends Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
   };
-
-  state = {
-    username: '',
-  };
-
-  handleLogin = () => {
-    // const temp =ipcRenderer.sendSync('send');
-    // console.log(temp);
-  };
-
-
-  handleChange = (e) => {
-    this.setState({
-      username: e.target.value,
-    });
+  constructor() {
+    super();
+    this.state = {
+      username: '',
+    };  
+    this.gitBranch = this.gitBranch.bind(this);
+  }
+  
+  gitBranch() {
+    const branches = ipcRenderer.sendSync('git-branch');
+    console.log(branches);
   };
 
   render() {
     return (
       <div>
+        <button>Git Branch</button>
         <h2>Login</h2>
       </div>
     );

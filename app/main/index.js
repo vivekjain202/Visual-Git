@@ -1,76 +1,24 @@
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
-import simpleGit from 'simple-git/promise';
+import { app, crashReporter, BrowserWindow, Menu, ipcMain } from 'electron';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo } from './menu-functions';
+
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 
 let mainWindow = null;
 let forceQuit = false;
 
-ipcMain.on('git-init',(event)=>{
-  try{
-    const selectedPath= dialog.showOpenDialog({properties:['openDirectory']});
-    if(selectedPath !== undefined)
-    {
-      simpleGit(selectedPath.toString()).init().then(data=>{
-        event.returnValue = data;
-      }).catch(err=>{return event.returnValue=err})
-    } 
-    else{
-      throw ('no path selected');
-    }
-  }
-  catch(e){
-    event.returnValue = e;
-  }
-})
+ipcMain.on('git-init', (event) => gitInit(event) )
 
-ipcMain.on('git-local-repo',(event)=>{
-  try{
-    const selectedPath= dialog.showOpenDialog({properties:['openDirectory']});
-    if(selectedPath !== undefined)
-    {
-      simpleGit(selectedPath.toString())
-      .log()
-      .then(data=>{
-        console.log(data,'data');
-       return event.returnValue = data;
-      }).catch(err=>{console.log(err,'error'); return event.returnValue=err;})
-    } 
-    else{
-      throw ('no path selected');
-    }
-  }
-  catch(e){
-    event.returnValue = e;
-  }
-})
+ipcMain.on('git-local-repo',(event) => gitLocalRepo(event))
 
-ipcMain.on('git-clone',(event,arg)=>{
-  console.log(arg[0],arg[1]);
-  if(arg[0]!==undefined && arg[1]!=='')
-  {
+ipcMain.on('git-clone',(event,arg)=> gitClone(event,arg))
 
-  const gitUrl = arg[0].toString();
-  const destination = arg[1].toString();
-    try{
-      simpleGit(destination)
-      .clone(gitUrl)
-      .then((data)=>{
-        return event.returnValue= 'error';
-      })
-      .catch(err=>console.error(err));
-    }
-    catch(error)
-    {
-      console.log(error);
-      event.returnValue= error;
-    } 
-  }
-  else{
-    return event.returnValue='Select proper url and path';
-  }
-})
+ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch))
+
+ipcMain.on('git-branch',(event,path) => gitBranch(event,path));
+
+ipcMain.on('git-repo-delete',(event) => gitDeleteRepo(event));
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
