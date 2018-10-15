@@ -1,10 +1,13 @@
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu, ipcMain } from 'electron';
+import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray, nativeImage } from 'electron';
 import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
+const iconPath =path.resolve(path.join(__dirname, '../renderer/astronaut-icon.png'));
 
+const image = nativeImage.createFromPath(iconPath);
+let tray = null;
 let mainWindow = null;
 let forceQuit = false;
 
@@ -59,6 +62,7 @@ app.on('ready', async () => {
     minWidth: 640,
     minHeight: 480,
     show: false,
+    icon:image,
   });
   mainWindow.maximize();
   const template=[
@@ -167,10 +171,21 @@ app.on('ready', async () => {
       ]
     }
   ];
-// Attaching Menu
+  const trayTemplate =[
+    {
+      label:'Restore',
+      click: ()=>mainWindow.show()
+    },
+    {
+      role:'quit',
+    }
+  ];
+   tray = new Tray(iconPath);
+  // Attaching Menu
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
+  const ctxMneu = Menu.buildFromTemplate(trayTemplate);
+  tray.setContextMenu(ctxMneu);
 
   mainWindow.loadFile(path.resolve(path.join(__dirname, '../renderer/index.html')));
   
@@ -204,6 +219,7 @@ app.on('ready', async () => {
       });
     } else {
       mainWindow.on('closed', () => {
+        Tray.destroy()
         mainWindow = null;
       });
     }
