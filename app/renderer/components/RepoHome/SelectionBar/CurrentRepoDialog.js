@@ -70,9 +70,8 @@ class CurrentRepoDialog extends React.Component {
         )
     }
 }
-const mapStateToProps = state => {
+const mapStateToProps = () => {
     return {
-        branches: state.branches.currentRepoBranches
     }
 }
 const mapDispatchToProps = dispatch => {
