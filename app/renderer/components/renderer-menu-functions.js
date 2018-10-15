@@ -77,6 +77,11 @@ export const createNewBranch = (repo) => {
   }
 }
 
+export const gitBranch = (repo) => {
+  const temp = ipcRenderer.sendSync('git-branch',repo);
+  console.log(temp);
+}
+
 export const switchBranch = (repo, branch) => {
   const temp = ipcRenderer.sendSync('git-switch-branch', repo, branch);
   console.log(temp)

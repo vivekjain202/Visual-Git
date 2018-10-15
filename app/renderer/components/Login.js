@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import path from 'path';
 import PropTypes from 'prop-types';
 import { ipcRenderer } from 'electron';
-import {gitInit, openLocalRepo, cloneRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch} from './renderer-menu-functions.js';
+import {gitInit, openLocalRepo, cloneRepo, deleteRepo, createNewBranch, gitBranch, switchBranch, deleteBranch, renameBranch} from './renderer-menu-functions.js';
 
 
 ipcRenderer.on('git-init-appmenu', gitInit);
@@ -40,7 +40,7 @@ export default class Login extends Component {
    return (
      <div>
        <h2>Login</h2>
-       <button onClick={gitInit}>Button</button>
+       <button onClick={() => gitBranch(path.join(__dirname,'../../../'))}>Button</button>
      </div>
    );
  }
