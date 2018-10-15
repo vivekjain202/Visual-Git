@@ -96,3 +96,8 @@ export const renameBranch = (repo, oldName, newName) => {
   const temp = ipcRenderer.sendSync('git-rename-branch', repo, oldName, newName);
   console.log(temp)
 };
+
+export const gitLog = (repo, branch) => {
+  const temp = ipcRenderer.sendSync('git-log-of-branch', repo, branch);
+  console.log(temp);
+}

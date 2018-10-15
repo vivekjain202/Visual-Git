@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import path from 'path';
 import PropTypes from 'prop-types';
 import { ipcRenderer } from 'electron';
-import {gitInit, openLocalRepo, cloneRepo, deleteRepo, createNewBranch, gitBranch, switchBranch, deleteBranch, renameBranch} from './renderer-menu-functions.js';
+import {gitInit, openLocalRepo, cloneRepo, deleteRepo, createNewBranch, gitBranch, switchBranch, deleteBranch, gitLog, renameBranch} from './renderer-menu-functions.js';
 
 
 ipcRenderer.on('git-init-appmenu', gitInit);
@@ -13,7 +13,6 @@ ipcRenderer.on('git-new-branch-appmenu',() => createNewBranch(path.join(__dirnam
 ipcRenderer.on('git-switch-branch-appmenu',() => switchBranch(path.join(__dirname,'../../../../trello-todo-shashank'),'temp'));
 ipcRenderer.on('git-delete-branch-appmenu',() => deleteBranch(path.join(__dirname,'../../../../trello-todo-shashank'),'newName'));
 ipcRenderer.on('git-rename-branch-appmenu',() => renameBranch(path.join(__dirname,'../../../../trello-todo-shashank'),'temp','newName'));
-
 
 export default class Login extends Component {
  static propTypes = {
@@ -41,6 +40,7 @@ export default class Login extends Component {
      <div>
        <h2>Login</h2>
        <button onClick={() => gitBranch(path.join(__dirname,'../../../'))}>Button</button>
+       <button onClick={() => gitLog(path.join(__dirname,'../../../'),'Backend')}>Button</button>
      </div>
    );
  }

@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray, nativeImage } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch } from './main-menu-functions.js';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -28,6 +28,9 @@ ipcMain.on('git-switch-branch',(event,path,branch) => gitCheckout(event,path,bra
 ipcMain.on('git-delete-branch',(event,repo,branch) => gitDeleteLocalBranch(event,repo,branch));
 
 ipcMain.on('git-rename-branch',(event,repo,oldName,newName) => gitRenameBranch(event,repo,oldName,newName));
+
+ipcMain.on('git-log-of-branch',(event,repo,branch) => gitLog(event,repo,branch));
+
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
