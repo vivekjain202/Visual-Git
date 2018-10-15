@@ -1,6 +1,6 @@
 appId: com.example.app
-copyright: Example co
-productName: MyApp
+copyright: Git Boys
+productName: Visual Git
 
 asar: true
 
@@ -37,3 +37,4 @@ linux:
     - AppImage
   icon: build/icon/visualGit.png
   category: utility
+  executableName: Visual Git
