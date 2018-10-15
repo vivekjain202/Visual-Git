@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "dialogs": "^1.1.20",
     "history": "^4.6.3",
     "prop-types": "^15.5.10",
     "react": "^16.2.0",
@@ -21,10 +22,10 @@
     "redux": "^4.0.0",
     "redux-actions": "^2.2.1",
     "redux-localstorage": "^0.4.1",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "simple-git": "^1.105.0"
   },
   "devDependencies": {
-    "ajv": "^6.5.4",
     "babel-cli": "^6.22.2",
     "babel-core": "^6.2.1",
     "babel-eslint": "^8.2.6",
@@ -46,8 +47,7 @@
     "npm-run-all": "^4.0.1",
     "prettier": "^1.13.7",
     "redux-mock-store": "^1.2.2",
-    "rimraf": "^2.5.4",
-    "simple-git": "^1.105.0"
+    "rimraf": "^2.5.4"
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
