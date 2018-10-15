@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo } from './menu-functions';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -8,13 +8,13 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow = null;
 let forceQuit = false;
 
-ipcMain.on('git-init', (event) => gitInit(event) )
+ipcMain.on('git-init', (event) => gitInit(event) );
 
-ipcMain.on('git-local-repo',(event) => gitLocalRepo(event))
+ipcMain.on('git-local-repo',(event) => gitLocalRepo(event));
 
-ipcMain.on('git-clone',(event,arg)=> gitClone(event,arg))
+ipcMain.on('git-clone',(event,arg)=> gitClone(event,arg));
 
-ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch))
+ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch));
 
 ipcMain.on('git-branch',(event,path) => gitBranch(event,path));
 
@@ -60,7 +60,7 @@ app.on('ready', async () => {
     minHeight: 480,
     show: false,
   });
-  
+  mainWindow.maximize();
   const template=[
     {
       label:'File',
@@ -229,4 +229,4 @@ app.on('ready', async () => {
 
 process.on('uncaughtException',function(exception){
   console.log(exception,"caught an exception in main process check this one out");
-})
+});
