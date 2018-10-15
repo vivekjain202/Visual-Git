@@ -14,8 +14,8 @@ export const gitInit = async (event) => {
   try {
     const selectedPath = await showDialog();
     if (selectedPath !== undefined) {
-      simpleGit(selectedPath.toString()).init().then(data => {
-        event.returnValue = data;
+      simpleGit(selectedPath.toString()).init().then(() => {
+        event.returnValue = selectedPath;
       }).catch(err => { return event.returnValue = err })
     }
     else {
@@ -35,6 +35,7 @@ export const gitLocalRepo = async (event) => {
         .log()
         .then(data => {
           console.log(data, 'data');
+          data['path'] = selectedPath;
           return event.returnValue = data;
         }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
     }
@@ -101,15 +102,65 @@ export const gitBranch = (event, path) => {
   }
 };
 
-export const gitNewBranch = (event, path, newBranch) => {
-  if (path !== undefined && path !== '') {
+export const gitNewBranch = (event, repo, newBranch) => {
+  if (repo !== undefined && repo !== '') {
     try {
-      simpleGit(path)
+      simpleGit(repo)
         .checkoutLocalBranch(newBranch)
         .then(() => {
-          simpleGit(path).branch().then(branches => event.returnValue = branches)
+          simpleGit(repo).branch().then(branches => event.returnValue = branches)
         })
         .catch(error => event.returnValue = error);
+    }
+    catch (error) {
+      event.returnValue = error;
+    }
+  }
+};
+
+export const gitCheckout = (event, repo, branch) => {
+  if (repo !== undefined && repo !== '') {
+    try {
+      simpleGit(repo).checkout(branch)
+        .then(() => {
+          event.returnValue = 'Switched branch';
+        })
+        .catch(error => event.returnValue = error);
+    }
+    catch (error) {
+      event.returnValue = error;
+    }
+  }
+};
+export const gitDeleteLocalBranch = (event, repo, branch) => {
+  if (repo !== undefined && repo !== '') {
+    try {
+      simpleGit(repo).checkout('master').then(
+        simpleGit(repo).deleteLocalBranch(branch)
+          .then(() => {
+            simpleGit(repo).branch().then(branches => event.returnValue = branches)
+          })
+      )
+        .catch(error => event.returnValue = error);
+    }
+    catch (error) {
+      event.returnValue = error;
+    }
+  }
+};
+
+export const gitRenameBranch = (event, repo, oldName, newName) => {
+  if (repo !== undefined && repo !== '' && newName !== undefined && newName !== '') {
+    try {
+      exec(`git branch -m ${oldName} ${newName}`, { cwd: repo.toString() }, (error, stdout, stderr) => {
+        if (error) {
+          throw error;
+        }
+        else {
+          console.log(stdout);
+          event.returnValue = stdout;
+        }
+      })
     }
     catch (error) {
       event.returnValue = error;

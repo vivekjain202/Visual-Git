@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray, nativeImage } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo } from './main-menu-functions.js';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -17,12 +17,17 @@ ipcMain.on('git-local-repo',(event) => gitLocalRepo(event));
 
 ipcMain.on('git-clone',(event,arg)=> gitClone(event,arg));
 
-ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch));
+ipcMain.on('git-repo-delete',(event) => gitDeleteRepo(event));
 
 ipcMain.on('git-branch',(event,path) => gitBranch(event,path));
 
-ipcMain.on('git-repo-delete',(event) => gitDeleteRepo(event));
+ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch));
 
+ipcMain.on('git-switch-branch',(event,path,branch) => gitCheckout(event,path,branch));
+
+ipcMain.on('git-delete-branch',(event,repo,branch) => gitDeleteLocalBranch(event,repo,branch));
+
+ipcMain.on('git-rename-branch',(event,repo,oldName,newName) => gitRenameBranch(event,repo,oldName,newName));
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
@@ -112,12 +117,6 @@ app.on('ready', async () => {
           label:"New repository",
           click: (menuItem,mainWindow)=>{
             mainWindow.webContents.send('git-init-appmenu');
-          }
-        },
-        {
-          label:"Rename repository",
-          click: (menuItem,mainWindow)=>{
-            mainWindow.webContents.send('git-repo-rename-appmenu');
           }
         },
         {
@@ -219,7 +218,7 @@ app.on('ready', async () => {
       });
     } else {
       mainWindow.on('closed', () => {
-        Tray.destroy()
+        tray.destroy()
         mainWindow = null;
       });
     }
