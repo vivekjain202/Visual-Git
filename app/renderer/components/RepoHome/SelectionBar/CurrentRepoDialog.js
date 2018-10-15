@@ -15,7 +15,7 @@ class CurrentRepoDialog extends React.Component {
     state = {
         open: this.props.openStatus,
         filterText: "",
-        repos: [{ id: 1, name: 'master', selected: true }, { id: 2, name: 'UI-1', selected: false }, { id: 3, name: 'UI-2', selected: false }]
+        repos: [],
     }
     handleClose = () => {
         this.setState({ open: false });

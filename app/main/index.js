@@ -99,12 +99,15 @@
 //   }
 // });
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu, ipcMain } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo } from './main-menu-functions.js';
+import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray, nativeImage } from 'electron';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
+const iconPath =path.resolve(path.join(__dirname, '../renderer/astronaut-icon.png'));
 
+const image = nativeImage.createFromPath(iconPath);
+let tray = null;
 let mainWindow = null;
 let forceQuit = false;
 
@@ -114,11 +117,19 @@ ipcMain.on('git-local-repo',(event) => gitLocalRepo(event));
 
 ipcMain.on('git-clone',(event,arg)=> gitClone(event,arg));
 
-ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch));
+ipcMain.on('git-repo-delete',(event) => gitDeleteRepo(event));
 
 ipcMain.on('git-branch',(event,path) => gitBranch(event,path));
 
-ipcMain.on('git-repo-delete',(event) => gitDeleteRepo(event));
+ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch));
+
+ipcMain.on('git-switch-branch',(event,path,branch) => gitCheckout(event,path,branch));
+
+ipcMain.on('git-delete-branch',(event,repo,branch) => gitDeleteLocalBranch(event,repo,branch));
+
+ipcMain.on('git-rename-branch',(event,repo,oldName,newName) => gitRenameBranch(event,repo,oldName,newName));
+
+ipcMain.on('git-log-of-branch',(event,repo,branch) => gitLog(event,repo,branch));
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -159,6 +170,7 @@ app.on('ready', async () => {
     minWidth: 640,
     minHeight: 480,
     show: false,
+    icon:image,
   });
   mainWindow.maximize();
   const template=[
@@ -208,12 +220,6 @@ app.on('ready', async () => {
           label:"New repository",
           click: (menuItem,mainWindow)=>{
             mainWindow.webContents.send('git-init-appmenu');
-          }
-        },
-        {
-          label:"Rename repository",
-          click: (menuItem,mainWindow)=>{
-            mainWindow.webContents.send('git-repo-rename-appmenu');
           }
         },
         {
@@ -267,10 +273,21 @@ app.on('ready', async () => {
       ]
     }
   ];
-// Attaching Menu
+  const trayTemplate =[
+    {
+      label:'Restore',
+      click: ()=>mainWindow.show()
+    },
+    {
+      role:'quit',
+    }
+  ];
+   tray = new Tray(iconPath);
+  // Attaching Menu
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
+  const ctxMneu = Menu.buildFromTemplate(trayTemplate);
+  tray.setContextMenu(ctxMneu);
 
   mainWindow.loadFile(path.resolve(path.join(__dirname, '../renderer/index.html')));
   
@@ -304,6 +321,7 @@ app.on('ready', async () => {
       });
     } else {
       mainWindow.on('closed', () => {
+        tray.destroy()
         mainWindow = null;
       });
     }
