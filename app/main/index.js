@@ -1,24 +1,76 @@
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu, Tray } from 'electron';
-import { ipcMain } from 'electron';
-import { gitLog, gitInit, gitClone, gitBranch, gitDiff, gitDiffSummary } from './menu-functions';
-
+import { app, crashReporter, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
+import simpleGit from 'simple-git/promise';
 const isDevelopment = process.env.NODE_ENV === 'development';
+
 
 let mainWindow = null;
 let forceQuit = false;
 
-ipcMain.on('git-log', async (event) => { event.returnValue = await gitLog(); });
+ipcMain.on('git-init',(event)=>{
+  try{
+    const selectedPath= dialog.showOpenDialog({properties:['openDirectory']});
+    if(selectedPath !== undefined)
+    {
+      simpleGit(selectedPath.toString()).init().then(data=>{
+        event.returnValue = data;
+      }).catch(err=>{return event.returnValue=err})
+    } 
+    else{
+      throw ('no path selected');
+    }
+  }
+  catch(e){
+    event.returnValue = e;
+  }
+})
 
-ipcMain.on('git-init', async (event) => { event.returnValue = await gitInit(mainWindow); });
+ipcMain.on('git-local-repo',(event)=>{
+  try{
+    const selectedPath= dialog.showOpenDialog({properties:['openDirectory']});
+    if(selectedPath !== undefined)
+    {
+      simpleGit(selectedPath.toString())
+      .log()
+      .then(data=>{
+        console.log(data,'data');
+       return event.returnValue = data;
+      }).catch(err=>{console.log(err,'error'); return event.returnValue=err;})
+    } 
+    else{
+      throw ('no path selected');
+    }
+  }
+  catch(e){
+    event.returnValue = e;
+  }
+})
 
-ipcMain.on('git-clone', async (event, remoteUrl) => { try { event.returnValue = await gitClone(remoteUrl); } catch(err){ event.returnValue = err; } });
+ipcMain.on('git-clone',(event,arg)=>{
+  console.log(arg[0],arg[1]);
+  if(arg[0]!==undefined && arg[1]!=='')
+  {
 
-ipcMain.on('git-branch', async (event) => { try { event.returnValue = await gitBranch(); } catch(err){ event.returnValue = err; } });
-
-ipcMain.on('git-diff', async (event) => { try { event.returnValue = await gitDiff(); } catch(err){ event.returnValue = err; } });
-
-ipcMain.on('git-diff-summary', async (event) => { try { event.returnValue = await gitDiffSummary(); } catch(err){ event.returnValue = err; } });
+  const gitUrl = arg[0].toString();
+  const destination = arg[1].toString();
+    try{
+      simpleGit(destination)
+      .clone(gitUrl)
+      .then((data)=>{
+        return event.returnValue= 'error';
+      })
+      .catch(err=>console.error(err));
+    }
+    catch(error)
+    {
+      console.log(error);
+      event.returnValue= error;
+    } 
+  }
+  else{
+    return event.returnValue='Select proper url and path';
+  }
+})
 
 const installExtensions = async () => {
  const installer = require('electron-devtools-installer');
@@ -61,11 +113,123 @@ app.on('ready', async () => {
     center: true,
     icon: iconPath,
   });
-  mainWindow.maximize();
+  
+  const template=[
+    {
+      label:'File',
+      submenu:[
+        {
+          label:"New repository",
+          accelerator:"CmdorCtrl + N",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-init-appmenu');
+          }
+        },
+        {
+          label:"Open local repository",
+          accelerator:"CmdorCtrl + O",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('open-local-repo-appmenu');
+          }
+        },
+        {
+          label:"Clone repository",
+          accelerator:"CmdorCtrl + C + L",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('clone-repo-appmenu');
+          }
+        },
+        {
+          role:"quit",
+        }
+      ]
+    },
+    {
+      label:"View",
+      submenu:[
+        {role:"zoomIn"},
+        {role:"zoomOut"},
+        {role:'reload'},
+        {role:'toggleFullScreen'},
+        {role: "toggleDevTools"}
+      ]
+    },
+    {
+      label:"Repository",
+      submenu:[
+        {
+          label:"New repository",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-init-appmenu');
+          }
+        },
+        {
+          label:"Rename repository",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-repo-rename-appmenu');
+          }
+        },
+        {
+          label:"Delete repository",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-repo-delete-appmenu');
+          }
+        },
+      ]
+    },
+    {
+      label:"Branch",
+      submenu:[
+        {
+          label:"New branch",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-new-branch-appmenu');
+          }
+        },
+        {
+          label:"Switch branch",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-switch-branch-appmenu');
+          }
+        },
+        {
+          label:"Delete branch",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-delete-branch-appmenu');
+          }
+        },
+        {
+          label:"Rename branch",
+          click: (menuItem,mainWindow)=>{
+            mainWindow.webContents.send('git-rename-branch-appmenu');
+          }
+        },
+      ]
+    },
+    {
+      label:"Help",
+      submenu:[
+        {
+          label:"Documentation",
+          accelerator:"CmdorCtrl + H",
+          click: ()=>{
+            const {shell} = require('electron');
+            shell.openExternal('https://gitlab.com/mountblue/august-18-js/visual-git-using-electron/blob/master/README.md')
+          }
+        },
+      ]
+    }
+  ];
+// Attaching Menu
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+
+
   mainWindow.loadFile(path.resolve(path.join(__dirname, '../renderer/index.html')));
- 
+  
   // show window once on first load
   mainWindow.webContents.once('did-finish-load', () => {
+    // mainWindow.webContents.openDevTools();
     mainWindow.show();
   });
  
@@ -74,123 +238,8 @@ app.on('ready', async () => {
     // 1. App should not terminate if window has been closed
     // 2. Click on icon in dock should re-open the window
     // 3. ⌘+Q should close the window and quit the app
-    // Menu template
-    const template=[
-      {
-        label:'File',
-        submenu:[
-          {
-            label:"New repository",
-            accelerator:"CmdorCtrl + N",
-            click: gitInit,
-          },
-          {
-            label:"New local repository",
-            accelerator:"CmdorCtrl + O",
-            click: gitInit,
-          },
-          {
-            label:"Clone repository",
-            accelerator:"CmdorCtrl + C + L",
-            click: function () {
-              console.log('Clone repo clicked');
-              }
-          },
-          {
-            role:"quit",
-          }
-        ]
-      },
-      {
-        label:"View",
-        submenu:[
-          {role:"zoomIn"},
-          {role:"zoomOut"},
-          {role:'reload'},
-          {role:'toggleFullScreen'},
-          {role: "toggleDevTools"}
-        ]
-      },
-      {
-        label:"Repository",
-        submenu:[
-          {
-            label:"New repository",
-            click: gitInit,
-          },
-          {
-            label:"Rename repository",
-            click: function () {
-              console.log('Rename clicked');
-              }
-          },
-          {
-            label:"Delete repository",
-            click: function () {
-              console.log('Delete repo clicked');
-              }
-          },
-        ]
-      },
-      {
-        label:"Branch",
-        submenu:[
-          {
-            label:"New branch",
-            click: function () {
-              console.log('Create new branch clicked');
-              }
-          },
-          {
-            label:"Switch branch",
-            click: function () {
-              console.log('Switch branch clicked');
-              }
-          },
-          {
-            label:"Delete branch",
-            click: function () {
-              console.log('Delete branch clicked');
-              }
-          },
-          {
-            label:"Rename branch",
-            click: function () {
-              console.log('Rename branch clicked');
-              }
-          },
-        ]
-      },
-      {
-        label:"Help",
-        submenu:[
-          {
-            label:"Documentation",
-            accelerator:"CmdorCtrl + H",
-            click: function () {
-              console.log('Documentation me clicked');
-              }
-          },
-        ]
-      }
-    ];
- // Attaching Menu
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
- 
-// Tray Configuration 
-    const tray = new Tray(iconPath);
-      const trayTemplate =[
-      {
-        label:'Restore',
-        click: ()=>mainWindow.show()
-      },
-      {
-        role:'quit'
-      },
-      ];
-      const ctxMenu = Menu.buildFromTemplate(trayTemplate);
-      tray.setContextMenu(ctxMenu); 
+    mainWindow.webContents.openDevTools();
+   
     if (process.platform === 'darwin') {
       mainWindow.on('close', function(e) {
         if (!forceQuit) {
@@ -215,8 +264,8 @@ app.on('ready', async () => {
  
   if (isDevelopment) {
     // auto-open dev tools
-    mainWindow.webContents.openDevTools();
- 
+    // mainWindow.webContents.openDevTools();
+
     // add inspect element on right click menu
     mainWindow.webContents.on('context-menu', (e, props) => {
       Menu.buildFromTemplate([
@@ -229,4 +278,8 @@ app.on('ready', async () => {
       ]).popup(mainWindow);
     });
   }
- });
+});
+
+process.on('uncaughtException',function(exception){
+  console.log(exception,"caught an exception in main process check this one out");
+})

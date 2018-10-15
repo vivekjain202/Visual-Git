@@ -35,3 +35,4 @@ linux:
   target:
     - deb
     - AppImage
+  category: utility
