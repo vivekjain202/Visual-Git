@@ -9,6 +9,10 @@ const styles = (theme) => ({
     width: 250,
     height: 'calc(100vh - 48px)',
   },
+  childPage:{
+    overflow: 'auto',
+    height: `calc(100vh - 96px)`
+  },
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -74,7 +78,9 @@ class SideBar extends React.Component {
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             />
           </Tabs>
+          <Paper   classes={{ root: classes.childPage }}>
           {tabNumber === 0 ? <Changes /> : <History />}
+          </Paper>
         </Paper>
       </Fragment>
     );

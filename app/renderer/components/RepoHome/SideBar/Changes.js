@@ -15,6 +15,7 @@ const styles = {
 class Changes extends React.Component {
   render() {
     const { classes, files, onSelectFile } = this.props;
+    console.log("files",files)
     return (
       <React.Fragment>
         <List component="nav">
@@ -28,7 +29,7 @@ class Changes extends React.Component {
                 <Checkbox tabIndex={-1} disableRipple />
                 <ListItemText
                   className={classes.listItemText}
-                  primary={fileItem.file}
+                  primary={fileItem.file.length > 18 ? fileItem.file.substring(0,20)+"..." : fileItem.file}
                   title={fileItem.file}
                 />
               </ListItem>
