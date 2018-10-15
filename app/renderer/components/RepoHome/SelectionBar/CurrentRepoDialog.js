@@ -1,8 +1,16 @@
 import React, { Fragment } from 'react'
 import { Dialog, TextField, DialogActions, DialogContentText, Button, DialogContent, ListItemText, Divider, List, ListItem } from '@material-ui/core'
-import CheckIcon from '@material-ui/icons/Check'
+// import CheckIcon from '@material-ui/icons/Check'
 import { connect } from 'react-redux'
+import TvIcon from '@material-ui/icons/Tv'
 import { CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY } from '../../../constants/actions'
+// import { gitInit, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch } from './renderer-menu-functions.js';
+
+
+const buttonStyle = {
+    paddingRight: 10,
+    color: 'black'
+  }
 class CurrentRepoDialog extends React.Component {
     state = {
         open: this.props.openStatus,
@@ -24,7 +32,7 @@ class CurrentRepoDialog extends React.Component {
 
     }
     componentDidMount() {
-        console.log(this.props)
+        
     }
     render() {
         return (
@@ -50,9 +58,9 @@ class CurrentRepoDialog extends React.Component {
                     <Divider />
                     <List style={{ maxHeight: 200, overflow: 'auto' }}>
                         {this.state.repos.map((repo) => {
-                            const iconDisplay = repo.selected ? <CheckIcon></CheckIcon> : <span></span>
+                            // const iconDisplay = repo.selected ? <CheckIcon></CheckIcon> : <span></span>
                             return <ListItem key={repo.id} button onClick={() => this.handleRepoClick(name)}>
-                                {iconDisplay}
+                                 <TvIcon style={buttonStyle} />
                                 <ListItemText primary={repo.name}></ListItemText>
                             </ListItem>
                         })}
@@ -76,7 +84,10 @@ const mapStateToProps = () => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        changeRepo: (repoName) => dispatch({ type: CHANGE_REPOSITORY, payload: repoName }),
+        changeRepo: (repoName) => {
+            console.log(repoName, 'from mapDispatchtoProps');
+            dispatch({ type: CHANGE_REPOSITORY, payload: repoName })
+        },
         changeBranches: () => dispatch({ type: CHANGE_REPOSITORY_BRANCHES })
     }
 }

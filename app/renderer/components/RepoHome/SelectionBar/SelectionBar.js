@@ -6,8 +6,10 @@ import CurrentRepoDialog from './CurrentRepoDialog'
 import CurrentBranchDialog from './CurrentBranchDialog'
 import TvIcon from '@material-ui/icons/Tv'
 import ArrowUpward from '@material-ui/icons/ArrowUpward'
-import {connect} from 'react-redux'
-
+import { connect } from 'react-redux'
+import { CHANGE_REPOSITORY } from '../../../constants/actions'
+import { ipcRenderer } from 'electron';
+import store from '../../../store/index'
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#000' },
@@ -16,9 +18,10 @@ const theme = createMuiTheme({
   },
 });
 const buttonStyle = {
-  paddingRight: 10, 
+  paddingRight: 10,
   color: 'white'
 }
+
 class SelectionBar extends Component {
   state = {
     isCurrentRepoOpen: false,
@@ -32,9 +35,9 @@ class SelectionBar extends Component {
       isCurrentRepoOpen: !this.state.isCurrentRepoOpen
     })
   }
-  componentDidUpdate(prevProps){
-    if(prevProps.branchName!==this.props.branchName) this.setState({currentBranchName: this.props.branchName})
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.branchName !== this.props.branchName) this.setState({ currentBranchName: this.props.branchName })
+  // }
   handleClickCloseCurrentRepo = () => {
     this.setState({
       isCurrentRepoOpen: false,
@@ -50,13 +53,31 @@ class SelectionBar extends Component {
       isCurrentBranchOpen: false,
     })
   }
-  componentDidMount(){
-   this.setState({})
+  componentDidMount() {
+    let currentRepoName = "";
+    // let allCommits = [];
+    ipcRenderer.on('open-local-repo-appmenu', async () => {
+      const temp = ipcRenderer.sendSync('git-local-repo');
+      console.log(temp, 'after getting data')
+      currentRepoName = temp.name;
+      this.props.changeRepo(currentRepoName)
+      // allCommits = temp.data;
+    });
+    // store.dispatch({type:CHANGE_REPOSITORY, currentRepoName})
+
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.repoName !== this.props.repoName) {
+      console.log(prevProps.repoName, this.props.repoName)
+      this.setState({
+        currentRepoName: this.props.repoName
+      })
+    }
   }
   displayModel() {
     if (this.state.isCurrentRepoOpen)
       return <CurrentRepoDialog openStatus={this.state.isCurrentRepoOpen} close={this.handleClickCloseCurrentRepo}></CurrentRepoDialog>
-    else if(this.state.isCurrentBranchOpen) 
+    else if (this.state.isCurrentBranchOpen)
       return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch}></CurrentBranchDialog>
     else return null;
   }
@@ -91,10 +112,19 @@ class SelectionBar extends Component {
 }
 const mapStateToProps = state => {
   return {
-      repoName: state.global.currentRepo,
-      branchName: state.global.currentBranch,
+    repoName: state.global.currentRepo,
+    branchName: state.global.currentBranch,
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    changeRepo: (repoName) => {
+      console.log(repoName, 'from mapDispatchtoProps');
+      dispatch({ type: CHANGE_REPOSITORY, payload: repoName })
+    },
+    // changeBranches: () => dispatch({ type: CHANGE_REPOSITORY_BRANCHES })
   }
 }
 
-export default connect(mapStateToProps)(SelectionBar);
+export default connect(mapStateToProps, mapDispatchToProps)(SelectionBar);
 //, position: 'absolute', left:'70px', bottom:'0',paddingTop:'3px'
