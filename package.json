@@ -31,7 +31,6 @@
     "simple-git": "^1.105.0"
   },
   "devDependencies": {
-    "ajv": "^6.5.4",
     "babel-cli": "^6.22.2",
     "babel-core": "^6.2.1",
     "babel-eslint": "^8.2.6",
@@ -43,7 +42,6 @@
     "babel-preset-react": "^6.24.1",
     "browser-sync": "^2.23.6",
     "chai": "^4.1.0",
-    "dugite": "^1.78.0",
     "electron": "^2.0.5",
     "electron-builder": "^20.0.7",
     "electron-devtools-installer": "^2.2.4",
@@ -76,12 +74,5 @@
     "private:compile": "babel app/ --copy-files --out-dir build",
     "private:clean": "rimraf build",
     "private:format": "prettier \"scripts/*.js\" \"app/**/*.js\" \"test/**/*.js\""
-  },
-  "bugs": {
-    "url": "https://github.com/jschr/electron-react-redux-boilerplate/issues"
-  },
-  "homepage": "https://github.com/jschr/electron-react-redux-boilerplate#readme",
-  "directories": {
-    "test": "test"
   }
 }
