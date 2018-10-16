@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
             state = { ...state, currentBranch: action.payload }
             break;
         case CHANGE_BRANCH_COMMITS:
-            state = { ...state, currentBranchCommits: changeBranchCommits(state.allCommits, action.payload) }
+            state = { ...state, currentBranchCommits: action.payload }
             break;
         case CHANGE_REPOSITORY:
             state = { ...state, currentRepo: action.payload }
@@ -34,27 +34,27 @@ export default (state = initialState, action) => {
     }
     return state;
 };
-const updateBranches = (branches, branchName) => {
-    const newBranches = branches.map(branch => {
-        if (branch.name !== branchName) return { ...branch, selected: false }
-        else return { ...branch, selected: true }
-    })
-    return newBranches
-}
+// const updateBranches = (branches, branchName) => {
+//     const newBranches = branches.map(branch => {
+//         if (branch.name !== branchName) return { ...branch, selected: false }
+//         else return { ...branch, selected: true }
+//     })
+//     return newBranches
+// }
 
-const getCurrentBranchCommits = (branches, branchName) => {
-    const commits = branches.map(branch => {
-        if (branch.name === branchName) return branch.commits
-    })
-    return commits
-}
+// const getCurrentBranchCommits = (branches, branchName) => {
+//     const commits = branches.map(branch => {
+//         if (branch.name === branchName) return branch.commits
+//     })
+//     return commits
+// }
 
-const getRepositoryBranches = (branchesRawData) => {
-    console.log(branchesRawData, 'branches rawdata from getRepositoryBranches')
-}
+// const getRepositoryBranches = (branchesRawData) => {
+//     console.log(branchesRawData, 'branches rawdata from getRepositoryBranches')
+// }
 
-const changeBranchCommits = (allCommits, commitsHash) => {
-    console.log(allCommits,"all commits");
-    console.log(commitsHash,"commit hash")
-    return commitsHash;
-}
+// const changeBranchCommits = (allCommits, commitsHash) => {
+//     console.log(allCommits,"all commits");
+//     console.log(commitsHash,"commit hash")
+//     return commitsHash;
+// }
