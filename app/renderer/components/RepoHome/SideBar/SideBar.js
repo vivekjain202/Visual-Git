@@ -3,10 +3,11 @@ import { Paper, Tabs, Tab, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Changes from './Changes';
 import History from './History';
+import { CHANGE_TO_HISTORY_VIEW } from '../../../constants/actions';
+import {connect} from 'react-redux'
 
 const styles = (theme) => ({
   sidebar: {
-    width: 272.17,
     height: 'calc(100vh - 48px)',
   },
   childPage:{
@@ -19,27 +20,26 @@ const styles = (theme) => ({
   },
   tabsRoot: {
     borderBottom: '1px solid #e8e8e8',
-    backgroundColor: '#212121',
+    backgroundColor: '#fff',
     padding: 0,
     minWidth: 100,
   },
   tabsIndicator: {
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
   },
   tabRoot: {
-    color: '#fff',
+    color: '#000',
     textTransform: 'initial',
     minWidth: 0,
     '&:hover': {
-      backgroundColor: '#222',
+      backgroundColor: '#eee',
     },
     '&$tabSelected': {
-      color: '#fff',
-      fontWeight: theme.typography.fontWeightMedium,
-      borderBottom: '3px solid #fff',
+      color: '#000',
+      fontWeight: "bold",
     },
     '&:focus': {
-      color: '#fff',
+      color: '#000',
     },
   },
   tabSelected: {},
@@ -55,6 +55,7 @@ class SideBar extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ tabNumber: value });
+    this.props.toggleTabs(value);
   };
   render() {
     const { classes } = this.props;
@@ -89,5 +90,6 @@ class SideBar extends React.Component {
 SideBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
+const mapDispatchToProps = (dispatch)=>({toggleTabs:(tabNumber)=>dispatch({type:CHANGE_TO_HISTORY_VIEW, payload:tabNumber === 1})})
 
-export default withStyles(styles)(SideBar);
+export default connect(()=>({}), mapDispatchToProps)(withStyles(styles)(SideBar));

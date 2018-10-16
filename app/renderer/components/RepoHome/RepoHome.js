@@ -10,10 +10,10 @@ class RepoHome extends React.Component {
       <Fragment>
         <SelectionBar />
         <Grid container>
-          <Grid item>
+          <Grid item xs={4}>
             <SideBar />
           </Grid>
-          <Grid item>
+          <Grid item xs={8}>
             <Details />
           </Grid>
         </Grid>

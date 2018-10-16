@@ -1,18 +1,30 @@
 import React, { Component, Fragment } from 'react';
-import { Paper, List, ListItem, Checkbox, ListItemText, withStyles } from '@material-ui/core';
+import {
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  withStyles,
+} from '@material-ui/core';
 import { HISTORY_FILE_SELECTED } from '../../../constants/actions';
 import { connect } from 'react-redux';
 
 const styles = {
-  sidebar: {
-    width: 272.17,
-    height: 'calc(100vh - 48px)',
-  },
-  listItem: {
-    padding: '0',
+  root: {
+    height: 'calc(100vh - 150px)',
+    backgroundColor:'#efefef'
   },
   listItemText: {
     padding: '0',
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  listItemTextPrimary: {
+    fontSize: 13,
+  },
+  listItemTextSecondary: {
+    fontSize: 13,
   },
 };
 class FilesView extends Component {
@@ -20,30 +32,35 @@ class FilesView extends Component {
     const { classes, onSelectFile, files } = this.props;
     return (
       <Fragment>
-        <Paper color="primary" classes={{ root: classes.sidebar }}>
+        <Paper color="primary" classes={{ root: classes.root }}>
           <List component="nav">
             {files && files.length > 0 ? (
               files.map((fileItem) => (
-                <ListItem
-                  key={fileItem.file}
-                  className={classes.listItem}
-                  onClick={() => onSelectFile(fileItem.file)}
-                  button>
-                  <Checkbox tabIndex={-1} disableRipple />
-                  <ListItemText
-                    className={classes.listItemText}
-                    primary={
-                      fileItem.file.length > 18
-                        ? fileItem.file.substring(0, 20) + '...'
-                        : fileItem.file
-                    }
-                    title={fileItem.file}
-                  />
-                </ListItem>
+                <Fragment key={fileItem.file}>
+                  <ListItem
+                    className={classes.listItem}
+                    onClick={() => onSelectFile(fileItem.file)}
+                    button>
+                    <ListItemText
+                      classes={{
+                        root: classes.listItemText,
+                        primary: classes.listItemTextPrimary,
+                        secondary: classes.listItemTextSecondary,
+                      }}
+                      primary={
+                        fileItem.file.length > 35
+                          ? fileItem.file.substring(0, 35) + '...'
+                          : fileItem.file
+                      }
+                      title={fileItem.file}
+                    />
+                  </ListItem>
+                  <Divider />
+                </Fragment>
               ))
             ) : (
-              <ListItem className={classes.listItem}>
-                <ListItemText className={classes.listItemText} primary="No files have changes." />
+              <ListItem>
+                <ListItemText primary="No changes." />
               </ListItem>
             )}
           </List>
