@@ -1,13 +1,13 @@
 {
-  "name": "electron-react-redux-boilerplate",
+  "name": "visual-git",
   "version": "0.0.0",
-  "description": "electron-react-redux-boilerplate",
+  "description": "visual-git",
   "main": "init.js",
   "author": {
-    "name": "Jordan Schroter",
-    "email": "email@author.com"
+    "name": "Git boys",
+    "email": "gitboys@mountblue.io"
   },
-  "repository": "https://github.com/jschr/electron-react-redux-boilerplate",
+  "repository": "https://gitlab.com/VisualGit/visual-git-using-electron.git",
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^3.2.0",
