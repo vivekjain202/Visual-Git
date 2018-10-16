@@ -180,3 +180,15 @@ export const gitLog = (event,repo,branch) => {
     event.returnValue = error;
   }
  }
+
+ export const diffSummary = (event,cwd, hash) =>{
+   try{
+     simpleGit(cwd)
+     .diff()
+     .then(data=>event.returnValue = data)
+     .catch((error)=> event.returnValue = error)
+   }
+   catch(err){
+     event.returnValue = error;
+   }
+ }

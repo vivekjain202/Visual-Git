@@ -31,6 +31,8 @@ ipcMain.on('git-rename-branch', (event, repo, oldName, newName) => gitRenameBran
 
 ipcMain.on('git-log-of-branch', (event, repo, branch) => gitLog(event, repo, branch));
 
+
+
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];

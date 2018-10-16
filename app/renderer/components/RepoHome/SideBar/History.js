@@ -2,6 +2,7 @@ import React from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Icon, withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { COMMIT_SELECTED } from '../../../constants/actions';
+import { ipcRenderer } from 'electron';
 
 const styles = {
   listItem: {
@@ -13,7 +14,17 @@ const styles = {
   },
 };
 
+
+
 class History extends React.Component {
+  constructor(){
+    super();
+    this.getDiffSummary =this.getDiffSummary.bind(this);
+  }
+
+  getDiffSummary(hash){
+    ipcRenderer.sendSync('git-diff-summary',[this.props.currentRepoPath,hash]);
+  }
   render() {
     const { classes, commits, onSelectCommit } = this.props;
     return (
@@ -24,7 +35,7 @@ class History extends React.Component {
               <ListItem
                 key={commit.hash}
                 className={classes.listItem}
-                onClick={() => onSelectCommit(commit.hash)}
+                onClick={() => this.getDiffSummary(commit.hash)}
                 button>
                 <ListItemIcon>
                   <Icon className="fa fa-gitter" />
@@ -50,11 +61,12 @@ class History extends React.Component {
 function mapStateToProps(state) {
   return {
     commits: state.global ? state.global.currentBranchCommits : [],
+    currentRepoPath : state.global.currentRepo,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectCommit: (hash) => dispatch({ type: COMMIT_SELECTED, payload: { hash } }),
+    onSelectCommit: (files) => dispatch({ type: COMMIT_SELECTED, payload: { files } }),
   };
 }
 export default connect(

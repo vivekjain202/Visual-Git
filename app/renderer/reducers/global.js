@@ -1,4 +1,4 @@
-import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../constants/actions'
+import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ALL_CHANGED_FILES_LOADED } from '../constants/actions'
 // import {gitInit, openLocalRepo, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch} from '../components/RepoHome/SelectionBar/renderer-menu-functions';
 const initialState = {
     currentRepo: '',
@@ -30,6 +30,9 @@ export default (state = initialState, action) => {
             break;
         case CURRENT_REPO_PATH:
             state = { ...state, currentRepoPath: action.payload }
+        break;
+        case ALL_CHANGED_FILES_LOADED:
+            state = { ...state, changedFiles: action.payload }
             break;
     }
     return state;

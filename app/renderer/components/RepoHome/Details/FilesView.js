@@ -60,7 +60,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (file) => dispatch({ type: HISTORY_FILE_SELECTED, payload: { file } }),
+    onSelectFile: (diff) => dispatch({ type: HISTORY_FILE_SELECTED, payload: { diff } }),
   };
 }
 
