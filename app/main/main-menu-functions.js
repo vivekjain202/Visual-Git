@@ -179,4 +179,4 @@ export const gitLog = (event,repo,branch) => {
   catch (error) {
     event.returnValue = error;
   }
-}
+ }

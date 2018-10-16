@@ -70,10 +70,9 @@ app.on('ready', async () => {
     minWidth: 640,
     minHeight: 480,
     show: false,
-    // icon:image,
+    icon:image,
   });
   mainWindow.maximize();
-  mainWindow.setTitle='Visual Git'
   const template=[
     {
       label:'File',
