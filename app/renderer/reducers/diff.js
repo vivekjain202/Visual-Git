@@ -1,7 +1,7 @@
 import { COMMIT_SELECTED, HISTORY_FILE_SELECTED, CHANGED_FILE_SELECTED } from '../constants/actions'
 
 const initialState = {
-    
+    files: '',
 };
 export default (state = initialState, action) => {
     switch (action.type) {

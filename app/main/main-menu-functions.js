@@ -207,7 +207,7 @@ export const gitLog = (event,repo,branch) => {
  export const gitDiffStat = (event, repoPath, hash) => {
   try{
     if(hash.length === 0 && hash.length !== undefined) {
-      simpleGit(repoPath).diff(['--stat'])
+      simpleGit(repoPath.toString()).diff(['--stat'])
       .then(diff => {
         console.log(diff);
         event.returnValue = diff;
@@ -225,5 +225,6 @@ export const gitLog = (event,repo,branch) => {
    }
   catch(error) {
     event.returnValue = error;
-  } 
+  }
+  
  }

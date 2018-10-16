@@ -23,7 +23,9 @@ class History extends React.Component {
   }
 
   getDiffSummary(hash){
-    ipcRenderer.sendSync('git-diff-summary',[this.props.currentRepoPath,hash]);
+    const temp = ipcRenderer.sendSync('git-diff-summary',[this.props.currentRepoPath,hash]);
+    console.log(temp,'');
+    this.props.onSelectCommit(temp)
   }
   render() {
     const { classes, commits, onSelectCommit } = this.props;
@@ -61,7 +63,8 @@ class History extends React.Component {
 function mapStateToProps(state) {
   return {
     commits: state.global ? state.global.currentBranchCommits : [],
-    currentRepoPath : state.global.currentRepo,
+    currentRepoPath : state.global.currentRepoPath,
+    files : state.diff.files,
   };
 }
 function mapDispatchToProps(dispatch) {
