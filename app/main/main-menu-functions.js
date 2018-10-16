@@ -32,8 +32,8 @@ export const gitLocalRepo = async (event) => {
     const selectedPath = await showDialog();
     if (selectedPath !== undefined) {
       simpleGit(selectedPath.toString())
-        .log()
-        .then(data => {
+      .log(['--all'])
+      .then(data => {
           console.log(data, 'data');
           data['path'] = selectedPath;
           return event.returnValue = data;
