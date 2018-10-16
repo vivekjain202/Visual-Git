@@ -1,17 +1,17 @@
-import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../constants/actions'
+import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO } from '../constants/actions'
 // import {gitInit, openLocalRepo, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch} from '../components/RepoHome/SelectionBar/renderer-menu-functions';
 const initialState = {
     currentRepo: '',
-    currentBranch: 'Master',
+    currentBranch: '',
     branches: [],
     currentBranchCommits: [],
     otherBranches: [],
     allCommits: [],
-    currentRepoPath: ""
+    currentRepoPath: "",
+    otherRepos: []
 };
 // , branches: updateBranches(state.branches, action.payload)
 export default (state = initialState, action) => {
-    console.log(action.type, action.payload, 'action.type, action.payload')
     switch (action.type) {
         case CHANGE_BRANCH:
             state = { ...state, currentBranch: action.payload }
@@ -31,9 +31,17 @@ export default (state = initialState, action) => {
         case CURRENT_REPO_PATH:
             state = { ...state, currentRepoPath: action.payload }
             break;
+        case ADD_OTHER_REPO:
+            state = { ...state, otherRepos: addOtherRepo(action.payload, state.otherRepos) }
     }
     return state;
 };
+
+const addOtherRepo = (pathToRepo, otherRepos) => {
+    if (!otherRepos.includes(pathToRepo)) return [...otherRepos, pathToRepo]
+    else return otherRepos
+}
+
 // const updateBranches = (branches, branchName) => {
 //     const newBranches = branches.map(branch => {
 //         if (branch.name !== branchName) return { ...branch, selected: false }

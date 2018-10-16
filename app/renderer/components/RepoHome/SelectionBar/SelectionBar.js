@@ -5,9 +5,9 @@ import { AppBarButton } from './CustomComponents'
 import CurrentRepoDialog from './CurrentRepoDialog'
 import CurrentBranchDialog from './CurrentBranchDialog'
 import TvIcon from '@material-ui/icons/Tv'
-import ArrowUpward from '@material-ui/icons/ArrowUpward'
+import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
-import { CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO ,CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
 import { ipcRenderer } from 'electron';
 import { gitBranch, gitLog } from './renderer-menu-functions'
 const theme = createMuiTheme({
@@ -63,7 +63,9 @@ class SelectionBar extends Component {
       const branches = await gitBranch(temp.path[0])
       this.props.changeBranches(branches.all)
       const gitLogs = await gitLog(temp.path[0], 'master')
+      this.props.changeBranch('master')
       this.props.changeBranchCommits(gitLogs);
+      this.props.addToOtherRepos(temp.path[0])
     });
 
   }
@@ -100,7 +102,7 @@ class SelectionBar extends Component {
                   <span style={{ color: 'white' }}>{this.state.currentBranchName}</span>
               </AppBarButton>
               <AppBarButton color="inherit" onClick={this.handleClickOpenPushBranch} primary="hello" secondary="world">
-                <ArrowUpward style={buttonStyle} />
+                <CloudUpload style={buttonStyle} />
                 Publish this repository
               </AppBarButton>
             </Toolbar>
@@ -123,7 +125,9 @@ const mapDispatchToProps = dispatch => {
     changeBranches: (branches) => dispatch({ type: CHANGE_REPOSITORY_BRANCHES, payload: branches }),
     changeBranchCommits: (commits) => dispatch({ type: CHANGE_BRANCH_COMMITS, payload: commits }),
     setAllCommits: (allCommits) => dispatch({type:SET_ALL_COMMITS, payload: allCommits}),
-    updateCurrentRepoPath: (path) => dispatch({type:CURRENT_REPO_PATH, payload: path})
+    updateCurrentRepoPath: (path) => dispatch({type:CURRENT_REPO_PATH, payload: path}),
+    changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
+    addToOtherRepos: (pathToRepo) => dispatch({type: ADD_OTHER_REPO, payload: pathToRepo})
   }
 }
 

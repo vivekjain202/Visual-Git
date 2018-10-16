@@ -1,14 +1,15 @@
 import React, { Fragment } from 'react'
-import { Dialog, TextField, DialogContentText, DialogContent, ListItemText, Divider, List, ListItem } from '@material-ui/core'
+import {  TextField, DialogContentText, DialogContent, ListItemText, Divider, List, ListItem, Icon } from '@material-ui/core'
 // import CheckIcon from '@material-ui/icons/Check'
 import { connect } from 'react-redux'
 import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS } from '../../../constants/actions'
 import { gitLog } from './renderer-menu-functions'
-
+import { CustomDialog } from './CustomComponents'
 const mapStateToProps = state => {
     return {
         branches: state.global.branches,
-        currentRepoPath: state.global.currentRepoPath
+        currentRepoPath: state.global.currentRepoPath,
+        currentBranch: state.global.currentBranch
     }
 }
 const mapDispatchToProps = dispatch => {
@@ -22,7 +23,7 @@ class CurrentBranchDialog extends React.Component {
         open: this.props.openStatus,
         filterText: "",
         branches: [],
-        default: 'master'
+        alertOpen: false,
     }
     handleClose = () => {
         this.setState({ open: false });
@@ -48,16 +49,21 @@ class CurrentBranchDialog extends React.Component {
         this.props.changeBranchCommits(gitLogs)
         this.handleClose()
     }
+    handleAlertClose = () => {
+        this.setState({
+            alertOpen: false,
+        })
+    }
     render() {
+        if (this.state.branches.length === 0) return null
         return (
             <Fragment>
-                <Dialog
+                <CustomDialog
                     open={this.state.open}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title"
                 >
-
-                    <DialogContent>
+                    <DialogContent style={{ padding: '0px 24px' }}>
                         <TextField
                             autoFocus
                             margin="normal"
@@ -67,28 +73,24 @@ class CurrentBranchDialog extends React.Component {
                             fullWidth
                         />
                     </DialogContent>
-                    <DialogContentText>Other</DialogContentText>
+                    <DialogContentText style={{ paddingLeft: '23px', paddingTop: '23px', }}>Select the branch</DialogContentText>
                     <Divider />
-                    <List style={{ maxHeight: 200, overflow: 'auto' }}>
+                    <List style={{ overflow: 'auto', maxHeight: '300px' }}>
                         {this.state.branches.map((branch) => {
                             // const iconDisplay = branch.selected || branch.name==='Master' ? <CheckIcon></CheckIcon> : <span></span>
                             console.log(branch)
-                            return <ListItem key={branch} button onClick={() => this.handleBranchClick(branch)}>
-                                {/* {iconDisplay} */}
-                                <ListItemText primary={branch}></ListItemText>
-                            </ListItem>
+                            return <React.Fragment key={branch}>
+                                <ListItem key={branch} selected={this.props.currentBranch === branch} button onClick={() => this.handleBranchClick(branch)}>
+                                    <Icon  style={{color: '#444'}}className="fa fa-code-branch" />
+                                    <ListItemText primary={branch}></ListItemText>
+                                </ListItem>
+                                <Divider />
+                            </React.Fragment>
+
                             // console.log(branch)
                         })}
                     </List>
-                    {/* <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.handleClose} color="primary">
-                            Select
-                        </Button>
-                    </DialogActions> */}
-                </Dialog>
+                </CustomDialog>
             </Fragment>
         )
     }

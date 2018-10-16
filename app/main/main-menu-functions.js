@@ -27,9 +27,19 @@ export const gitInit = async (event) => {
   }
 };
 
-export const gitLocalRepo = async (event) => {
+export const gitLocalRepo = async (event,path) => {
   try {
-    const selectedPath = await showDialog();
+    if(path !== undefined && path !== ''){
+        simpleGit(path.toString())
+        .log(['--all'])
+        .then(data => {
+            console.log(data, 'data');
+            data['path'] = path;
+            return event.returnValue = data;
+          }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
+      }
+    else if(path == undefined) {
+      const selectedPath = await showDialog();
     if (selectedPath !== undefined) {
       simpleGit(selectedPath.toString())
       .log(['--all'])
@@ -38,6 +48,7 @@ export const gitLocalRepo = async (event) => {
           data['path'] = selectedPath;
           return event.returnValue = data;
         }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
+    }
     }
     else {
       throw ('no path selected');
