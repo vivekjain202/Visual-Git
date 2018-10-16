@@ -170,7 +170,6 @@ export const gitRenameBranch = (event, repo, oldName, newName) => {
 
 export const gitLog = (event,repo,branch) => {
   try {
-    console.log(repo,"gitLog")
     simpleGit(repo.toString())
     .log([branch])
     .then(commits => event.returnValue = commits)
@@ -179,4 +178,52 @@ export const gitLog = (event,repo,branch) => {
   catch (error) {
     event.returnValue = error;
   }
+ }
+
+ export const gitDiff = (event,repoPath,hash) => {
+   try{
+    if(hash.length === 0 && hash.length !== undefined) {
+      simpleGit(repoPath).diff()
+      .then(diff => {
+        console.log(diff);
+        event.returnValue = diff;
+      })
+      .catch(error => event.returnValue = error);
+    }
+    else if(hash.length !== undefined) {
+      simpleGit(repoPath).diff([hash])
+      .then(diff => {
+        console.log(diff);
+        event.returnValue = diff;
+      })
+      .catch(error => event.returnValue = error);
+    }
+   }
+  catch(error) {
+    event.returnValue = error;
+  }
+ }
+
+ export const gitDiffStat = (event, repoPath, hash) => {
+  try{
+    if(hash.length === 0 && hash.length !== undefined) {
+      simpleGit(repoPath).diff(['--stat'])
+      .then(diff => {
+        console.log(diff);
+        event.returnValue = diff;
+      })
+      .catch(error => event.returnValue = error);
+    }
+    else if(hash.length !== undefined) {
+      simpleGit(repoPath).diff(['--stat',hash])
+      .then(diff => {
+        console.log(diff);
+        event.returnValue = diff;
+      })
+      .catch(error => event.returnValue = error);
+    }
+   }
+  catch(error) {
+    event.returnValue = error;
+  } 
  }
