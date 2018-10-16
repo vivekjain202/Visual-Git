@@ -101,9 +101,9 @@ class SelectionBar extends Component {
                 Current Branch&nbsp;
                   <span style={{ color: 'white' }}>{this.state.currentBranchName}</span>
               </AppBarButton>
-              <AppBarButton color="inherit" onClick={this.handleClickOpenPushBranch} primary="hello" secondary="world">
+              <AppBarButton color="inherit" onClick={this.handleClickOpenPushBranch}>
                 <CloudUpload style={buttonStyle} />
-                Publish this repository
+                <span style={{color: 'white'}}>Publish this repository</span>
               </AppBarButton>
             </Toolbar>
           </AppBar>
