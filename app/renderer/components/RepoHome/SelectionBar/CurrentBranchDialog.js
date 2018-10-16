@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react'
-import {  TextField, DialogContentText, DialogContent, ListItemText, Divider, List, ListItem, Icon } from '@material-ui/core'
+import { TextField, DialogContentText, DialogContent, ListItemText, Divider, List, ListItem, Icon } from '@material-ui/core'
 // import CheckIcon from '@material-ui/icons/Check'
 import { connect } from 'react-redux'
 import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS } from '../../../constants/actions'
 import { gitLog } from './renderer-menu-functions'
 import { CustomDialog } from './CustomComponents'
+import CheckIcon from '@material-ui/icons/Done'
 const mapStateToProps = state => {
     return {
         branches: state.global.branches,
@@ -40,12 +41,7 @@ class CurrentBranchDialog extends React.Component {
     }
     handleBranchClick = async (name) => {
         this.props.changeBranch(name)
-        // this.props.changeBranchCommits()
-        // this.setState({
-        //     default: name!=='Master' ? name : 'Master',
-        // })
         const gitLogs = await gitLog(this.props.currentRepoPath, name)
-        console.log(gitLogs, 'from the handleBranchClick')
         this.props.changeBranchCommits(gitLogs)
         this.handleClose()
     }
@@ -73,18 +69,27 @@ class CurrentBranchDialog extends React.Component {
                             fullWidth
                         />
                     </DialogContent>
-                    <DialogContentText style={{ paddingLeft: '23px', paddingTop: '23px', }}>Select the branch</DialogContentText>
+                    {/* selected={this.props.currentBranch === branch} */}
+                    <DialogContentText style={{ paddingLeft: '23px', paddingTop: '23px', }}>Default branch</DialogContentText>
+                    <List>
+                        <ListItem key={'master'} button onClick={() => this.handleBranchClick('master')}>
+                            <Icon style={{ color: '#444' }} className="fa fa-code-branch" />
+                            <ListItemText primary={'master'}></ListItemText>
+                        </ListItem>
+                    </List>
                     <Divider />
+                    <DialogContentText style={{ paddingLeft: '23px', paddingTop: '23px', }}>Other</DialogContentText>
+                    {/* <Divider /> */}
+
                     <List style={{ overflow: 'auto', maxHeight: '300px' }}>
                         {this.state.branches.map((branch) => {
-                            // const iconDisplay = branch.selected || branch.name==='Master' ? <CheckIcon></CheckIcon> : <span></span>
-                            console.log(branch)
+                            const iconToDisplay = this.props.currentBranch === branch ? <CheckIcon /> : <Icon style={{ color: '#444' }} className="fa fa-code-branch" />
                             return <React.Fragment key={branch}>
-                                <ListItem key={branch} selected={this.props.currentBranch === branch} button onClick={() => this.handleBranchClick(branch)}>
-                                    <Icon  style={{color: '#444'}}className="fa fa-code-branch" />
-                                    <ListItemText primary={branch}></ListItemText>
+                                <ListItem key={branch} button onClick={() => this.handleBranchClick(branch)}>
+                                    {iconToDisplay}
+                                    <ListItemText primary={branch} ></ListItemText>
                                 </ListItem>
-                                <Divider />
+                                {/* <Divider /> */}
                             </React.Fragment>
 
                             // console.log(branch)

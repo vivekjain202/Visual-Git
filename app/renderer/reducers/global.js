@@ -9,7 +9,8 @@ const initialState = {
     allCommits: [],
     currentRepoPath: "",
     otherRepos: [],
-    isHistoryView: false
+    isHistoryView: false,
+    latestBranchCommit:{}
 };
 // , branches: updateBranches(state.branches, action.payload)
 export default (state = initialState, action) => {
