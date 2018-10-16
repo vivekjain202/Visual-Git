@@ -1,4 +1,4 @@
-import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO } from '../constants/actions'
+import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO, CHANGE_TO_HISTORY_VIEW } from '../constants/actions'
 // import {gitInit, openLocalRepo, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch} from '../components/RepoHome/SelectionBar/renderer-menu-functions';
 const initialState = {
     currentRepo: '',
@@ -8,7 +8,8 @@ const initialState = {
     otherBranches: [],
     allCommits: [],
     currentRepoPath: "",
-    otherRepos: []
+    otherRepos: [],
+    isHistoryView: false
 };
 // , branches: updateBranches(state.branches, action.payload)
 export default (state = initialState, action) => {
@@ -33,10 +34,13 @@ export default (state = initialState, action) => {
             break;
         case ADD_OTHER_REPO:
             state = { ...state, otherRepos: addOtherRepo(action.payload, state.otherRepos) }
+            break;
+        case CHANGE_TO_HISTORY_VIEW:
+        state = { ...state, isHistoryView: action.payload };
+        break;
     }
     return state;
-};
-
+}
 const addOtherRepo = (pathToRepo, otherRepos) => {
     if (!otherRepos.includes(pathToRepo)) return [...otherRepos, pathToRepo]
     else return otherRepos
