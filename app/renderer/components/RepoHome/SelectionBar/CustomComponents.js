@@ -24,9 +24,7 @@ export const CustomDialog = withStyles({
   root:{
   },
   paper: {
-    minWidth: '400px',
+    minWidth: '450px',
     borderRadius:'0px',
-    // marginBottom: '0px'
-
   }
 })(Dialog)

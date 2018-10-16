@@ -4,6 +4,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { AppBarButton } from './CustomComponents'
 import CurrentRepoDialog from './CurrentRepoDialog'
 import CurrentBranchDialog from './CurrentBranchDialog'
+import PublishBranchDialog from './PublishBranchDialog'
 import TvIcon from '@material-ui/icons/Tv'
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
@@ -28,7 +29,8 @@ class SelectionBar extends Component {
     isCurrentBranchOpen: false,
     isPushBranch: false,
     currentRepoName: this.props.repoName,
-    currentBranchName: this.props.branchName
+    currentBranchName: this.props.branchName,
+    isPublishBranchDialogOpen: false,
   }
   handleClickOpenCurrentRepo = () => {
     this.setState({
@@ -51,6 +53,16 @@ class SelectionBar extends Component {
   handleClickCloseCurrentBranch = () => {
     this.setState({
       isCurrentBranchOpen: false,
+    })
+  }
+  handleClickOpenPublishDialog = () => {
+    this.setState({
+      isPublishBranchDialogOpen: !this.state.isCurrentBranchOpen
+    })
+  }
+  handleClickClosePublishDialog = () => {
+    this.setState({
+      isPublishBranchDialogOpen: false,
     })
   }
   componentDidMount() {
@@ -82,6 +94,8 @@ class SelectionBar extends Component {
       return <CurrentRepoDialog openStatus={this.state.isCurrentRepoOpen} close={this.handleClickCloseCurrentRepo}></CurrentRepoDialog>
     else if (this.state.isCurrentBranchOpen)
       return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch}></CurrentBranchDialog>
+    else if (this.state.isPublishBranchDialogOpen)
+      return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close = {this.handleClickClosePublishDialog}></PublishBranchDialog>
     else return null;
   }
   render() {
@@ -101,9 +115,9 @@ class SelectionBar extends Component {
                 Current Branch&nbsp;
                   <span style={{ color: 'white' }}>{this.state.currentBranchName}</span>
               </AppBarButton>
-              <AppBarButton color="inherit" onClick={this.handleClickOpenPushBranch}>
+              <AppBarButton color="inherit" onClick={this.handleClickOpenPublishDialog}>
                 <CloudUpload style={buttonStyle} />
-                <span style={{color: 'white'}}>Publish this repository</span>
+                <span style={{color: 'white'}}>Publish {this.state.currentBranchName ?  this.state.currentBranchName: "repository"}</span>
               </AppBarButton>
             </Toolbar>
           </AppBar>

@@ -83,11 +83,11 @@ class CurrentBranchDialog extends React.Component {
 
                     <List style={{ overflow: 'auto', maxHeight: '300px' }}>
                         {this.state.branches.map((branch) => {
-                            const iconToDisplay = this.props.currentBranch === branch ? <CheckIcon /> : <Icon style={{ color: '#444' }} className="fa fa-code-branch" />
+                            const iconToDisplay = this.props.currentBranch === branch ? <CheckIcon /> : <Icon style={{ color: 'orange' }} className="fa fa-code-branch" />
                             return <React.Fragment key={branch}>
                                 <ListItem key={branch} button onClick={() => this.handleBranchClick(branch)}>
                                     {iconToDisplay}
-                                    <ListItemText primary={branch} ></ListItemText>
+                                    <ListItemText primary={branch} secondary="Jan 7, 2014"></ListItemText>
                                 </ListItem>
                                 {/* <Divider /> */}
                             </React.Fragment>
