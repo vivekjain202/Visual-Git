@@ -1,12 +1,11 @@
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray, nativeImage } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog, gitDiff, gitDiffStat } from './main-menu-functions.js';
+import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray } from 'electron';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog, gitDiff, gitDiffStat, gitParticularFileDiff } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const iconPath = path.resolve(path.join(__dirname, '../renderer/astronaut-icon.png'));
 
-const image = nativeImage.createFromPath(iconPath);
 let tray = null;
 let mainWindow = null;
 let forceQuit = false;
@@ -34,6 +33,8 @@ ipcMain.on('git-log-of-branch', (event, repo, branch) => gitLog(event, repo, bra
 ipcMain.on('git-diff',(event, path, hash) => gitDiff(event, path, hash));
 
 ipcMain.on('git-diff-summary',(event, arg) => gitDiffStat(event, arg[0], arg[1]));
+
+ipcMain.on('git-diff-particular-file',(event, arg) => gitParticularFileDiff(event, arg[0], arg[1], arg[2]));
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');

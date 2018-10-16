@@ -2,6 +2,7 @@ import React from 'react';
 import { List, ListItem, ListItemText, Checkbox, withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { CHANGED_FILE_SELECTED } from '../../../constants/actions';
+import { ipcRenderer } from 'electron';
 
 const styles = {
   listItem: {
@@ -13,8 +14,17 @@ const styles = {
 };
 
 class Changes extends React.Component {
+  constructor() {
+    super();
+  }
+
+  onFileClick(file) {
+    const diff = ipcRenderer.sendSync('git-diff-perticular-file',this.props.currentRepoPath,null,file);
+    this.props.onSelectFile(diff)
+  }
+
   render() {
-    const { classes, files, onSelectFile } = this.props;
+    const { classes, files } = this.props;
     console.log('files', files);
     return (
       <React.Fragment>
@@ -24,7 +34,7 @@ class Changes extends React.Component {
               <ListItem
                 key={fileItem.file}
                 className={classes.listItem}
-                onClick={() => onSelectFile(fileItem.file)}
+                onClick={() => this.onFileClick(fileItem.file)}
                 button>
                 <Checkbox tabIndex={-1} disableRipple />
                 <ListItemText
@@ -52,6 +62,7 @@ class Changes extends React.Component {
 function mapStateToProps(state) {
   return {
     files: state.global ? state.global.changedFiles : [],
+    currentRepoPath: state.global.currentRepoPath,
   };
 }
 function mapDispatchToProps(dispatch) {

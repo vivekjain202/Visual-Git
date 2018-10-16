@@ -23,12 +23,12 @@ class History extends React.Component {
   }
 
   getDiffSummary(hash){
-    const temp = ipcRenderer.sendSync('git-diff-summary',[this.props.currentRepoPath,hash]);
-    console.log(temp,'');
-    this.props.onSelectCommit(temp)
+    let filteredFileName = ipcRenderer.sendSync('git-diff-summary',[this.props.currentRepoPath,hash]).split('\n').map((data) => data.split('|')[0].trim());
+    filteredFileName = filteredFileName.slice(0,filteredFileName.length - 2);
+    this.props.onSelectCommit(filteredFileName);
   }
   render() {
-    const { classes, commits, onSelectCommit } = this.props;
+    const { classes, commits } = this.props;
     return (
       <React.Fragment>
         <List component="nav">
@@ -69,7 +69,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectCommit: (files) => dispatch({ type: COMMIT_SELECTED, payload: { files } }),
+    onSelectCommit: (files) => dispatch({ type: COMMIT_SELECTED, payload: files }),
   };
 }
 export default connect(

@@ -3,7 +3,7 @@ import { dialog } from 'electron';
 import { exec } from 'child_process';
 
 export const showDialog = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     dialog.showOpenDialog({ properties: ['openDirectory'] }, (path) => {
       resolve(path);
     })
@@ -53,7 +53,7 @@ export const gitDeleteRepo = async (event) => {
   const selectedDirPath = await showDialog();
   console.log('selected path', selectedDirPath);
   if (selectedDirPath !== undefined) {
-    exec('rm -rf .git ', { cwd: selectedDirPath.toString() }, (error, stdout, stderr) => {
+    exec('rm -rf .git ', { cwd: selectedDirPath.toString() }, (error, stdout) => {
       if (error) {
         throw error;
       }
@@ -75,7 +75,7 @@ export const gitClone = (event, arg) => {
     try {
       simpleGit(destination)
         .clone(gitUrl)
-        .then((data) => {
+        .then(() => {
           return event.returnValue = 'error';
         })
         .catch(err => console.error(err));
@@ -152,7 +152,7 @@ export const gitDeleteLocalBranch = (event, repo, branch) => {
 export const gitRenameBranch = (event, repo, oldName, newName) => {
   if (repo !== undefined && repo !== '' && newName !== undefined && newName !== '') {
     try {
-      exec(`git branch -m ${oldName} ${newName}`, { cwd: repo.toString() }, (error, stdout, stderr) => {
+      exec(`git branch -m ${oldName} ${newName}`, { cwd: repo.toString() }, (error, stdout) => {
         if (error) {
           throw error;
         }
@@ -226,5 +226,27 @@ export const gitLog = (event,repo,branch) => {
   catch(error) {
     event.returnValue = error;
   }
-  
+ }
+
+ export const gitParticularFileDiff = (event,cwd,hash,fileName)=>{
+  try{
+    console.log(cwd,fileName,hash);
+    if(hash === null)
+    {
+      console.log("In hash null")
+      simpleGit(cwd)
+      .diff([fileName])
+      .then(data=> event.returnValue =data)
+      .catch(error=> event.returnValue= error)
+    }
+    else{
+      simpleGit(cwd)
+      .diff([fileName, hash])
+      .then(data=> event.returnValue=data)
+      .catch(error=>event.returnValue=error)
+    }
+  }
+  catch(error){
+    event.returnValue = error;
+  }
  }
