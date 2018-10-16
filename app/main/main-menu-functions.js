@@ -171,21 +171,12 @@ export const gitRenameBranch = (event, repo, oldName, newName) => {
 export const gitLog = (event,repo,branch) => {
   try {
     console.log(repo,"gitLog")
-    exec(`git log ${branch} --oneline`, { cwd: repo.toString() }, (error, stdout, stderr) => {
-      if (error) {
-        throw error;
-      }
-      else {
-        event.returnValue = puts(stdout);
-      }
-    })
+    simpleGit(repo.toString())
+    .log([branch])
+    .then(commits => event.returnValue = commits)
+    .catch(error => event.returnValue = error);
   }
   catch (error) {
     event.returnValue = error;
   }
-}
-//helper function
-
-function puts(stdout) {
-  return  stdout.split(/\n/).map(e=>e.split(' ')[0]);
 }
