@@ -55,10 +55,22 @@ const getRepositoryBranches = (branchesRawData) => {
 
 const changeBranchCommits = (allCommits, commitsHash) => {
     const reqCommits = commitsHash.filter(commit => commit !== null)
-    let branchCommits = allCommits.filter(commit => {
-        console.log(commit.commitsHash)
-        for (let i = 0; i < reqCommits.length; i++) if (commit.hash.includes(reqCommits[i])) return true;
-    })
+    // let branchCommits = allCommits.filter(commit => {
+    //     // console.log(commit.commitsHash)
+    //     // console.log(commit.hash, 'pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp')
+    //     let val = false;
+    //     for (let i = 0; i < reqCommits.length; i++) {
+    //         if (commit.hash.includes(reqCommits[i])) return true
+    //     }
+    //     return val
+    // })
+    // console.log(branchCommits, '|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||S')
+    let branchCommits = [];
+    for(let i = 0;i< reqCommits.length;i++) {
+        let temp = allCommits.filter(commit => commit.hash.slice(0,7) === reqCommits[i]);
+        branchCommits = branchCommits.concat(temp);
+    }
+    console.log(allCommits);
     console.log(branchCommits)
     return branchCommits
 }
