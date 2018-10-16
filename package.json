@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "description": "visual-git",
   "main": "init.js",
-  "author": "Jordan Schroter <email@author.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jschr/electron-react-redux-boilerplate.git"
+  "author": {
+    "name": "Git boys",
+    "email": "gitboys@mountblue.io"
   },
+  "repository": "https://gitlab.com/VisualGit/visual-git-using-electron.git",
   "license": "MIT",
   "dependencies": {
     "ajv": "^6.5.4",
