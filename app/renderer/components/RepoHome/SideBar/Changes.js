@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Checkbox, withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { FILE_SELECTED } from '../../../constants/actions';
+import { CHANGED_FILE_SELECTED } from '../../../constants/actions';
 
 const styles = {
   listItem: {
@@ -56,7 +56,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (file) => dispatch({ type: FILE_SELECTED, payload: { file } }),
+    onSelectFile: (file) => dispatch({ type: CHANGED_FILE_SELECTED, payload: { file } }),
   };
 }
 
