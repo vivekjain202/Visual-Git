@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray, nativeImage } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog } from './main-menu-functions.js';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog, gitDiff, gitDiffStat } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -31,7 +31,9 @@ ipcMain.on('git-rename-branch', (event, repo, oldName, newName) => gitRenameBran
 
 ipcMain.on('git-log-of-branch', (event, repo, branch) => gitLog(event, repo, branch));
 
+ipcMain.on('git-diff',(event, path, hash) => gitDiff(event, path, hash));
 
+ipcMain.on('git-diff-summary',(event, arg) => gitDiffStat(event, arg[0], arg[1]));
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
