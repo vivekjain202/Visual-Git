@@ -4,32 +4,32 @@ import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const iconPath =path.resolve(path.join(__dirname, '../renderer/astronaut-icon.png'));
+const iconPath = path.resolve(path.join(__dirname, '../renderer/astronaut-icon.png'));
 
 const image = nativeImage.createFromPath(iconPath);
 let tray = null;
 let mainWindow = null;
 let forceQuit = false;
 
-ipcMain.on('git-init', (event) => gitInit(event) );
+ipcMain.on('git-init', (event) => gitInit(event));
 
-ipcMain.on('git-local-repo',(event) => gitLocalRepo(event));
+ipcMain.on('git-local-repo', (event) => gitLocalRepo(event));
 
-ipcMain.on('git-clone',(event,arg)=> gitClone(event,arg));
+ipcMain.on('git-clone', (event, arg) => gitClone(event, arg));
 
-ipcMain.on('git-repo-delete',(event) => gitDeleteRepo(event));
+ipcMain.on('git-repo-delete', (event) => gitDeleteRepo(event));
 
-ipcMain.on('git-branch',(event,path) => gitBranch(event,path));
+ipcMain.on('git-branch', (event, path) => gitBranch(event, path));
 
-ipcMain.on('git-new-branch',(event,path,newBranch) => gitNewBranch(event,path,newBranch));
+ipcMain.on('git-new-branch', (event, path, newBranch) => gitNewBranch(event, path, newBranch));
 
-ipcMain.on('git-switch-branch',(event,path,branch) => gitCheckout(event,path,branch));
+ipcMain.on('git-switch-branch', (event, path, branch) => gitCheckout(event, path, branch));
 
-ipcMain.on('git-delete-branch',(event,repo,branch) => gitDeleteLocalBranch(event,repo,branch));
+ipcMain.on('git-delete-branch', (event, repo, branch) => gitDeleteLocalBranch(event, repo, branch));
 
-ipcMain.on('git-rename-branch',(event,repo,oldName,newName) => gitRenameBranch(event,repo,oldName,newName));
+ipcMain.on('git-rename-branch', (event, repo, oldName, newName) => gitRenameBranch(event, repo, oldName, newName));
 
-ipcMain.on('git-log-of-branch',(event,repo,branch) => gitLog(event,repo,branch));
+ipcMain.on('git-log-of-branch', (event, repo, branch) => gitLog(event, repo, branch));
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -70,119 +70,118 @@ app.on('ready', async () => {
     minWidth: 640,
     minHeight: 480,
     show: false,
-    icon:image,
   });
   mainWindow.maximize();
-  const template=[
+  const template = [
     {
-      label:'File',
-      submenu:[
+      label: 'File',
+      submenu: [
         {
-          label:"New repository",
-          accelerator:"CmdorCtrl + N",
-          click: (menuItem,mainWindow)=>{
+          label: "New repository",
+          accelerator: "CmdorCtrl + N",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-init-appmenu');
           }
         },
         {
-          label:"Open local repository",
-          accelerator:"CmdorCtrl + O",
-          click: (menuItem,mainWindow)=>{
+          label: "Open local repository",
+          accelerator: "CmdorCtrl + O",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('open-local-repo-appmenu');
           }
         },
         {
-          label:"Clone repository",
-          accelerator:"CmdorCtrl + C + L",
-          click: (menuItem,mainWindow)=>{
+          label: "Clone repository",
+          accelerator: "CmdorCtrl + C + L",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('clone-repo-appmenu');
           }
         },
         {
-          role:"quit",
+          role: "quit",
         }
       ]
     },
     {
-      label:"View",
-      submenu:[
-        {role:"zoomIn"},
-        {role:"zoomOut"},
-        {role:'reload'},
-        {role:'toggleFullScreen'},
-        {role: "toggleDevTools"}
+      label: "View",
+      submenu: [
+        { role: "zoomIn" },
+        { role: "zoomOut" },
+        { role: 'reload' },
+        { role: 'toggleFullScreen' },
+        { role: "toggleDevTools" }
       ]
     },
     {
-      label:"Repository",
-      submenu:[
+      label: "Repository",
+      submenu: [
         {
-          label:"New repository",
-          click: (menuItem,mainWindow)=>{
+          label: "New repository",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-init-appmenu');
           }
         },
         {
-          label:"Delete repository",
-          click: (menuItem,mainWindow)=>{
+          label: "Delete repository",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-repo-delete-appmenu');
           }
         },
       ]
     },
     {
-      label:"Branch",
-      submenu:[
+      label: "Branch",
+      submenu: [
         {
-          label:"New branch",
-          click: (menuItem,mainWindow)=>{
+          label: "New branch",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-new-branch-appmenu');
           }
         },
         {
-          label:"Switch branch",
-          click: (menuItem,mainWindow)=>{
+          label: "Switch branch",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-switch-branch-appmenu');
           }
         },
         {
-          label:"Delete branch",
-          click: (menuItem,mainWindow)=>{
+          label: "Delete branch",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-delete-branch-appmenu');
           }
         },
         {
-          label:"Rename branch",
-          click: (menuItem,mainWindow)=>{
+          label: "Rename branch",
+          click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-rename-branch-appmenu');
           }
         },
       ]
     },
     {
-      label:"Help",
-      submenu:[
+      label: "Help",
+      submenu: [
         {
-          label:"Documentation",
-          accelerator:"CmdorCtrl + H",
-          click: ()=>{
-            const {shell} = require('electron');
+          label: "Documentation",
+          accelerator: "CmdorCtrl + H",
+          click: () => {
+            const { shell } = require('electron');
             shell.openExternal('https://gitlab.com/mountblue/august-18-js/visual-git-using-electron/blob/master/README.md')
           }
         },
       ]
     }
   ];
-  const trayTemplate =[
+  const trayTemplate = [
     {
-      label:'Restore',
-      click: ()=>mainWindow.show()
+      label: 'Restore',
+      click: () => mainWindow.show()
     },
     {
-      role:'quit',
+      role: 'quit',
     }
   ];
-   tray = new Tray(iconPath);
+  tray = new Tray(iconPath);
   // Attaching Menu
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
@@ -190,7 +189,7 @@ app.on('ready', async () => {
   tray.setContextMenu(ctxMneu);
 
   mainWindow.loadFile(path.resolve(path.join(__dirname, '../renderer/index.html')));
-  
+
   // show window once on first load
   mainWindow.webContents.once('did-finish-load', () => {
     // mainWindow.webContents.openDevTools();
@@ -203,9 +202,9 @@ app.on('ready', async () => {
     // 2. Click on icon in dock should re-open the window
     // 3. ⌘+Q should close the window and quit the app
     mainWindow.webContents.openDevTools();
-   
+
     if (process.platform === 'darwin') {
-      mainWindow.on('close', function(e) {
+      mainWindow.on('close', function (e) {
         if (!forceQuit) {
           e.preventDefault();
           mainWindow.hide();
@@ -245,6 +244,6 @@ app.on('ready', async () => {
   }
 });
 
-process.on('uncaughtException',function(exception){
-  console.log(exception,"caught an exception in main process check this one out");
+process.on('uncaughtException', function (exception) {
+  console.log(exception, "caught an exception in main process check this one out");
 });

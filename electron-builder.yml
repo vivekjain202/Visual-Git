@@ -35,6 +35,6 @@ linux:
  target:
    - deb
    - AppImage
- icon: build/icon/visualGit.png
+ icon: dist-assets/icon/visualGit.png
  category: utility
  executableName: Visual Git
