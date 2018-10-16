@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
             state = { ...state, currentBranch: action.payload }
             break;
         case CHANGE_BRANCH_COMMITS:
-            state = { ...state, currentBranchCommits: action.payload }
+            state = { ...state, currentBranchCommits: action.payload.all, latestBranchCommit: action.payload.latest }
             break;
         case CHANGE_REPOSITORY:
             state = { ...state, currentRepo: action.payload }

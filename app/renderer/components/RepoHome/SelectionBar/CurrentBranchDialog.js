@@ -44,6 +44,7 @@ class CurrentBranchDialog extends React.Component {
         //     default: name!=='Master' ? name : 'Master',
         // })
         const gitLogs = await gitLog(this.props.currentRepoPath, name)
+        console.log(gitLogs, 'from the handleBranchClick')
         this.props.changeBranchCommits(gitLogs)
         this.handleClose()
     }
