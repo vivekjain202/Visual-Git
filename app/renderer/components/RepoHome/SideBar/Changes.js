@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { FILE_SELECTED } from '../../../constants/actions';
+import { ipcRenderer } from 'electron';
 
 const styles = {
   list: {
@@ -30,26 +31,39 @@ const styles = {
   listItemTextSecondary: {
     fontSize: 13,
   },
-  commitContainer:{
+  commitContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    backgroundColor: '#efefef'
-  }
+    backgroundColor: '#efefef',
+  },
 };
 
 class Changes extends React.Component {
+  constructor() {
+    super();
+  }
+
+  onFileClick(file) {
+    const diff = ipcRenderer.sendSync(
+      'git-diff-perticular-file',
+      this.props.currentRepoPath,
+      null,
+      file,
+    );
+    this.props.onSelectFile(diff);
+  }
   render() {
-    const { classes, files, onSelectFile } = this.props;
+    const { classes, files } = this.props;
     console.log('files', files);
     return (
-      <React.Fragment>
+      <Fragment>
         <List component="nav" className={classes.list}>
           {files && files.length > 0 ? (
             files.map((fileItem) => (
               <Fragment key={fileItem.file}>
                 <ListItem
                   className={classes.listItem}
-                  onClick={() => onSelectFile(fileItem.file)}
+                  onClick={() => this.onFileClick(fileItem.file)}
                   button>
                   <Checkbox tabIndex={-1} disableRipple />
                   <ListItemText
@@ -85,11 +99,15 @@ class Changes extends React.Component {
             fullWidth
             disabled={!(files && files.length > 0)}
           />
-          <Button variant="contained" color="primary" fullWidth disabled={!(files && files.length > 0)}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={!(files && files.length > 0)}>
             Commit
           </Button>
         </form>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }
@@ -97,6 +115,7 @@ class Changes extends React.Component {
 function mapStateToProps(state) {
   return {
     files: state.global ? state.global.files : [],
+    currentRepoPath: state.global && state.global.currentRepoPath,
   };
 }
 function mapDispatchToProps(dispatch) {
