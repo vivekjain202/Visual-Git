@@ -25,7 +25,7 @@ class PositionedSnackbar extends React.Component {
     }
     render() {
         const { vertical, horizontal, open } = this.state;
-        const notificationColor = this.props.message.type === "error" ? "#f50057" : "#007EF5"
+        const notificationColor = this.props.message.type === "error" ? "white" : "#007EF5"
         return (
             <div>
                 <Snackbar

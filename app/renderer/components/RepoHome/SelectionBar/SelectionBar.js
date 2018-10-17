@@ -70,7 +70,8 @@ class SelectionBar extends Component {
       this.props.changeRepo(splitTemp[splitTemp.length - 1])
       this.props.setAllCommits(temp.all)
       const branches = await gitBranch(temp.path[0])
-      this.props.changeBranches(branches.all)
+      console.log(branches.branches, 'from componentDidMount()/////////////////////////')
+      this.props.changeBranches(branches.branches)
       const gitLogs = await gitLog(temp.path[0], 'master')
       this.props.changeBranch('master')
       this.props.changeBranchCommits(gitLogs);

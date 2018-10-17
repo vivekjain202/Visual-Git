@@ -3,7 +3,7 @@ import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANG
 const initialState = {
     currentRepo: '',
     currentBranch: '',
-    branches: [],
+    branches: {},
     currentBranchCommits: [],
     otherBranches: [],
     allCommits: [],

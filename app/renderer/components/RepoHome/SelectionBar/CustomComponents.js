@@ -27,5 +27,7 @@ export const CustomDialog = withStyles({
   paper: {
     minWidth: '450px',
     borderRadius:'0px',
+    // minHeight: '300px',
+    // maxHeight: '600px'
   }
 })(Dialog)
