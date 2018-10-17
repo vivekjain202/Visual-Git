@@ -12,7 +12,7 @@ let forceQuit = false;
 
 ipcMain.on('git-init', (event) => gitInit(event));
 
-ipcMain.on('git-local-repo', (event) => gitLocalRepo(event));
+ipcMain.on('git-local-repo', (event,path) => gitLocalRepo(event,path));
 
 ipcMain.on('git-clone', (event, arg) => gitClone(event, arg));
 
