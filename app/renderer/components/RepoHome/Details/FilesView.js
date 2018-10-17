@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Paper, List, ListItem, Checkbox, ListItemText, withStyles } from '@material-ui/core';
 import { HISTORY_FILE_SELECTED } from '../../../constants/actions';
 import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
 
 const styles = {
   sidebar: {
@@ -16,8 +17,21 @@ const styles = {
   },
 };
 class FilesView extends Component {
+  constructor() {
+    super();
+    this.showDiff = this.showDiff.bind(this);
+  }
+
+  showDiff(file) {
+    console.log(file);
+    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,this.props.currentCommitHash,file]);
+    console.log(diff,"In renderer");
+    this.props.onSelectFile(diff);
+  }
+
   render() {
-    const { classes, onSelectFile, files } = this.props;
+    const { classes, files } = this.props;
+    console.log(files);
     return (
       <Fragment>
         <Paper color="primary" classes={{ root: classes.sidebar }}>
@@ -25,19 +39,19 @@ class FilesView extends Component {
             {files && files.length > 0 ? (
               files.map((fileItem) => (
                 <ListItem
-                  key={fileItem.file}
+                  key={fileItem}
                   className={classes.listItem}
-                  onClick={() => onSelectFile(fileItem.file)}
+                  onClick={() => this.showDiff(fileItem)}
                   button>
                   <Checkbox tabIndex={-1} disableRipple />
                   <ListItemText
                     className={classes.listItemText}
                     primary={
-                      fileItem.file.length > 18
-                        ? fileItem.file.substring(0, 20) + '...'
-                        : fileItem.file
+                      fileItem.length > 18
+                        ? fileItem.substring(0, 20) + '...'
+                        : fileItem
                     }
-                    title={fileItem.file}
+                    title={fileItem}
                   />
                 </ListItem>
               ))
@@ -55,12 +69,14 @@ class FilesView extends Component {
 
 function mapStateToProps(state) {
   return {
-    files: state.files ? state.files.files : [],
+    files: state.diff.files ? state.diff.files : [],
+    currentRepoPath: state.global.currentRepoPath,
+    currentCommitHash: state.diff.currentCommitHash,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (file) => dispatch({ type: HISTORY_FILE_SELECTED, payload: { file } }),
+    onSelectFile: (diff) => dispatch({ type: HISTORY_FILE_SELECTED, payload: diff }),
   };
 }
 
