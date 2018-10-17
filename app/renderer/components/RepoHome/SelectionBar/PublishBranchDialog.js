@@ -3,6 +3,7 @@ import { TextField, DialogContent, DialogContentText, Button } from '@material-u
 import { CustomDialog } from './CustomComponents'
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
+import PositionedSnackbar from './PositionedSnackbar'
 
 const buttonStyle = {
     paddingRight: 10,
@@ -30,8 +31,7 @@ class PublishBranchDialog extends React.Component {
         console.log('unmounting publish branch dialog')
     }
     noBranchSelected = () => {
-        this.props.close()
-        return <div></div>
+        return <PositionedSnackbar message={this.props.message} closeComponent= {this.props.close}></PositionedSnackbar>
     }
     render() {
         return (

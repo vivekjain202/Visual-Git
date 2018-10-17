@@ -89,12 +89,13 @@ class SelectionBar extends Component {
     }
   }
   displayModel() {
+    const message = this.state.currentBranchName ? "" : "No repository selected" 
     if (this.state.isCurrentRepoOpen)
       return <CurrentRepoDialog openStatus={this.state.isCurrentRepoOpen} close={this.handleClickCloseCurrentRepo}></CurrentRepoDialog>
     else if (this.state.isCurrentBranchOpen)
       return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch}></CurrentBranchDialog>
     else if (this.state.isPublishBranchDialogOpen)
-      return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close = {this.handleClickClosePublishDialog}></PublishBranchDialog>
+      return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close = {this.handleClickClosePublishDialog} message={message}></PublishBranchDialog>
     else return null;
   }
   render() {

@@ -5,7 +5,7 @@ class PositionedSnackbar extends React.Component {
     state = {
         open: false,
         vertical: 'bottom',
-        horizontal: 'left',
+        horizontal: 'right',
         message: ''
     };
 
@@ -15,16 +15,13 @@ class PositionedSnackbar extends React.Component {
 
     handleClose = () => {
         this.setState({ open: false });
+        this.props.closeComponent()
     };
     componentDidMount() {
-        console.log(this.props,' from positionSnackbar //////////////////////////////////////////////////')
         this.setState({
             message:this.props.message,
             open: true,
         })
-    }
-    componentWillMount(){
-        console.log('component is unmounting....')
     }
     render() {
         const { vertical, horizontal, open } = this.state;
