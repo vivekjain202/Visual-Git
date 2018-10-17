@@ -1,14 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import { Paper, List, ListItem, ListItemText, Divider, withStyles } from '@material-ui/core';
+import { List, ListItem, ListItemText, Divider, withStyles } from '@material-ui/core';
 import { HISTORY_FILE_SELECTED } from '../../../constants/actions';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 
 const styles = {
   root: {
-    height: 'calc(100vh - 161px)',
+    height: 'calc(100vh - 157px)',
     backgroundColor: '#efefef',
-    borderRadius: 'none'
+    borderTop: '1px solid #bbb',
+    borderRadius: '0px',
+    boxShadow: 'none',
+    boxSizing: 'border-box'
   },
   listItemText: {
     padding: '0',
@@ -42,7 +45,7 @@ class FilesView extends Component {
     const { classes, files } = this.props;
     return (
       <Fragment>
-        <div color="primary" className={ classes.root   }>
+        <div color="primary" className={classes.root}>
           <List component="nav">
             {files && files.length > 0 ? (
               files.map((fileItem) => (

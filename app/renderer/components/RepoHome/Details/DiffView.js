@@ -3,9 +3,13 @@ import { Paper, withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
 
 const styles = {
-  root:{
-    borderRadius: 'none'
-  }
+  root: {
+    height: "100%",
+    border: '1px solid #bbb',
+    borderRadius: '0px',
+    boxShadow: 'none',
+    boxSizing: 'border-box'
+  },
 };
 
 class DiffView extends Component {
@@ -16,9 +20,6 @@ class DiffView extends Component {
         <Paper
           color="primary"
           classes={{root:classes.root}}
-          style={{
-            height: containerHeight,
-          }}
         />
       </Fragment>
     );
@@ -30,7 +31,7 @@ function mapStateToProps(state) {
     diffDetails: state.diff && state.diff.diffDetails,
   };
 }
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps() {
   return {};
 }
 
