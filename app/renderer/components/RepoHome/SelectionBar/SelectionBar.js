@@ -8,7 +8,7 @@ import PublishBranchDialog from './PublishBranchDialog'
 import TvIcon from '@material-ui/icons/Tv'
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
-import { CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO ,CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
 import { ipcRenderer } from 'electron';
 import { gitBranch, gitLog } from './renderer-menu-functions'
 const theme = createMuiTheme({
@@ -37,9 +37,6 @@ class SelectionBar extends Component {
       isCurrentRepoOpen: !this.state.isCurrentRepoOpen
     })
   }
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.branchName !== this.props.branchName) this.setState({ currentBranchName: this.props.branchName })
-  // }
   handleClickCloseCurrentRepo = () => {
     this.setState({
       isCurrentRepoOpen: false,
@@ -89,13 +86,17 @@ class SelectionBar extends Component {
     }
   }
   displayModel() {
-    const message = this.state.currentBranchName ? "" : "No repository selected" 
+    const message = this.state.currentBranchName ? "" : "No repository selected"
+    const obj = {
+      message: message,
+      type: 'error'
+    }
     if (this.state.isCurrentRepoOpen)
       return <CurrentRepoDialog openStatus={this.state.isCurrentRepoOpen} close={this.handleClickCloseCurrentRepo}></CurrentRepoDialog>
     else if (this.state.isCurrentBranchOpen)
-      return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch} message={message}></CurrentBranchDialog>
+      return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch} message={obj}></CurrentBranchDialog>
     else if (this.state.isPublishBranchDialogOpen)
-      return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close = {this.handleClickClosePublishDialog} message={message}></PublishBranchDialog>
+      return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close={this.handleClickClosePublishDialog} message={obj}></PublishBranchDialog>
     else return null;
   }
   render() {
@@ -117,7 +118,7 @@ class SelectionBar extends Component {
               </AppBarButton>
               <AppBarButton color="inherit" onClick={this.handleClickOpenPublishDialog}>
                 <CloudUpload style={buttonStyle} />
-                <span style={{color: 'white'}}>Publish {this.state.currentBranchName ?  this.state.currentBranchName : "repository"}</span>
+                <span style={{ color: 'white' }}>Publish {this.state.currentBranchName ? this.state.currentBranchName : "repository"}</span>
               </AppBarButton>
             </Toolbar>
           </AppBar>
@@ -138,10 +139,10 @@ const mapDispatchToProps = dispatch => {
     changeRepo: (repoName) => dispatch({ type: CHANGE_REPOSITORY, payload: repoName }),
     changeBranches: (branches) => dispatch({ type: CHANGE_REPOSITORY_BRANCHES, payload: branches }),
     changeBranchCommits: (commits) => dispatch({ type: CHANGE_BRANCH_COMMITS, payload: commits }),
-    setAllCommits: (allCommits) => dispatch({type:SET_ALL_COMMITS, payload: allCommits}),
-    updateCurrentRepoPath: (path) => dispatch({type:CURRENT_REPO_PATH, payload: path}),
+    setAllCommits: (allCommits) => dispatch({ type: SET_ALL_COMMITS, payload: allCommits }),
+    updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
     changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
-    addToOtherRepos: (pathToRepo) => dispatch({type: ADD_OTHER_REPO, payload: pathToRepo})
+    addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo })
   }
 }
 

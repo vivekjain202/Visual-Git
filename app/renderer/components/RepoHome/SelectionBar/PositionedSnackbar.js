@@ -19,12 +19,13 @@ class PositionedSnackbar extends React.Component {
     };
     componentDidMount() {
         this.setState({
-            message:this.props.message,
+            message:this.props.message.message,
             open: true,
         })
     }
     render() {
         const { vertical, horizontal, open } = this.state;
+        const notificationColor = this.props.message.type === "error" ? "#f50057" : "#007EF5"
         return (
             <div>
                 <Snackbar
@@ -34,7 +35,7 @@ class PositionedSnackbar extends React.Component {
                     ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">{this.state.message}</span>}
+                    message={<span id="message-id" style={{color: notificationColor}}>{this.state.message}</span>}
                 />
             </div>
         );

@@ -25,10 +25,10 @@ class PublishBranchDialog extends React.Component {
         this.props.close()
     };
     componentDidMount = () => {
-        console.log(this.props.remoteOrigin, ' remote origin...........................................')
+        // console.log(this.props, ' remote origin...........................................')
     }
     componentWillMount = () => {
-        console.log('unmounting publish branch dialog')
+        // console.log('unmounting publish branch dialog')
     }
     noBranchSelected = () => {
         return <PositionedSnackbar message={this.props.message} closeComponent= {this.props.close}></PositionedSnackbar>
