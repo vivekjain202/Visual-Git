@@ -79,7 +79,6 @@ class SelectionBar extends Component {
       this.props.changeBranchCommits(gitLogs);
       this.props.addToOtherRepos(temp.path[0])
     });
-
   }
   componentDidUpdate(prevProps) {
     if (prevProps.branchName !== this.props.branchName || prevProps.repoName !== this.props.repoName) {
@@ -117,7 +116,7 @@ class SelectionBar extends Component {
               </AppBarButton>
               <AppBarButton color="inherit" onClick={this.handleClickOpenPublishDialog}>
                 <CloudUpload style={buttonStyle} />
-                <span style={{color: 'white'}}>Publish {this.state.currentBranchName ?  this.state.currentBranchName: "repository"}</span>
+                <span style={{color: 'white'}}>Publish {this.state.currentBranchName ?  this.state.currentBranchName : "repository"}</span>
               </AppBarButton>
             </Toolbar>
           </AppBar>

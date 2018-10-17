@@ -1,26 +1,9 @@
 import React from 'react'
 import { TextField, DialogContent, DialogContentText, Button } from '@material-ui/core'
 import { CustomDialog } from './CustomComponents'
-import { withStyles } from '@material-ui/core/styles';
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
 
-// const styles = theme => ({
-//     container: {
-//         display: 'flex',
-//         paddingLeft: '50px'
-//     },
-//     textField: {
-//         width: 350,
-//         margin: '0 auto',
-//         // paddingLeft: '30px',
-//         // paddingright: '30px',
-//         // paddingTop: '30px',
-//     },
-//     dense: {
-//         marginTop: 16,
-//     },
-// });
 const buttonStyle = {
     paddingRight: 10,
     color: 'white'
@@ -43,10 +26,16 @@ class PublishBranchDialog extends React.Component {
     componentDidMount = () => {
         console.log(this.props.remoteOrigin, ' remote origin...........................................')
     }
+    componentWillMount = () => {
+        console.log('unmounting publish branch dialog')
+    }
+    noBranchSelected = () => {
+        this.props.close()
+        return <div></div>
+    }
     render() {
-        const { classes } = this.props;
         return (
-            <CustomDialog
+            !this.props.currentBranch ? this.noBranchSelected() : <CustomDialog
                 open={this.state.open}
                 onClose={this.handleClose}
             >
@@ -78,8 +67,8 @@ class PublishBranchDialog extends React.Component {
                         required
                     />}
                     <Button variant="contained" color="secondary" style={{ width: '200px', textAlign: 'center', margin: '0 auto', marginLeft: 'auto', marginRight: 'auto' }}>
-                       <span style={{paddingRight: '23px'}}> Push</span>
-                    <CloudUpload style={buttonStyle} />
+                        <span style={{ paddingRight: '23px' }}> Push</span>
+                        <CloudUpload style={buttonStyle} />
                     </Button>
                 </DialogContent>
 
