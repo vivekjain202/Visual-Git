@@ -31,9 +31,7 @@ export default (state = initialState, action) => {
         case CURRENT_REPO_PATH:
             state = { ...state, currentRepoPath: action.payload }
         break;
-        case ALL_CHANGED_FILES_LOADED:
-            state = { ...state, changedFiles: action.payload }
-            break;
+      
     }
     return state;
 };

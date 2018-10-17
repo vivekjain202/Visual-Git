@@ -24,7 +24,7 @@ class FilesView extends Component {
 
   showDiff(file) {
     console.log(file);
-    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,null,file]);
+    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,this.props.currentCommitHash,file]);
     console.log(diff,"In renderer");
     this.props.onSelectFile(diff);
   }
@@ -71,11 +71,12 @@ function mapStateToProps(state) {
   return {
     files: state.diff.files ? state.diff.files : [],
     currentRepoPath: state.global.currentRepoPath,
+    currentCommitHash: state.diff.currentCommitHash,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (diff) => dispatch({ type: HISTORY_FILE_SELECTED, payload: { diff } }),
+    onSelectFile: (diff) => dispatch({ type: HISTORY_FILE_SELECTED, payload: diff }),
   };
 }
 

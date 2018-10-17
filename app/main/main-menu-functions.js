@@ -34,7 +34,6 @@ export const gitLocalRepo = async (event) => {
       simpleGit(selectedPath.toString())
       .log(['--all'])
       .then(data => {
-          console.log(data, 'data');
           data['path'] = selectedPath;
           return event.returnValue = data;
         }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
@@ -206,22 +205,29 @@ export const gitLog = (event,repo,branch) => {
 
  export const gitDiffStat = (event, repoPath, hash) => {
   try{
-    if(hash.length === 0 && hash.length !== undefined) {
-      simpleGit(repoPath.toString()).diff(['--stat'])
-      .then(diff => {
-        console.log(diff);
-        event.returnValue = diff;
-      })
-      .catch(error => event.returnValue = error);
-    }
-    else if(hash.length !== undefined) {
-      simpleGit(repoPath).diff(['--stat',hash])
-      .then(diff => {
-        console.log(diff);
-        event.returnValue = diff;
-      })
-      .catch(error => event.returnValue = error);
-    }
+    // if(hash.length === 0 && hash.length !== undefined) {
+    //   simpleGit(repoPath.toString()).diff(['--stat'])
+    //   .then(diff => {
+    //     console.log(diff,'/////////////////// in diff stat');
+    //     event.returnValue = diff;
+    //   })
+    //   .catch(error => event.returnValue = error);
+    // }
+    // else if(hash.length !== undefined) {
+    //   simpleGit(repoPath).diff(['--stat',hash])
+    //   .then(diff => {
+    //     console.log(diff,'in diff state else //////////');
+    //     event.returnValue = diff;
+    //   })
+    //   .catch(error => event.returnValue = error);
+    // }
+    simpleGit(repoPath)
+    .show(['--pretty=oneline','--color','--name-only','--no-notes',hash])
+    .then(data=>{
+      console.log(data,'in main git diff stat //////////');
+      event.returnValue =data;
+    })
+    .catch(error=> event.returnValue=error);
    }
   catch(error) {
     event.returnValue = error;
@@ -233,19 +239,25 @@ export const gitLog = (event,repo,branch) => {
     console.log(cwd,fileName,hash);
     if(hash === null)
     {
-      console.log("In hash null")
       simpleGit(cwd)
       .diff([fileName])
-      .then(data=> event.returnValue =data)
+      .then(data=> {event.returnValue =data})
       .catch(error=> event.returnValue= error)
     }
     else{
-      simpleGit(cwd)
-      .diff([fileName, hash])
-      .then(data=> event.returnValue=data)
-      .catch(error=>event.returnValue=error)
-    }
+      // simpleGit(cwd)
+      // .diff([fileName, hash])
+      // .then(data=>{
+      //   console.log(data,'in main /////////////////')
+      //   return event.returnValue=data;
+      // } )
+      // .catch(error=>event.returnValue=error)
+    simpleGit(cwd)
+    .show(['--color',hash, fileName])
+    .then(data =>event.returnValue=data)
+    .catch(error=>event.returnValue=error);
   }
+}
   catch(error){
     event.returnValue = error;
   }
