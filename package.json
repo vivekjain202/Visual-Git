@@ -10,9 +10,10 @@
   "repository": "https://gitlab.com/VisualGit/visual-git-using-electron.git",
   "license": "MIT",
   "dependencies": {
-    "ajv": "^6.5.4",
     "@material-ui/core": "^3.2.0",
     "@material-ui/icons": "^3.0.1",
+    "ajv": "^6.5.4",
+    "ansi-to-html": "^0.6.6",
     "babel-runtime": "^6.26.0",
     "dialogs": "^1.1.20",
     "fg-loadcss": "^2.0.1",
