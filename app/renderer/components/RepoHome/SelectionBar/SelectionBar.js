@@ -93,7 +93,7 @@ class SelectionBar extends Component {
     if (this.state.isCurrentRepoOpen)
       return <CurrentRepoDialog openStatus={this.state.isCurrentRepoOpen} close={this.handleClickCloseCurrentRepo}></CurrentRepoDialog>
     else if (this.state.isCurrentBranchOpen)
-      return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch}></CurrentBranchDialog>
+      return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch} message={message}></CurrentBranchDialog>
     else if (this.state.isPublishBranchDialogOpen)
       return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close = {this.handleClickClosePublishDialog} message={message}></PublishBranchDialog>
     else return null;
