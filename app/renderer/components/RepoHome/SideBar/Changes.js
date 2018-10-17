@@ -35,6 +35,9 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     backgroundColor: '#efefef',
+    position: 'fixed',
+    bottom: 0,
+    width: 200,
   },
 };
 

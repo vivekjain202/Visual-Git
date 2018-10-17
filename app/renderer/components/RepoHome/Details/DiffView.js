@@ -3,17 +3,23 @@ import { Paper, withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
 
 const styles = {
-  container: {
-    height: 'calc(100vh - 165px)',
-  },
+  root:{
+    borderRadius: 'none'
+  }
 };
 
 class DiffView extends Component {
   render() {
-    const { classes } = this.props;
+    const { containerHeight, classes } = this.props;
     return (
       <Fragment>
-        <Paper color="primary" classes={{ root: classes.container }} />
+        <Paper
+          color="primary"
+          classes={{root:classes.root}}
+          style={{
+            height: containerHeight,
+          }}
+        />
       </Fragment>
     );
   }

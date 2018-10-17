@@ -6,8 +6,9 @@ import { ipcRenderer } from 'electron';
 
 const styles = {
   root: {
-    height: 'calc(100vh - 170px)',
+    height: 'calc(100vh - 161px)',
     backgroundColor: '#efefef',
+    borderRadius: 'none'
   },
   listItemText: {
     padding: '0',
@@ -41,7 +42,7 @@ class FilesView extends Component {
     const { classes, files } = this.props;
     return (
       <Fragment>
-        <Paper color="primary" classes={{ root: classes.root }}>
+        <div color="primary" className={ classes.root   }>
           <List component="nav">
             {files && files.length > 0 ? (
               files.map((fileItem) => (
@@ -73,7 +74,7 @@ class FilesView extends Component {
               </ListItem>
             )}
           </List>
-        </Paper>
+        </div>
       </Fragment>
     );
   }

@@ -4,13 +4,14 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Icon,
+  SvgIcon,
   Divider,
   withStyles,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { COMMIT_SELECTED } from '../../../constants/actions';
 import { ipcRenderer } from 'electron';
+import moment from 'moment';
 
 const styles = {
   listItem: {
@@ -36,13 +37,13 @@ class History extends React.Component {
     this.getDiffSummary = this.getDiffSummary.bind(this);
   }
 
-  getDiffSummary(hash) {
+  getDiffSummary(commit) {
     let filteredFileName = ipcRenderer
-      .sendSync('git-diff-summary', [this.props.currentRepoPath, hash])
+      .sendSync('git-diff-summary', [this.props.currentRepoPath, commit.hash])
       .split('\n')
       .map((data) => data.split('|')[0].trim());
     filteredFileName = filteredFileName.slice(0, filteredFileName.length - 1);
-    this.props.onSelectCommit(filteredFileName, hash);
+    this.props.onSelectCommit(filteredFileName, commit);
   }
   render() {
     const { classes, commits } = this.props;
@@ -54,10 +55,12 @@ class History extends React.Component {
               <Fragment key={commit.hash}>
                 <ListItem
                   className={classes.listItem}
-                  onClick={() => this.getDiffSummary(commit.hash)}
+                  onClick={() => this.getDiffSummary(commit)}
                   button>
                   <ListItemIcon>
-                    <Icon className="fa fa-gitter" />
+                  <SvgIcon viewBox="0 0 15 15">
+                    <path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z"></path>
+                    </SvgIcon>
                   </ListItemIcon>
                   <ListItemText
                     classes={{
@@ -70,9 +73,7 @@ class History extends React.Component {
                         ? commit.message.substring(0, 35) + '...'
                         : commit.message
                     }
-                    secondary={`on ${new Date().getDate() - new Date(commit.date).getDate()} by ${
-                      commit.author_name
-                    }`}
+                    secondary={`${moment(commit.date).fromNow()} by ${commit.author_name}`}
                     title={commit.message}
                   />
                 </ListItem>
@@ -98,7 +99,8 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectCommit: (hash) => dispatch({ type: COMMIT_SELECTED, payload: { hash } }),
+    onSelectCommit: (files, commit) =>
+      dispatch({ type: COMMIT_SELECTED, payload: { files, commit } }),
   };
 }
 export default connect(

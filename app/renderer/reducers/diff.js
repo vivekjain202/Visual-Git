@@ -12,7 +12,7 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case COMMIT_SELECTED:
-      state = { ...state, files: action.payload[0], currentCommitHash: action.payload[1] };
+      state = { ...state, files: action.payload.files, currentCommitHash: action.payload.commit.hash, currentCommitMsg: action.payload.commit.message, currentCommitAuthor: commit.author_name };
       break;
     case HISTORY_FILE_SELECTED:
       state = { ...state, diffDetails: action.payload };
