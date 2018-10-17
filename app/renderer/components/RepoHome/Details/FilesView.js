@@ -43,16 +43,17 @@ class FilesView extends Component {
   }
   render() {
     const { classes, files } = this.props;
+    console.log("files", files)
     return (
       <Fragment>
         <div color="primary" className={classes.root}>
           <List component="nav">
             {files && files.length > 0 ? (
               files.map((fileItem) => (
-                <Fragment key={fileItem.file}>
+                <Fragment key={fileItem}>
                   <ListItem
                     className={classes.listItem}
-                    onClick={() => this.showDiff(fileItem.file)}
+                    onClick={() => this.showDiff(fileItem)}
                     button>
                     <ListItemText
                       classes={{
@@ -61,11 +62,11 @@ class FilesView extends Component {
                         secondary: classes.listItemTextSecondary,
                       }}
                       primary={
-                        fileItem.file.length > 35
-                          ? fileItem.file.substring(0, 35) + '...'
-                          : fileItem.file
+                        fileItem > 35
+                          ? fileItem.substring(0, 35) + '...'
+                          : fileItem
                       }
-                      title={fileItem.file}
+                      title={fileItem}
                     />
                   </ListItem>
                   <Divider />
