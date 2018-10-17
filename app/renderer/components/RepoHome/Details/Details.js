@@ -53,8 +53,8 @@ class Details extends Component {
               <Grid item xs={12} className={classes.item}>
                 <div className={classes.header}>
                   <Typography variant="h6" classes={{ root: classes.headerTitle }} component="h6">
-                    {currentCommitMsg.length > 50
-                      ? currentCommitMsg.substring(0, 50) + '...'
+                    {currentCommitMsg.length > 75
+                      ? currentCommitMsg.substring(0, 75) + '...'
                       : currentCommitMsg}
                   </Typography>
                   <div className={classes.titleItems}>

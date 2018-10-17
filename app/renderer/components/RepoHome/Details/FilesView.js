@@ -7,11 +7,15 @@ import { ipcRenderer } from 'electron';
 const styles = {
   root: {
     height: 'calc(100vh - 157px)',
-    backgroundColor: '#efefef',
+    backgroundColor: 'white',
     borderTop: '1px solid #bbb',
     borderRadius: '0px',
     boxShadow: 'none',
     boxSizing: 'border-box'
+  },
+  listItem:{
+    padding:0,
+    paddingLeft: 10
   },
   listItemText: {
     padding: '0',
