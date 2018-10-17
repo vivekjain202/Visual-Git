@@ -1,19 +1,14 @@
 import React, { Component, Fragment } from 'react';
-import {
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  withStyles,
-} from '@material-ui/core';
+import { Paper, List, ListItem, ListItemText, Divider, withStyles } from '@material-ui/core';
 import { HISTORY_FILE_SELECTED } from '../../../constants/actions';
 import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
 
 const styles = {
   root: {
-    height: 'calc(100vh - 150px)',
-    backgroundColor:'#efefef'
+    height: 'calc(100vh - 161px)',
+    backgroundColor: '#efefef',
+    borderRadius: 'none'
   },
   listItemText: {
     padding: '0',
@@ -28,18 +23,33 @@ const styles = {
   },
 };
 class FilesView extends Component {
+  constructor() {
+    super();
+    this.showDiff = this.showDiff.bind(this);
+  }
+
+  showDiff(file) {
+    console.log(file);
+    const diff = ipcRenderer.sendSync('git-diff-particular-file', [
+      this.props.currentRepoPath,
+      this.props.currentCommitHash,
+      file,
+    ]);
+    console.log(diff, 'In renderer');
+    this.props.onSelectFile(diff);
+  }
   render() {
-    const { classes, onSelectFile, files } = this.props;
+    const { classes, files } = this.props;
     return (
       <Fragment>
-        <Paper color="primary" classes={{ root: classes.root }}>
+        <div color="primary" className={ classes.root   }>
           <List component="nav">
             {files && files.length > 0 ? (
               files.map((fileItem) => (
                 <Fragment key={fileItem.file}>
                   <ListItem
                     className={classes.listItem}
-                    onClick={() => onSelectFile(fileItem.file)}
+                    onClick={() => this.showDiff(fileItem.file)}
                     button>
                     <ListItemText
                       classes={{
@@ -64,7 +74,7 @@ class FilesView extends Component {
               </ListItem>
             )}
           </List>
-        </Paper>
+        </div>
       </Fragment>
     );
   }
@@ -72,7 +82,9 @@ class FilesView extends Component {
 
 function mapStateToProps(state) {
   return {
-    files: state.files ? state.files.files : [],
+    files: state.diff ? state.diff.files : [],
+    currentRepoPath: state.global.currentRepoPath,
+    currentCommitHash: state.diff && state.diff.currentCommitHash,
   };
 }
 function mapDispatchToProps(dispatch) {
