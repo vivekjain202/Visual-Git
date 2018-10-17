@@ -15,7 +15,7 @@ import { ipcRenderer } from 'electron';
 
 const styles = {
   list: {
-    height: 450,
+    height: "calc(100% - 172px)",
   },
   listItem: {
     padding: '0',
@@ -35,9 +35,9 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     backgroundColor: '#efefef',
-    position: 'fixed',
+    // position: 'fixed',
     bottom: 0,
-    width: 200,
+    padding:20
   },
 };
 
@@ -106,7 +106,8 @@ class Changes extends React.Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={!(files && files.length > 0)}>
+            disabled={!(files && files.length > 0)}
+            >
             Commit
           </Button>
         </form>

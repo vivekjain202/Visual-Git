@@ -32,8 +32,8 @@ const styles = {
 };
 
 class History extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.getDiffSummary = this.getDiffSummary.bind(this);
   }
 
@@ -45,8 +45,15 @@ class History extends React.Component {
     filteredFileName = filteredFileName.slice(0, filteredFileName.length - 1);
     this.props.onSelectCommit(filteredFileName, commit);
   }
+  componentDidUpdate(prevProps){
+    const {latestBranchCommit} = this.props
+    if(latestBranchCommit !== prevProps.latestBranchCommit)
+    {
+      this.getDiffSummary(latestBranchCommit) 
+    }
+  }
   render() {
-    const { classes, commits } = this.props;
+    const { classes, commits, currentCommitHash } = this.props;
     return (
       <Fragment>
         <List component="nav">
@@ -55,11 +62,12 @@ class History extends React.Component {
               <Fragment key={commit.hash}>
                 <ListItem
                   className={classes.listItem}
+                  selected={currentCommitHash === commit.hash}
                   onClick={() => this.getDiffSummary(commit)}
                   button>
                   <ListItemIcon>
-                  <SvgIcon viewBox="0 0 15 15">
-                    <path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z"></path>
+                    <SvgIcon viewBox="0 0 15 15">
+                      <path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" />
                     </SvgIcon>
                   </ListItemIcon>
                   <ListItemText
@@ -95,6 +103,8 @@ function mapStateToProps(state) {
     commits: state.global ? state.global.currentBranchCommits : [],
     currentRepoPath: state.global && state.global.currentRepoPath,
     files: state.diff && state.diff.files,
+    currentCommitHash: state.diff && state.diff.currentCommitHash,
+    latestBranchCommit: state.global && state.global.latestBranchCommit
   };
 }
 function mapDispatchToProps(dispatch) {
