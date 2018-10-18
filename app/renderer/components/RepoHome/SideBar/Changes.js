@@ -45,18 +45,45 @@ class Changes extends React.Component {
   constructor() {
     super();
     this.onFileClick = this.onFileClick.bind(this);
+    this.onCommitButtonClick = this.onCommitButtonClick.bind(this);
+    this.state = {
+      commitMessage: '',
+    };
   }
 
   onFileClick(file) {
     const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,null,file]);
-    this.props.onSelectFile(diff)
+    this.props.onSelectFile(diff, file)
   }
-  onCommitButtonClick(){
-
+  onCommitButtonClick() {
+    const { commitMessage } = this.state;
+    if (commitMessage.length !== '') {
+      const temp = ipcRenderer.sendSync(
+        'git-commit',
+        this.props.currentRepoPath,
+        this.state.commitMessage,
+      );
+      console.log('commit done', temp);
+    }
+  }
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+  componentDidUpdate(prevProps){
+    console.log("currentfile", this.props.currentFile, prevProps.currentFile)
+    if(this.props.currentFile !== prevProps.currentFile){
+      this.onFileClick(this.props.currentFile)
+    }
   }
   render() {
-    const { classes, files } = this.props;
+    const { classes, files, currentFile } = this.props;
     console.log('files', files);
+    if(!currentFile && currentFile === '' && files){
+      const file = this.props.files[0];
+      this.onFileClick(file)
+    }
     return (
       <React.Fragment>
         <List component="nav" className={classes.list}>
@@ -65,6 +92,7 @@ class Changes extends React.Component {
               <Fragment key={fileItem}>
                 <ListItem
                   className={classes.listItem}
+                  selected={fileItem === currentFile}
                   onClick={() => this.onFileClick(fileItem)}
                   button>
                   <Checkbox tabIndex={-1} disableRipple />
@@ -95,6 +123,8 @@ class Changes extends React.Component {
             margin="normal"
             variant="outlined"
             fullWidth
+            value={this.state.commitMessage}
+            onChange={this.handleChange('commitMessage')}
             disabled={!(files && files.length > 0)}
           />
           <Button
@@ -115,11 +145,12 @@ function mapStateToProps(state) {
   return {
     files: state.global ? state.global.changedFiles : [],
     currentRepoPath: state.global.currentRepoPath,
+    currentFile: state.diff.currentFile
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (diff) => dispatch({ type: CHANGED_FILE_SELECTED, payload: diff }),
+    onSelectFile: (diff,currentFile) => dispatch({ type: CHANGED_FILE_SELECTED, payload: {diff,currentFile} }),
   };
 }
 

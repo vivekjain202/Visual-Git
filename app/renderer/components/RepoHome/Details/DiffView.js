@@ -26,9 +26,9 @@ const styles = {
 
 class DiffView extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, diffDetails } = this.props;
     let display;
-    if (this.props.diffDetails) {
+    if (diffDetails && diffDetails.length > 0) {
       display = ansi_up.ansi_to_html(this.props.diffDetails);
       display = display.split('\n').join('<br /><br />');
     }

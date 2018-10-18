@@ -49,11 +49,14 @@ class FilesView extends Component {
     this.setState({currentFile:file})
   }
   componentDidUpdate(prevProps){
-    const {files} = this.props
+    const {files,onSelectFile} = this.props
     if(this.state.currentFile === '' || files !== prevProps.files){
       const file = files ? files[0]: ''
       if(file !== ''){
         this.showDiff(file)
+      }
+      else{
+        onSelectFile('')
       }
     }
   }
