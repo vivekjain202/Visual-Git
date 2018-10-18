@@ -1,86 +1,52 @@
-// import React, { Component, Fragment } from 'react';
-// import { Paper, withStyles } from '@material-ui/core';
-// import { connect } from 'react-redux';
-
-// const styles = {
-//   root: {
-//     height: "100%",
-//     border: '1px solid #bbb',
-//     borderRadius: '0px',
-//     boxShadow: 'none',
-//     boxSizing: 'border-box'
-//   },
-// };
-
-// class DiffView extends Component {
-//   render() {
-//     const { containerHeight, classes } = this.props;
-//     return (
-//       <Fragment>
-//         <Paper
-//           color="primary"
-//           classes={{root:classes.root}}
-//         />
-//       </Fragment>
-//     );
-//   }
-// }
-
-// function mapStateToProps(state) {
-//   return {
-//     diffDetails: state.diff && state.diff.diffDetails,
-//   };
-// }
-// function mapDispatchToProps() {
-//   return {};
-// }
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// )(withStyles(styles)(DiffView));
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Paper, withStyles } from '@material-ui/core';
 import { connect } from 'react-redux';
-import {withStyles} from '@material-ui/core'
 var AU = require('ansi_up');
-var ansi_up = new AU.default;
+var ansi_up = new AU.default();
 
 const styles = {
-  sidebar: {
-    width: 272.17,
-    height: 'calc(100vh - 48px)',
-    overflow: 'auto'
+  root: {
+    height: '100%',
+    maxHeight: 'calc(100vh - 48px)',
+    borderRadius: '0px',
+    boxShadow: 'none',
+    boxSizing: 'border-box',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    backgroundColor: '#000011',
   },
-  listItem: {
-    padding: '0',
-  },
-  listItemText: {
-    padding: '0',
+  view: {
+    width: '100%',
+    padding: 20,
+    boxSizing: 'border-box',
+    color: 'white',
+    whiteSpace: 'pre-wrap',
   },
 };
 
 class DiffView extends Component {
   render() {
+    const { classes } = this.props;
     let display;
-    if (this.props.diffDetails){
+    if (this.props.diffDetails) {
       display = ansi_up.ansi_to_html(this.props.diffDetails);
       display = display.split('\n').join('<br /><br />');
     }
     return (
-      <div style={{backgroundColor:'black', overflow:'auto', paddingTop:'10px',paddingLeft:'30px', height: 'calc(100vh - 160px)' }}>
-        <pre style={{color:'white'}} dangerouslySetInnerHTML={{__html:display}}></pre>
-      </div>
+      <Paper color="primary" classes={{ root: classes.root }}>
+        <pre className={classes.view} dangerouslySetInnerHTML={{ __html: display }} />
+      </Paper>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    diffDetails : state.diff.diffDetails
+    diffDetails: state.diff.diffDetails,
   };
 }
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {};
 }
 
 export default connect(

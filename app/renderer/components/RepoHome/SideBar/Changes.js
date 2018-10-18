@@ -1,5 +1,6 @@
-import React, {Fragment} from 'react';
-import { List,
+import React, { Fragment } from 'react';
+import {
+  List,
   ListItem,
   ListItemText,
   Checkbox,
@@ -14,7 +15,7 @@ import { ipcRenderer } from 'electron';
 
 const styles = {
   list: {
-    height: "calc(100% - 172px)",
+    height: 'calc(100% - 172px)',
   },
   listItem: {
     padding: '0',
@@ -36,58 +37,31 @@ const styles = {
     backgroundColor: '#efefef',
     // position: 'fixed',
     bottom: 0,
-    padding:20
+    padding: 20,
   },
-
 };
-
 
 class Changes extends React.Component {
   constructor() {
     super();
+    this.onFileClick = this.onFileClick.bind(this);
+    this.onCommitButtonClick = this.onCommitButtonClick.bind(this)
   }
 
   onFileClick(file) {
-    const diff = ipcRenderer.sendSync('git-diff-perticular-file',this.props.currentRepoPath,null,file);
-    this.props.onSelectFile(diff)
+    const diff = ipcRenderer.sendSync(
+      'git-diff-perticular-file',
+      this.props.currentRepoPath,
+      null,
+      file,
+    );
+    this.props.onSelectFile(diff);
   }
+  onCommitButtonClick(){
 
-  // render() {
-  //   const { classes, files } = this.props;
-  //   console.log('files', files);
-  //   return (
-  //     <React.Fragment>
-  //       <List component="nav">
-  //         {files && files.length > 0 ? (
-  //           files.map((fileItem) => (
-  //             <ListItem
-  //               key={fileItem.file}
-  //               className={classes.listItem}
-  //               onClick={() => this.onFileClick(fileItem.file)}
-  //               button>
-  //               <Checkbox tabIndex={-1} disableRipple />
-  //               <ListItemText
-  //                 className={classes.listItemText}
-  //                 primary={
-  //                   fileItem.file.length > 18
-  //                     ? fileItem.file.substring(0, 20) + '...'
-  //                     : fileItem.file
-  //                 }
-  //                 title={fileItem.file}
-  //               />
-  //             </ListItem>
-  //           ))
-  //         ) : (
-  //           <ListItem className={classes.listItem}>
-  //             <ListItemText className={classes.listItemText} primary="No files have changes." />
-  //           </ListItem>
-  //         )}
-  //       </List>
-  //     </React.Fragment>
-  //   );
-  // }
+  }
   render() {
-    const { classes, files, onSelectFile } = this.props;
+    const { classes, files } = this.props;
     console.log('files', files);
     return (
       <React.Fragment>
@@ -97,7 +71,7 @@ class Changes extends React.Component {
               <Fragment key={fileItem}>
                 <ListItem
                   className={classes.listItem}
-                  onClick={() => onSelectFile(fileItem)}
+                  onClick={() => this.onFileClick(fileItem)}
                   button>
                   <Checkbox tabIndex={-1} disableRipple />
                   <ListItemText
@@ -106,11 +80,7 @@ class Changes extends React.Component {
                       primary: classes.listItemTextPrimary,
                       secondary: classes.listItemTextSecondary,
                     }}
-                    primary={
-                      fileItem.length > 35
-                        ? fileItem.substring(0, 35) + '...'
-                        : fileItem
-                    }
+                    primary={fileItem.length > 35 ? fileItem.substring(0, 35) + '...' : fileItem}
                     title={fileItem}
                   />
                 </ListItem>
@@ -133,7 +103,12 @@ class Changes extends React.Component {
             fullWidth
             disabled={!(files && files.length > 0)}
           />
-          <Button variant="contained" color="primary" fullWidth disabled={!(files && files.length > 0)}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={this.onCommitButtonClick}
+            disabled={!(files && files.length > 0)}>
             Commit
           </Button>
         </form>
