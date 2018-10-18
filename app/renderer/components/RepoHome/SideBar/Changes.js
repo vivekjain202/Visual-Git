@@ -45,7 +45,10 @@ class Changes extends React.Component {
   constructor() {
     super();
     this.onFileClick = this.onFileClick.bind(this);
-    this.onCommitButtonClick = this.onCommitButtonClick.bind(this)
+    this.onCommitButtonClick = this.onCommitButtonClick.bind(this);
+    this.state = {
+      commitMessage: '',
+    };
   }
 
   onFileClick(file) {
@@ -57,9 +60,22 @@ class Changes extends React.Component {
     );
     this.props.onSelectFile(diff);
   }
-  onCommitButtonClick(){
-
+  onCommitButtonClick() {
+    const { commitMessage } = this.state;
+    if (commitMessage.length !== '') {
+      const temp = ipcRenderer.sendSync(
+        'git-commit',
+        this.props.currentRepoPath,
+        this.state.commitMessage,
+      );
+      console.log('commit done', temp);
+    }
   }
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
   render() {
     const { classes, files } = this.props;
     console.log('files', files);
@@ -101,6 +117,8 @@ class Changes extends React.Component {
             margin="normal"
             variant="outlined"
             fullWidth
+            value={this.state.commitMessage}
+            onChange={this.handleChange('commitMessage')}
             disabled={!(files && files.length > 0)}
           />
           <Button
