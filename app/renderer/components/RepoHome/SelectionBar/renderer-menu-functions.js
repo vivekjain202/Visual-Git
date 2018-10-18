@@ -87,6 +87,7 @@ export const gitBranch = (repo) => {
 
 export const switchBranch = (repo, branch) => {
   const temp = ipcRenderer.sendSync('git-switch-branch', repo, branch);
+  console.log("conflict console")
   console.log(temp)
 };
 
