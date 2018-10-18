@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { DialogContent, TextField, DialogContentText, Button, withStyles } from '@material-ui/core'
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { CustomDialog } from '../SelectionBar/CustomComponents'
 import SelectPath from '@material-ui/icons/Create'
 const { dialog } = require('electron').remote;
