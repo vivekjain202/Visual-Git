@@ -5,6 +5,7 @@ import Changes from './Changes';
 import History from './History';
 import { CHANGE_TO_HISTORY_VIEW } from '../../../constants/actions';
 import {connect} from 'react-redux'
+import { ipcRenderer } from 'electron';
 
 const styles = (theme) => ({
   sidebar: {
@@ -60,6 +61,10 @@ class SideBar extends React.Component {
   render() {
     const { classes } = this.props;
     const { tabNumber } = this.state;
+    if(this.props.currentRepoPath) {
+      const changes = ipcRenderer.sendSync('get-changes',this.props.currentRepoPath);
+      this.props.dispatchChanges(changes);
+    }
     return (
       <Fragment>
         <Paper color="primary" classes={{ root: classes.sidebar }}>
@@ -90,6 +95,12 @@ class SideBar extends React.Component {
 SideBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-const mapDispatchToProps = (dispatch)=>({toggleTabs:(tabNumber)=>dispatch({type:CHANGE_TO_HISTORY_VIEW, payload:tabNumber === 1})})
 
-export default connect(()=>({}), mapDispatchToProps)(withStyles(styles)(SideBar));
+const mapStateToProps = (state) => ({currentRepoPath: state.global.currentRepoPath});
+
+const mapDispatchToProps = (dispatch)=>({
+  toggleTabs:(tabNumber)=>dispatch({type:CHANGE_TO_HISTORY_VIEW, payload:tabNumber === 1}),
+  dispatchChanges:(changedFiles) => dispatch({type:'GET_CHANGES', payload:changedFiles})
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SideBar));

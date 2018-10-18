@@ -63,6 +63,7 @@ class SelectionBar extends Component {
     })
   }
   componentDidMount() {
+    ipcRenderer.on('git-switch-branch-appmenu',() => this.handleClickOpenCurrentBranch());
     ipcRenderer.on('open-local-repo-appmenu', async () => {
       const temp = ipcRenderer.sendSync('git-local-repo');
       const splitTemp = temp.path[0].split('/')
