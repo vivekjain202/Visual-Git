@@ -2,7 +2,6 @@ import React, {Fragment} from 'react';
 import { List,
   ListItem,
   ListItemText,
-  Checkbox,
   Divider,
   Button,
   TextField,
