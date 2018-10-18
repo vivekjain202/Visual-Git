@@ -43,12 +43,15 @@ class History extends React.Component {
       .sendSync('git-diff-summary', [this.props.currentRepoPath, commit.hash])
       .split('\n')
       .map((data) => data.split('|')[0].trim());
-    filteredFileName = filteredFileName.slice(1, filteredFileName.length - 1);
+    filteredFileName = filteredFileName.slice(1, filteredFileName.length - 1).filter(item=> item.length !== 0);
     this.props.onSelectCommit(filteredFileName, commit);
   }
   componentDidMount(){
-    const {latestBranchCommit} = this.props
-    if(latestBranchCommit && latestBranchCommit.hash)
+    const {latestBranchCommit, currentCommitHash, commits} = this.props
+    if(currentCommitHash && currentCommitHash.length > 0){
+      this.getDiffSummary(commits.find((item)=>item.hash === currentCommitHash))
+    }
+    else if(latestBranchCommit && latestBranchCommit.hash)
     {
       this.getDiffSummary(latestBranchCommit) 
     }

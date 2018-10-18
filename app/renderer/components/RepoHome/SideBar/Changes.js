@@ -52,13 +52,8 @@ class Changes extends React.Component {
   }
 
   onFileClick(file) {
-    const diff = ipcRenderer.sendSync(
-      'git-diff-perticular-file',
-      this.props.currentRepoPath,
-      null,
-      file,
-    );
-    this.props.onSelectFile(diff);
+    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,null,file]);
+    this.props.onSelectFile(diff)
   }
   onCommitButtonClick() {
     const { commitMessage } = this.state;
@@ -143,7 +138,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (diff) => dispatch({ type: CHANGED_FILE_SELECTED, payload: { diff } }),
+    onSelectFile: (diff) => dispatch({ type: CHANGED_FILE_SELECTED, payload: diff }),
   };
 }
 
