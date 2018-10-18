@@ -3,12 +3,12 @@ import SelectionBar from './SelectionBar/SelectionBar';
 import SideBar from './SideBar/SideBar';
 import { Grid } from '@material-ui/core';
 import Details from './Details/Details';
-
+import Home from '../RepoHome/Home/Home'
 class RepoHome extends React.Component {
   render() {
     return (
       <Fragment>
-        <SelectionBar />
+        {/* <SelectionBar />
         <Grid container>
           <Grid item xs={3}>
             <SideBar />
@@ -16,7 +16,8 @@ class RepoHome extends React.Component {
           <Grid item xs={9}>
             <Details />
           </Grid>
-        </Grid>
+        </Grid> */}
+        <Home></Home>
       </Fragment>
     );
   }
