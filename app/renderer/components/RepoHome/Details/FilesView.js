@@ -6,12 +6,13 @@ import { ipcRenderer } from 'electron';
 
 const styles = {
   root: {
-    height: 'calc(100vh - 160px)',
+    height: '100%',
     backgroundColor: 'white',
     borderTop: '1px solid #bbb',
     borderRadius: '0px',
     boxShadow: 'none',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    overflow: 'auto'
   },
   listItem:{
     padding:0,
@@ -33,9 +34,7 @@ class FilesView extends Component {
   constructor(props) {
     super(props);
     this.showDiff = this.showDiff.bind(this);
-    this.state={
-      currentFile: props.files ? props.files[0] : ''
-    }
+    this.state={currentFile:props.files ? props.files[0]:''}
   }
 
   showDiff(file) {
@@ -47,11 +46,20 @@ class FilesView extends Component {
     ]);
     console.log(diff, 'In renderer');
     this.props.onSelectFile(diff);
-    this.setState({currentFile: file})
+    this.setState({currentFile:file})
+  }
+  componentDidUpdate(prevProps){
+    const {files} = this.props
+    if(this.state.currentFile === '' || files !== prevProps.files){
+      const file = files ? files[0]: ''
+      if(file !== ''){
+        this.showDiff(file)
+      }
+    }
   }
   render() {
     const { classes, files } = this.props;
-    const {currentFile}=this.state
+    const {currentFile} = this.state
     console.log("files", files)
     return (
       <Fragment>
@@ -62,7 +70,7 @@ class FilesView extends Component {
                 <Fragment key={fileItem}>
                   <ListItem
                     className={classes.listItem}
-                    selected={currentFile === fileItem}
+                    selected={currentFile===fileItem}
                     onClick={() => this.showDiff(fileItem)}
                     button>
                     <ListItemText
@@ -72,8 +80,8 @@ class FilesView extends Component {
                         secondary: classes.listItemTextSecondary,
                       }}
                       primary={
-                        fileItem > 35
-                          ? fileItem.substring(0, 35) + '...'
+                        fileItem.length > 30
+                          ? fileItem.substring(0, 30) + '...'
                           : fileItem
                       }
                       title={fileItem}

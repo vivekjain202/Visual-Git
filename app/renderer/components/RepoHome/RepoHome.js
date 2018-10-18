@@ -5,6 +5,7 @@ import { Grid } from '@material-ui/core';
 import Details from './Details/Details';
 
 class RepoHome extends React.Component {
+
   render() {
     return (
       <Fragment>
@@ -21,5 +22,5 @@ class RepoHome extends React.Component {
     );
   }
 }
+export default RepoHome
 
-export default RepoHome;

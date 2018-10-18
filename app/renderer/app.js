@@ -5,7 +5,11 @@ import { Provider } from 'react-redux';
 import store from './store/index';
 import { ipcRenderer } from 'electron';
 import path from 'path';
+<<<<<<< HEAD
 import {gitInit, cloneRepo, deleteRepo, deleteBranch, renameBranch} from '../renderer/components/RepoHome/SelectionBar/renderer-menu-functions.js';
+=======
+import {gitInit, cloneRepo, deleteRepo, deleteBranch, renameBranch} from './components/RepoHome/SelectionBar/renderer-menu-functions';
+>>>>>>> master
 
 ipcRenderer.on('git-init-appmenu', gitInit);
 ipcRenderer.on('clone-repo-appmenu',cloneRepo);

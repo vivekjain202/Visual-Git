@@ -97,7 +97,7 @@ export const gitClone = (event, arg) => {
       simpleGit(destination)
         .clone(gitUrl)
         .then(() => {
-          return event.returnValue = 'error';
+          return event.returnValue = 'true';
         })
         .catch(err => console.error(err));
     }
@@ -107,7 +107,7 @@ export const gitClone = (event, arg) => {
     }
   }
   else {
-    return event.returnValue = 'Select proper url and path';
+    return event.returnValue = 'false';
   }
 };
 

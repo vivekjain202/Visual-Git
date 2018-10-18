@@ -3,6 +3,7 @@ import { Grid, Icon, withStyles, Typography, SvgIcon } from '@material-ui/core';
 import DiffView from './DiffView';
 import FilesView from './FilesView';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 const style = {
   root: {
@@ -12,6 +13,9 @@ const style = {
   },
   item: {
     flexGrow: 1,
+  },
+  detail: {
+    height: 'calc(100vh - 157px)',
   },
   header: {
     paddingBottom: 20,
@@ -77,10 +81,10 @@ class Details extends Component {
                   </div>
                 </div>
               </Grid>
-              <Grid item xs={4} className={classes.item}>
+              <Grid item xs={4} className={classNames(classes.item, classes.detail)}>
                 <FilesView />
               </Grid>
-              <Grid item xs={8} className={classes.item}>
+              <Grid item xs={8} className={classNames(classes.item, classes.detail)}>
                 <DiffView />
               </Grid>
             </Grid>
