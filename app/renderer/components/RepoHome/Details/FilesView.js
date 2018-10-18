@@ -11,7 +11,8 @@ const styles = {
     borderTop: '1px solid #bbb',
     borderRadius: '0px',
     boxShadow: 'none',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    overflow: 'auto'
   },
   listItem:{
     padding:0,
@@ -66,8 +67,8 @@ class FilesView extends Component {
                         secondary: classes.listItemTextSecondary,
                       }}
                       primary={
-                        fileItem > 35
-                          ? fileItem.substring(0, 35) + '...'
+                        fileItem.length > 30
+                          ? fileItem.substring(0, 30) + '...'
                           : fileItem
                       }
                       title={fileItem}
