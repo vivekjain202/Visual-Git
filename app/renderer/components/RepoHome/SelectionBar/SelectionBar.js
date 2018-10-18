@@ -16,10 +16,9 @@ import {
   CHANGE_BRANCH,
   SET_ALL_COMMITS,
   CURRENT_REPO_PATH,
-  CHANGED_FILES_LOADED,
 } from '../../../constants/actions';
-import { ipcRenderer } from 'electron';
-import { gitBranch, gitLog, getChangedFiles } from './renderer-menu-functions';
+import { ipcRenderer } from 'electron'
+import { gitBranch, gitLog, } from './renderer-menu-functions';
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#000' },
