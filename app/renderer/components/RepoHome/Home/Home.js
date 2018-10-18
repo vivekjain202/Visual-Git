@@ -10,6 +10,7 @@ import { ipcRenderer } from 'electron'
 import { CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
 import { connect } from 'react-redux'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
+import SnackBar from '../SelectionBar/PositionedSnackbar'
 const styles = {
     homeActionBlocks: {
         display: 'flex',
@@ -56,6 +57,7 @@ class Home extends React.Component {
         isCreateNewRepositoryDialogOpen: false,
         isAddLocalRepositoryDialogOpen: false,
         isCloneRepositoryDialogOpen: false,
+        isSnackBarOpen:false,
     }
     handleNewRepositoryDialogOpen = () => {
         this.setState({
@@ -87,18 +89,28 @@ class Home extends React.Component {
             isCloneRepositoryDialogOpen: false,
         })
     }
+    handleSnackBarClose = () => {
+        this.setState({
+            isSnackBarOpen: false,
+        })
+    }
     homeDialogs = () => {
         if (this.state.isCreateNewRepositoryDialogOpen)
             return <CreateRepoDialog openStatus={this.state.isCreateNewRepositoryDialogOpen} close={this.handleNewRepositoryDialogClose}></CreateRepoDialog>
         else if (this.state.isCloneRepositoryDialogOpen)
             return <CloneRepository openStatus={this.state.isCloneRepositoryDialogOpen} close={this.handleCloneRepositoryDialogClose}></CloneRepository>
-        // else if (this.state.isCurrentBranchOpen)
-        //     return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch} message={obj}></CurrentBranchDialog>
-        // else if (this.state.isPublishBranchDialogOpen)
-        //     return <PublishBranchDialog openStatus={this.state.isPublishBranchDialogOpen} close={this.handleClickClosePublishDialog} message={obj}></PublishBranchDialog>
         else return null;
     }
-
+    handleError = () => {
+        this.setState({
+            isSnackBarOpen: !this.state.isSnackBarOpen,
+        })
+    }
+    componentDidMount() {
+        ipcRenderer.on('open-local-repo-appmenu', this.initiateLocalRepoDialog)
+        ipcRenderer.on('clone-repo-appmenu', this.handleCloneRepositoryDialogOpen)
+        ipcRenderer.on('git-new-branch-appmenu', () => this.handleError())
+    }
     initiateLocalRepoDialog = async () => {
         const temp = ipcRenderer.sendSync('git-local-repo')
         const splitTemp = temp.path[0].split('/')
@@ -149,6 +161,7 @@ class Home extends React.Component {
                         </div>
                     </div>
                     {contentToDisplay}
+                    {!this.state.isSnackBarOpen ? null : <SnackBar message={{message:'No Repository Selected', type:'error'}} closeComponent={this.handleSnackBarClose}></SnackBar>}
                 </div>
             </MuiThemeProvider>
         )
