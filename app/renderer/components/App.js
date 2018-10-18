@@ -1,9 +1,16 @@
 import React from 'react';
 import RepoHome from './RepoHome/RepoHome';
-import { loadCSS } from 'fg-loadcss'
-import Home from './RepoHome/Home/Home'
-import { connect } from 'react-redux'
+import { loadCSS } from 'fg-loadcss';
+import Home from './RepoHome/Home/Home';
+import { connect } from 'react-redux';
+import {ipcRenderer} from 'electron';
 
+let temp =[];
+ipcRenderer.on('app-close',(e)=>{
+  console.log(temp);
+
+   ipcRenderer.send('closed',temp);
+})
 class App extends React.Component {
   state = {
     currentRepo: "",
@@ -26,7 +33,9 @@ class App extends React.Component {
       })
     }
   }
+
   render() {
+    temp = this.props.allRepos;
     return (
       <React.Fragment>
         {!this.state.allRepos.length ? <Home></Home> : <RepoHome />}
