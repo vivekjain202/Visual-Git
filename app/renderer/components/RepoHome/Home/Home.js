@@ -112,6 +112,7 @@ class Home extends React.Component {
         this.props.changeBranchCommits(gitLogs)
         this.props.addToOtherRepos(temp.path[0])
     }
+    
     render() {
         const { classes } = this.props;
         const contentToDisplay = this.homeDialogs()
