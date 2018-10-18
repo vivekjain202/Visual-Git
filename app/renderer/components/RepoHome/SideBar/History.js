@@ -85,8 +85,8 @@ class History extends React.Component {
                       secondary: classes.listItemTextSecondary,
                     }}
                     primary={
-                      commit.message.length > 35
-                        ? commit.message.substring(0, 35) + '...'
+                      commit.message.length > 30
+                        ? commit.message.substring(0, 30) + '...'
                         : commit.message
                     }
                     secondary={`${moment(commit.date).fromNow()} by ${commit.author_name}`}

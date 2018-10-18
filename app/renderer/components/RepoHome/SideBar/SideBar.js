@@ -3,17 +3,17 @@ import { Paper, Tabs, Tab, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Changes from './Changes';
 import History from './History';
-import { CHANGE_TO_HISTORY_VIEW } from '../../../constants/actions';
-import {connect} from 'react-redux'
-// import { ipcRenderer } from 'electron';
+import { CHANGE_TO_HISTORY_VIEW, CHANGED_FILES_LOADED } from '../../../constants/actions';
+import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
 
 const styles = (theme) => ({
   sidebar: {
     height: 'calc(100vh - 48px)',
   },
-  childPage:{
+  childPage: {
     overflow: 'auto',
-    height: `calc(100vh - 97px)`
+    height: `calc(100vh - 97px)`,
   },
   root: {
     flexGrow: 1,
@@ -37,7 +37,7 @@ const styles = (theme) => ({
     },
     '&$tabSelected': {
       color: '#000',
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
     '&:focus': {
       color: '#000',
@@ -61,10 +61,10 @@ class SideBar extends React.Component {
   render() {
     const { classes } = this.props;
     const { tabNumber } = this.state;
-    // if(this.props.currentRepoPath) {
-    //   const changes = ipcRenderer.sendSync('get-changes',this.props.currentRepoPath);
-    //   this.props.dispatchChanges(changes);
-    // }
+    if (this.props.currentRepoPath) {
+      const changes = ipcRenderer.sendSync('get-changes', this.props.currentRepoPath);
+      this.props.dispatchChanges(changes);
+    }
     return (
       <Fragment>
         <Paper color="primary" classes={{ root: classes.sidebar }}>
@@ -84,8 +84,8 @@ class SideBar extends React.Component {
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             />
           </Tabs>
-          <Paper   classes={{ root: classes.childPage }}>
-          {tabNumber === 0 ? <Changes /> : <History />}
+          <Paper classes={{ root: classes.childPage }}>
+            {tabNumber === 0 ? <Changes /> : <History />}
           </Paper>
         </Paper>
       </Fragment>
@@ -96,11 +96,15 @@ SideBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({currentRepoPath: state.global.currentRepoPath});
+const mapStateToProps = (state) => ({ currentRepoPath: state.global.currentRepoPath });
 
-const mapDispatchToProps = (dispatch)=>({
-  toggleTabs:(tabNumber)=>dispatch({type:CHANGE_TO_HISTORY_VIEW, payload:tabNumber === 1}),
-  // dispatchChanges:(changedFiles) => dispatch({type:'GET_CHANGES', payload:changedFiles})
-})
+const mapDispatchToProps = (dispatch) => ({
+  toggleTabs: (tabNumber) => dispatch({ type: CHANGE_TO_HISTORY_VIEW, payload: tabNumber === 1 }),
+  dispatchChanges: (changedFiles) =>
+    dispatch({ type: CHANGED_FILES_LOADED, payload: changedFiles }),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SideBar));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withStyles(styles)(SideBar));
