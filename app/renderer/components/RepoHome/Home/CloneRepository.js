@@ -2,16 +2,16 @@ import React, { Fragment } from 'react'
 import { CustomDialog } from '../SelectionBar/CustomComponents'
 import { DialogContent, DialogContentText, TextField, withStyles, Button } from '@material-ui/core'
 import classNames from 'classnames'
-import SelectPath from '@material-ui/icons/Create'
 import { ipcRenderer } from 'electron'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
+import FolderIcon from '@material-ui/icons/CreateNewFolder'
 const { dialog } = require('electron').remote
 const styles = {
     inputField: {
         marginBottom: '0px'
     },
     cloneButtonMargin: {
-        marginTop: '10px',
+        marginTop: '20px',
         textTransform: 'capitalize'
     },
     displayflex: {
@@ -32,7 +32,7 @@ class CloneRepository extends React.Component {
         open: false,
         url: '',
         path: '',
-        isCloneDisabled: ''
+        isCloneDisabled: false,
     }
     handleClose = () => {
         this.setState({
@@ -71,11 +71,14 @@ class CloneRepository extends React.Component {
         })
     }
     handleClone = async () => {
-        const isCloned = await ipcRenderer.sendSync('git-clone', [this.state.url, this.state.path])
-        if(isCloned) this.initiateLocalRepoDialog()
+        const isCloned = ipcRenderer.sendSync('git-clone', [this.state.url, this.state.path])
+        console.log(isCloned)
+        const temp = this.state.url.split('/')
+        const reponame = temp[temp.length -1]
+        if(isCloned==="true") this.initiateLocalRepoDialog(reponame)
     }
-    initiateLocalRepoDialog = async () => {
-        const temp = ipcRenderer.sendSync('git-local-repo')
+    initiateLocalRepoDialog = async (reponame) => {
+        const temp = ipcRenderer.sendSync('git-local-repo', `${this.state.path}/${reponame}`)
         const splitTemp = temp.path[0].split('/')
         this.props.updateCurrentRepoPath(temp.path[0])
         this.props.changeRepo(splitTemp[splitTemp.length - 1])
@@ -118,9 +121,9 @@ class CloneRepository extends React.Component {
                                 className={classNames(classes.inputField, classes.inputFieldPartialWidth, classes.inputFieldPaddingRight)}
                                 onChange={this.handleRepositoryPathChange}
                             />
-                            <Button onClick={this.handlePath} className={classes.button}><SelectPath></SelectPath></Button>
+                            <Button onClick={this.handlePath} className={classes.button}><FolderIcon></FolderIcon></Button>
                         </div>
-                        <Button variant="contained" color="secondary" disabled={this.state.isCloneDisabled}className={classes.cloneButtonMargin} onClick={this.handleClone}>
+                        <Button variant="contained" color="secondary" disabled={this.state.isCloneDisabled} className={classes.cloneButtonMargin} onClick={this.handleClone}>
                             Clone
                     </Button>
                     </DialogContent>
