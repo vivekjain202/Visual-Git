@@ -12,7 +12,7 @@ import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
 const styles = {
     homeActionBlocks: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignContent: 'center',
         justifyContent: 'space-between',
         alignItems: 'center',
