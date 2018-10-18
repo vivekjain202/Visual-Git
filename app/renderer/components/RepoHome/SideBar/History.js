@@ -46,6 +46,13 @@ class History extends React.Component {
     filteredFileName = filteredFileName.slice(1, filteredFileName.length - 1);
     this.props.onSelectCommit(filteredFileName, commit);
   }
+  componentDidMount(){
+    const {latestBranchCommit} = this.props
+    if(latestBranchCommit && latestBranchCommit.hash)
+    {
+      this.getDiffSummary(latestBranchCommit) 
+    }
+  }
   componentDidUpdate(prevProps){
     const {latestBranchCommit} = this.props
     if(latestBranchCommit !== prevProps.latestBranchCommit)
