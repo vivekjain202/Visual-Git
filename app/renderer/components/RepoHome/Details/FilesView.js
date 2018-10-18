@@ -1,19 +1,32 @@
 import React, { Component, Fragment } from 'react';
-import { Paper, List, ListItem, Checkbox, ListItemText, withStyles } from '@material-ui/core';
+import { List, ListItem, ListItemText, Divider, withStyles } from '@material-ui/core';
 import { HISTORY_FILE_SELECTED } from '../../../constants/actions';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 
 const styles = {
-  sidebar: {
-    width: 272.17,
-    height: 'calc(100vh - 48px)',
+  root: {
+    height: 'calc(100vh - 157px)',
+    backgroundColor: 'white',
+    borderTop: '1px solid #bbb',
+    borderRadius: '0px',
+    boxShadow: 'none',
+    boxSizing: 'border-box'
   },
-  listItem: {
-    padding: '0',
+  listItem:{
+    padding:0,
+    paddingLeft: 10
   },
   listItemText: {
     padding: '0',
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  listItemTextPrimary: {
+    fontSize: 13,
+  },
+  listItemTextSecondary: {
+    fontSize: 13,
   },
 };
 class FilesView extends Component {
@@ -24,44 +37,52 @@ class FilesView extends Component {
 
   showDiff(file) {
     console.log(file);
-    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,this.props.currentCommitHash,file]);
-    console.log(diff,"In renderer");
+    const diff = ipcRenderer.sendSync('git-diff-particular-file', [
+      this.props.currentRepoPath,
+      this.props.currentCommitHash,
+      file,
+    ]);
+    console.log(diff, 'In renderer');
     this.props.onSelectFile(diff);
   }
-
   render() {
     const { classes, files } = this.props;
-    console.log(files);
+    console.log("files", files)
     return (
       <Fragment>
-        <Paper color="primary" classes={{ root: classes.sidebar }}>
+        <div color="primary" className={classes.root}>
           <List component="nav">
             {files && files.length > 0 ? (
               files.map((fileItem) => (
-                <ListItem
-                  key={fileItem}
-                  className={classes.listItem}
-                  onClick={() => this.showDiff(fileItem)}
-                  button>
-                  <Checkbox tabIndex={-1} disableRipple />
-                  <ListItemText
-                    className={classes.listItemText}
-                    primary={
-                      fileItem.length > 18
-                        ? fileItem.substring(0, 20) + '...'
-                        : fileItem
-                    }
-                    title={fileItem}
-                  />
-                </ListItem>
+                <Fragment key={fileItem}>
+                  <ListItem
+                    className={classes.listItem}
+                    onClick={() => this.showDiff(fileItem)}
+                    button>
+                    <ListItemText
+                      classes={{
+                        root: classes.listItemText,
+                        primary: classes.listItemTextPrimary,
+                        secondary: classes.listItemTextSecondary,
+                      }}
+                      primary={
+                        fileItem > 35
+                          ? fileItem.substring(0, 35) + '...'
+                          : fileItem
+                      }
+                      title={fileItem}
+                    />
+                  </ListItem>
+                  <Divider />
+                </Fragment>
               ))
             ) : (
-              <ListItem className={classes.listItem}>
-                <ListItemText className={classes.listItemText} primary="No files have changes." />
+              <ListItem>
+                <ListItemText primary="No changes." />
               </ListItem>
             )}
           </List>
-        </Paper>
+        </div>
       </Fragment>
     );
   }
@@ -69,9 +90,9 @@ class FilesView extends Component {
 
 function mapStateToProps(state) {
   return {
-    files: state.diff.files ? state.diff.files : [],
+    files: state.diff ? state.diff.files : [],
     currentRepoPath: state.global.currentRepoPath,
-    currentCommitHash: state.diff.currentCommitHash,
+    currentCommitHash: state.diff && state.diff.currentCommitHash,
   };
 }
 function mapDispatchToProps(dispatch) {
