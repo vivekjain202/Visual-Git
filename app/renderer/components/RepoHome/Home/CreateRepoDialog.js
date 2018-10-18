@@ -18,19 +18,19 @@ const styles = {
     flexDirectionRow: {
         flexDirection: 'row'
     },
-    button:{
-        margin:'dense',
-        color:'black',
-        padding:'0px',
+    button: {
+        margin: 'dense',
+        color: 'black',
+        padding: '0px',
     },
-    flexSpaceBetween:{
-        justifyContent:'space-between'
+    flexSpaceBetween: {
+        justifyContent: 'space-between'
     },
-    createButtonMargin:{
+    createButtonMargin: {
         marginTop: '10px',
-        textTransform:'capitalize'
+        textTransform: 'capitalize'
     },
-    inputFieldPaddingRight:{
+    inputFieldPaddingRight: {
         paddingRight: '10px'
     }
 }
@@ -38,16 +38,16 @@ class NewRepoDialog extends React.Component {
     state = {
         open: this.props.openStatus,
         directoryPath: "",
-        name:"",
-        description:""
+        name: "",
+        description: ""
     }
     handleClose = () => {
         this.setState({
-             open: false,
-             name:"",
-             description:"",
-             directoryPath:""
-         });
+            open: false,
+            name: "",
+            description: "",
+            directoryPath: ""
+        });
         this.props.close()
     };
     handlePath = () => {
@@ -68,12 +68,12 @@ class NewRepoDialog extends React.Component {
     }
     handleNameChange = (e) => {
         this.setState({
-            name:e.target.value
+            name: e.target.value
         })
     }
     handleDescriptionChange = (e) => {
         this.setState({
-            description:e.target.value
+            description: e.target.value
         })
     }
     handleRepositoryPathChange = (e) => {
@@ -82,7 +82,7 @@ class NewRepoDialog extends React.Component {
         })
     }
     handleCreate = () => {
-        
+
     }
     render() {
         const { classes } = this.props
@@ -128,7 +128,7 @@ class NewRepoDialog extends React.Component {
                             <Button onClick={this.handlePath} className={classes.button}><SelectPath></SelectPath></Button>
                         </div>
                         <Button variant="contained" color="secondary" className={classes.createButtonMargin} onClick={this.handleCreate}>
-                        Create
+                            Create
                     </Button>
                     </DialogContent>
                 </CustomDialog>

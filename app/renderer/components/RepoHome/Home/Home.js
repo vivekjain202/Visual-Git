@@ -103,6 +103,7 @@ class Home extends React.Component {
     initiateLocalRepoDialog = async () => {
         const temp = ipcRenderer.sendSync('git-local-repo')
         const splitTemp = temp.path[0].split('/')
+        console.log(temp.path[0], 'from initiateLocalRepoDialog')
         this.props.updateCurrentRepoPath(temp.path[0])
         this.props.changeRepo(splitTemp[splitTemp.length - 1])
         this.props.setAllCommits(temp.all)
