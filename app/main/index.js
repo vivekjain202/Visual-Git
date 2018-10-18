@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray } from 'electron';
-import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog, gitDiff, gitDiffStat, gitParticularFileDiff } from './main-menu-functions.js';
+import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog, gitDiff, gitDiffStat, gitParticularFileDiff, gitCommit, getChanges, gitPush } from './main-menu-functions.js';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -35,6 +35,12 @@ ipcMain.on('git-diff',(event, path, hash) => gitDiff(event, path, hash));
 ipcMain.on('git-diff-summary',(event, arg) => gitDiffStat(event, arg[0], arg[1]));
 
 ipcMain.on('git-diff-particular-file',(event, arg) => gitParticularFileDiff(event, arg[0], arg[1], arg[2]));
+
+ipcMain.on('git-commit',(event,path,message) => gitCommit(event,path,message));
+
+ipcMain.on('get-changes',(event,path) => getChanges(event,path));
+
+ipcMain.on('git-push',(event,repoPath,remote,branch) => gitPush(event,repoPath,remote,branch))
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');

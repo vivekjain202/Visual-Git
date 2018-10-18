@@ -6,7 +6,7 @@ import { ipcRenderer } from 'electron';
 
 const styles = {
   root: {
-    height: 'calc(100vh - 157px)',
+    height: 'calc(100vh - 160px)',
     backgroundColor: 'white',
     borderTop: '1px solid #bbb',
     borderRadius: '0px',
@@ -30,9 +30,12 @@ const styles = {
   },
 };
 class FilesView extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.showDiff = this.showDiff.bind(this);
+    this.state={
+      currentFile: props.files ? props.files[0] : ''
+    }
   }
 
   showDiff(file) {
@@ -44,9 +47,11 @@ class FilesView extends Component {
     ]);
     console.log(diff, 'In renderer');
     this.props.onSelectFile(diff);
+    this.setState({currentFile: file})
   }
   render() {
     const { classes, files } = this.props;
+    const {currentFile}=this.state
     console.log("files", files)
     return (
       <Fragment>
@@ -57,6 +62,7 @@ class FilesView extends Component {
                 <Fragment key={fileItem}>
                   <ListItem
                     className={classes.listItem}
+                    selected={currentFile === fileItem}
                     onClick={() => this.showDiff(fileItem)}
                     button>
                     <ListItemText

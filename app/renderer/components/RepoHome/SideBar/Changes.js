@@ -94,10 +94,10 @@ class Changes extends React.Component {
         <List component="nav" className={classes.list}>
           {files && files.length > 0 ? (
             files.map((fileItem) => (
-              <Fragment key={fileItem.file}>
+              <Fragment key={fileItem}>
                 <ListItem
                   className={classes.listItem}
-                  onClick={() => onSelectFile(fileItem.file)}
+                  onClick={() => onSelectFile(fileItem)}
                   button>
                   <Checkbox tabIndex={-1} disableRipple />
                   <ListItemText
@@ -107,11 +107,11 @@ class Changes extends React.Component {
                       secondary: classes.listItemTextSecondary,
                     }}
                     primary={
-                      fileItem.file.length > 35
-                        ? fileItem.file.substring(0, 35) + '...'
-                        : fileItem.file
+                      fileItem.length > 35
+                        ? fileItem.substring(0, 35) + '...'
+                        : fileItem
                     }
-                    title={fileItem.file}
+                    title={fileItem}
                   />
                 </ListItem>
                 <Divider />

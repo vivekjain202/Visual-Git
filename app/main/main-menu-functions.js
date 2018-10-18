@@ -33,19 +33,30 @@ export const gitLocalRepo = async (event,path) => {
         simpleGit(path.toString())
         .log(['--all'])
         .then(data => {
-            console.log(data, 'data');
+          simpleGit(path.toString())
+          .getRemotes(['--verbose'])
+          .then(remotes => {
             data['path'] = path;
-            return event.returnValue = data;
+            data['remotes'] = remotes;
+            console.log(data, 'data');
+            event.returnValue = data;
           }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
-      }
+      })
+    }
     else if(path == undefined) {
       const selectedPath = await showDialog();
     if (selectedPath !== undefined) {
       simpleGit(selectedPath.toString())
       .log(['--all'])
       .then(data => {
-          data['path'] = selectedPath;
-          return event.returnValue = data;
+          simpleGit(selectedPath.toString())
+          .getRemotes(true)
+          .then(remotes => {
+            data['path'] = selectedPath;
+            data['remotes'] = remotes;
+            console.log(remotes, 'remotes');
+            return event.returnValue = data;
+          })
         }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
     }
     }
@@ -260,9 +271,75 @@ export const gitLog = (event,repo,branch) => {
     .show(['--color',hash, fileName])
     .then(data =>event.returnValue=data)
     .catch(error=>event.returnValue=error);
+//     exec(`git diff ${hash} ${fileName}| gawk 'match($0,"^@@ -([0-9]+),[0-9]+ [+]([0-9]+),[0-9]+ @@",a){left=a[1];right=a[2];next};\
+//     /^(---|\+\+\+|[^-+ ])/{print;next};\
+//     {line=substr($0,2)};\
+//     /^[-]/{print "-" left++ ":" line;next};\
+//     /^[+]/{print "+" right++ ":" line;next};\
+//     {print "|" left++ "," right++ "|:"line}'`,{cwd:cwd.toString()},(error, stdout) => {
+//   if (error) {
+//     throw error;
+//   }
+//   else {
+//     console.log(stdout);
+//     event.returnValue = stdout;
+//   }
+// })
   }
 }
   catch(error){
     event.returnValue = error;
   }
  }
+
+ export const getChanges = (event,repoPath) => {
+    try{
+      if(repoPath){
+        simpleGit(repoPath)
+        .diff(['--name-only'])
+        .then((changedFiles) => {
+          event.returnValue = changedFiles.split('\n').filter(fileName => fileName !== '');
+        })
+        .catch(error => event.returnValue = error);
+      }
+    }
+    catch(error) {
+      event.returnValue = error;
+    }
+ }
+
+export const gitCommit = (event,repoPath,message) => {
+  try {
+    if(message) {
+      simpleGit(repoPath)
+      .commit(message)
+      .then(()=>{
+        event.returnValue = 'Successfully committed';
+      })
+      .catch(error => event.returnValue = error);
+    } else {
+      event.returnValue = 'Invalid Message';
+    }
+  } catch(error) {
+    event.returnValue = error;
+  }
+}
+
+export const gitPush = (event,repoPath,remote,branch) => {
+  try {
+    if(repoPath && remote && branch){
+      simpleGit(repoPath)
+      .push(remote,branch)
+      .then(() => {
+        event.returnValue = 'Successfully Published';
+      })
+      .catch(error => event.returnValue = error);
+    }
+    else {
+      event.returnValue = 'Invalid Arguements to Push';
+    }
+  }
+  catch(error) {
+    event.returnValue = error;
+  }
+}

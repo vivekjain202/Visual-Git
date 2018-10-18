@@ -23,7 +23,7 @@ export const cloneRepo = async () => {
       try {
         if (gitUrl != undefined) {
           const destination = dialog.showOpenDialog({ properties: ['openDirectory'] });
-          if (destination !== undefined) { const temp = ipcRenderer.sendSync('git-clone', [gitUrl, destination]); }
+          if (destination !== undefined) { ipcRenderer.sendSync('git-clone', [gitUrl, destination]); }
           else {
             throw "Select Proper Destinantion Path";
           }
@@ -51,25 +51,27 @@ export const deleteRepo = () => {
 
 export const createNewBranch = (repo) => {
   try {
-    let newBranch = '';
-    const dialogBox = dialogs({ ok: 'ok', cancel: 'cancel' });
-    dialogBox.prompt('Enter new Branch name', function (ok) {
-      console.log(ok);
-      newBranch = ok;
-      try {
-        if (newBranch != undefined) {
-          const temp = ipcRenderer.sendSync('git-new-branch', repo, newBranch);
-          console.log(temp)
+    if(repo){
+      let newBranch = '';
+      const dialogBox = dialogs({ ok: 'ok', cancel: 'cancel' });
+      dialogBox.prompt('Enter new Branch name', function (ok) {
+        console.log(ok);
+        newBranch = ok;
+        try {
+          if (newBranch != undefined) {
+            const temp = ipcRenderer.sendSync('git-new-branch', repo, newBranch);
+            console.log(temp)
+          }
+          else {
+            throw 'Invalid name for branch';
+          }
         }
-        else {
-          throw 'Invalid name for branch';
+        catch (error) {
+          console.log(error);
+          return error;
         }
-      }
-      catch (error) {
-        console.log(error);
-        return error;
-      }
-    })
+      })
+    }
   }
   catch (error) {
     console.log(error);

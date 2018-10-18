@@ -67,7 +67,7 @@ class DiffView extends Component {
       display = display.split('\n').join('<br /><br />');
     }
     return (
-      <div style={{backgroundColor:'black', overflow:'auto', paddingTop:'10px',paddingLeft:'30px', height: 'calc(100vh - 60px)' }}>
+      <div style={{backgroundColor:'black', overflow:'auto', paddingTop:'10px',paddingLeft:'30px', height: 'calc(100vh - 160px)' }}>
         <pre style={{color:'white'}} dangerouslySetInnerHTML={{__html:display}}></pre>
       </div>
     );

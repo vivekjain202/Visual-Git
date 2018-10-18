@@ -38,8 +38,11 @@ export default (state = initialState, action) => {
             state = { ...state, otherRepos: addOtherRepo(action.payload, state.otherRepos) }
             break;
         case CHANGE_TO_HISTORY_VIEW:
-        state = { ...state, isHistoryView: action.payload };
-        break;
+            state = { ...state, isHistoryView: action.payload };
+            break;
+        case 'GET_CHANGES':
+            state = { ...state, changedFiles:action.payload }
+            break;
     }
     return state;
 }
