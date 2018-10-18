@@ -3,9 +3,12 @@ import { dialog } from 'electron';
 import { exec } from 'child_process';
 
 export const showDialog = () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve,reject) => {
     dialog.showOpenDialog({ properties: ['openDirectory'] }, (path) => {
+      if(path)
       resolve(path);
+      else
+      reject('No path selected');
     })
   })
 };
@@ -246,7 +249,6 @@ export const gitLog = (event,repo,branch) => {
     simpleGit(repoPath)
     .show(['--pretty=oneline','--color','--name-only','--no-notes',hash])
     .then(data=>{
-      console.log(data,'in main git diff stat //////////');
       event.returnValue =data;
     })
     .catch(error=> event.returnValue=error);
@@ -258,12 +260,12 @@ export const gitLog = (event,repo,branch) => {
 
  export const gitParticularFileDiff = (event,cwd,hash,fileName)=>{
   try{
-    console.log(cwd,fileName,hash);
-    if(hash === null)
+    if(hash == null)
     {
+      console.log(cwd,hash,fileName);
       simpleGit(cwd)
-      .diff([fileName])
-      .then(data=> {event.returnValue =data})
+      .diff(['--color',fileName])
+      .then(data=> { console.log(data); event.returnValue =data})
       .catch(error=> event.returnValue= error)
     }
     else{
