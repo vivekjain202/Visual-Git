@@ -1,4 +1,4 @@
-import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO, CHANGE_TO_HISTORY_VIEW } from '../constants/actions'
+import { CHANGE_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO, CHANGE_TO_HISTORY_VIEW, CHANGED_FILES_LOADED } from '../constants/actions'
 // import {gitInit, openLocalRepo, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch} from '../components/RepoHome/SelectionBar/renderer-menu-functions';
 const initialState = {
     currentRepo: '',
@@ -11,7 +11,8 @@ const initialState = {
     otherRepos: [],
     isHistoryView: false,
     latestBranchCommit:{},
-    remoteOrigin:""
+    remoteOrigin:"",
+    changedFiles:[]
 };
 // , branches: updateBranches(state.branches, action.payload)
 export default (state = initialState, action) => {
@@ -40,8 +41,8 @@ export default (state = initialState, action) => {
         case CHANGE_TO_HISTORY_VIEW:
             state = { ...state, isHistoryView: action.payload };
             break;
-        case 'GET_CHANGES':
-            state = { ...state, changedFiles:action.payload }
+        case CHANGED_FILES_LOADED:
+            state = { ...state, changedFiles: action.payload };
             break;
     }
     return state;
