@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
 const styles = {
     homeActionBlocks: {
-        display: 'flex',
+        display: 'Grid',
         flexDirection: 'column',
         alignContent: 'center',
         justifyContent: 'space-between',
