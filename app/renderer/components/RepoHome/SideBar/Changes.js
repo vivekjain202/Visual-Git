@@ -80,7 +80,7 @@ class Changes extends React.Component {
                       primary: classes.listItemTextPrimary,
                       secondary: classes.listItemTextSecondary,
                     }}
-                    primary={fileItem.length > 35 ? fileItem.substring(0, 35) + '...' : fileItem}
+                    primary={fileItem.length > 30 ? fileItem.substring(0, 30) + '...' : fileItem}
                     title={fileItem}
                   />
                 </ListItem>

@@ -85,9 +85,8 @@ class SelectionBar extends Component {
       const gitLogs = await gitLog(temp.path[0], 'master');
       this.props.changeBranch('master');
       this.props.changeBranchCommits(gitLogs);
-      const changedFiles = getChangedFiles(temp.path[0]);
-      console.log("changed files loaded",changedFiles)
-      this.props.onChangedFilesLoaded(changedFiles);
+      // const changedFiles = getChangedFiles(temp.path[0]);
+      // this.props.onChangedFilesLoaded(changedFiles);
       this.props.addToOtherRepos(temp.path[0]);
     });
   }
@@ -182,7 +181,7 @@ const mapDispatchToProps = (dispatch) => {
     updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
     changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
     addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo }),
-    onChangedFilesLoaded: (payload) => dispatch({ type: CHANGED_FILES_LOADED, payload }),
+    // onChangedFilesLoaded: (payload) => dispatch({ type: CHANGED_FILES_LOADED, payload }),
   };
 };
 
