@@ -45,49 +45,16 @@ const styles = {
 class Changes extends React.Component {
   constructor() {
     super();
+    this.onFileClick = this.onFileClick.bind(this);
   }
 
   onFileClick(file) {
-    const diff = ipcRenderer.sendSync('git-diff-perticular-file',this.props.currentRepoPath,null,file);
+    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,null,file]);
     this.props.onSelectFile(diff)
   }
 
-  // render() {
-  //   const { classes, files } = this.props;
-  //   console.log('files', files);
-  //   return (
-  //     <React.Fragment>
-  //       <List component="nav">
-  //         {files && files.length > 0 ? (
-  //           files.map((fileItem) => (
-  //             <ListItem
-  //               key={fileItem.file}
-  //               className={classes.listItem}
-  //               onClick={() => this.onFileClick(fileItem.file)}
-  //               button>
-  //               <Checkbox tabIndex={-1} disableRipple />
-  //               <ListItemText
-  //                 className={classes.listItemText}
-  //                 primary={
-  //                   fileItem.file.length > 18
-  //                     ? fileItem.file.substring(0, 20) + '...'
-  //                     : fileItem.file
-  //                 }
-  //                 title={fileItem.file}
-  //               />
-  //             </ListItem>
-  //           ))
-  //         ) : (
-  //           <ListItem className={classes.listItem}>
-  //             <ListItemText className={classes.listItemText} primary="No files have changes." />
-  //           </ListItem>
-  //         )}
-  //       </List>
-  //     </React.Fragment>
-  //   );
-  // }
   render() {
-    const { classes, files, onSelectFile } = this.props;
+    const { classes, files } = this.props;
     console.log('files', files);
     return (
       <React.Fragment>
@@ -97,7 +64,7 @@ class Changes extends React.Component {
               <Fragment key={fileItem}>
                 <ListItem
                   className={classes.listItem}
-                  onClick={() => onSelectFile(fileItem)}
+                  onClick={() => this.onFileClick(fileItem)}
                   button>
                   <Checkbox tabIndex={-1} disableRipple />
                   <ListItemText
@@ -150,7 +117,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (diff) => dispatch({ type: CHANGED_FILE_SELECTED, payload: { diff } }),
+    onSelectFile: (diff) => dispatch({ type: CHANGED_FILE_SELECTED, payload: diff }),
   };
 }
 
