@@ -4,6 +4,7 @@ import TvIcon from '@material-ui/icons/Tv'
 import CloneIcon from '@material-ui/icons/FilterNone'
 import { Button, withStyles } from '@material-ui/core'
 import CreateRepoDialog from './CreateRepoDialog'
+import CloneRepository from './CloneRepository'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { ipcRenderer } from 'electron'
 import { CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
@@ -50,10 +51,6 @@ const theme = createMuiTheme({
         color: { mainTextColor: 'white' }
     },
 });
-// const buttonStyle = {
-//     paddingRight: 10,
-//     color: 'white'
-// }
 class Home extends React.Component {
     state = {
         isCreateNewRepositoryDialogOpen: false,
@@ -93,6 +90,8 @@ class Home extends React.Component {
     homeDialogs = () => {
         if (this.state.isCreateNewRepositoryDialogOpen)
             return <CreateRepoDialog openStatus={this.state.isCreateNewRepositoryDialogOpen} close={this.handleNewRepositoryDialogClose}></CreateRepoDialog>
+        else if (this.state.isCloneRepositoryDialogOpen)
+            return <CloneRepository openStatus={this.state.isCloneRepositoryDialogOpen} close={this.handleCloneRepositoryDialogClose}></CloneRepository>
         // else if (this.state.isCurrentBranchOpen)
         //     return <CurrentBranchDialog openStatus={this.state.isCurrentBranchOpen} close={this.handleClickCloseCurrentBranch} message={obj}></CurrentBranchDialog>
         // else if (this.state.isPublishBranchDialogOpen)
@@ -103,7 +102,6 @@ class Home extends React.Component {
     initiateLocalRepoDialog = async () => {
         const temp = ipcRenderer.sendSync('git-local-repo')
         const splitTemp = temp.path[0].split('/')
-        console.log(temp.path[0], 'from initiateLocalRepoDialog')
         this.props.updateCurrentRepoPath(temp.path[0])
         this.props.changeRepo(splitTemp[splitTemp.length - 1])
         this.props.setAllCommits(temp.all)
@@ -144,7 +142,7 @@ class Home extends React.Component {
                         <div style={{ borderRight: '0px' }} className={classes.homeActionBlocks}>
                             <CloneIcon></CloneIcon>
                             <p>clone an existing project to your computer</p>
-                            <Button variant="outlined" href="#outlined-buttons" className={classes.button}>
+                            <Button variant="outlined" href="#outlined-buttons" className={classes.button} onClick={this.handleCloneRepositoryDialogOpen}>
                                 Clone a respository
                         </Button>
                         </div>
