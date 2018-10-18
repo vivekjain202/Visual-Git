@@ -80,8 +80,8 @@ export const gitBranch = (repo) => {
 
 export const switchBranch = (repo, branch) => {
   const temp = ipcRenderer.sendSync('git-switch-branch', repo, branch);
-  console.log("conflict console")
-  console.log(temp)
+  console.log('conflict console');
+  console.log(temp);
 };
 
 export const deleteBranch = (repo, branch) => {
@@ -102,8 +102,9 @@ export const gitLog = (repo, branch) => {
 
 export const getChangedFiles = (path) => {
   const temp = ipcRenderer.sendSync('get-changes', path);
-  console.log("changed files",temp)
-  console.log("conflict line")
+  console.log('changed files', temp);
+  console.log('conflict line');
   //conflict line
   return temp;
 };
+console.log('somthieoj');
