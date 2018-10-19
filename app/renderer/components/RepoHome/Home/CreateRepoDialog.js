@@ -5,7 +5,7 @@ import { CustomDialog } from '../SelectionBar/CustomComponents'
 import FolderIcon from '@material-ui/icons/CreateNewFolder'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
 import { ipcRenderer } from 'electron'
-import { CHANGE_REPOSITORY, ADD_OTHER_REPO, CHANGE_REPOSITORY_BRANCHES, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY, ADD_OTHER_REPO, CHANGE_REPOSITORY_BRANCHES, ADD_REMOTE_ORIGIN, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
 import { connect } from 'react-redux'
 const { dialog } = require('electron').remote;
 
@@ -94,6 +94,9 @@ class NewRepoDialog extends React.Component {
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs)
         this.props.addToOtherRepos(path)
+        if (dirData.remotes.length)
+            this.props.setRemoteURL(dirData.remotes['0'].refs['fetch'])
+        else this.props.setRemoteURL("")
     }
     render() {
         const { classes } = this.props
@@ -136,8 +139,9 @@ const mapDispatchToProps = (dispatch) => {
         updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
         changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
         addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo }),
+        setRemoteURL: (remoteURL) => dispatch({ type: ADD_REMOTE_ORIGIN, payload: remoteURL })
     }
 }
-const mapStateToProps = () => {return{}}
+const mapStateToProps = () => { return {} }
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(NewRepoDialog))
 // style={{ width: '200px', textAlign: 'center', margin: '0 auto', marginLeft: 'auto', marginRight: 'auto' }}
