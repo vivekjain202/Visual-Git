@@ -52,7 +52,7 @@ class CurrentRepoDialog extends React.Component {
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs);
         if (temp.remotes.length)
-            this.props.setRemoteURL(temp.remotes['0'].refs['fetch'])
+            this.props.setRemoteURL(temp.remotes[0].refs['fetch'])
         else this.props.setRemoteURL("")
     }
     render() {

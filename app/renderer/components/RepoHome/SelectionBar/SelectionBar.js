@@ -92,7 +92,7 @@ class SelectionBar extends Component {
     this.props.changeBranchCommits(gitLogs)
     this.props.addToOtherRepos(path)
     if (dirData.remotes.length)
-      this.props.setRemoteURL(dirData.remotes['0'].refs['fetch'])
+      this.props.setRemoteURL(dirData.remotes[0].refs['fetch'])
     else this.props.setRemoteURL("")
   }
   componentDidUpdate(prevProps) {
@@ -156,7 +156,7 @@ class SelectionBar extends Component {
                 Current Branch&nbsp;
                 <span style={{ color: 'white' }}>{this.state.currentBranchName}</span>
               </AppBarButton>
-              <AppBarButton color="inherit" onClick={this.handleClickOpenPublishDialog}>
+              <AppBarButton color="inherit" onClick={this.handleClickOpenPublishDialog} secondary="Publishing...">
                 <CloudUpload style={buttonStyle} />
                 <span style={{ color: 'white' }}>
                   Publish{' '}

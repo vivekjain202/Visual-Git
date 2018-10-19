@@ -4,6 +4,8 @@ import { CustomDialog } from './CustomComponents'
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
 import PositionedSnackbar from './PositionedSnackbar'
+import {ipcRenderer} from 'electron'
+import SnackBar from './PositionedSnackbar'
 
 const buttonStyle = {
     paddingRight: 10,
@@ -13,7 +15,9 @@ const buttonStyle = {
 const mapStateToProps = state => {
     return {
         remoteOrigin: state.global.remoteOrigin,
-        currentBranch: state.global.currentBranch
+        currentBranch: state.global.currentBranch,
+        repo: state.global.currentRepoPath,
+        pushSuccess: ''
     }
 }
 class PublishBranchDialog extends React.Component {
@@ -23,7 +27,9 @@ class PublishBranchDialog extends React.Component {
         userName: '',
         password: '',
         disabled: true,
-        buttonValue: 'Push'
+        buttonValue: 'Push',
+        isSnackBarOpen:false,
+        message:''
     }
     handleClose = () => {
         this.setState({ open: false });
@@ -65,9 +71,31 @@ class PublishBranchDialog extends React.Component {
             })
         }
     }
-
+    handleSnackBarClose = () => {
+        this.setState({
+            isSnackBarOpen: false,
+        })
+    }
     handlePush = () => {
-        
+        const reply = ipcRenderer.sendSync('git-push',this.props.repo,this.state.userName,this.state.password,this.state.remoteOrigin);
+        this.setState({
+            buttonValue: "Pushing...",
+        }, ()=>{
+            if(reply==='success'){
+                this.handleClose()
+                this.setState({
+                    isSnackBarOpen: true,
+                    message:'Push successful'
+                })
+            }
+            else {
+                this.handleClose()
+                this.setState({
+                    isSnackBarOpen: true,
+                    message:'Push Failed'
+                })
+            }
+        })
     }
     render() {
         return (
@@ -111,6 +139,7 @@ class PublishBranchDialog extends React.Component {
                         <span style={{ paddingRight: '23px' }}> {this.state.buttonValue}</span>
                         <CloudUpload style={buttonStyle} />
                     </Button>
+                    {!this.state.isSnackBarOpen ? null : <SnackBar message={{message: this.state.message, type:'error'}} closeComponent={this.handleSnackBarClose}></SnackBar>}
                 </DialogContent>
 
             </CustomDialog>
