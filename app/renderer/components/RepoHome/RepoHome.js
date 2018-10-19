@@ -35,11 +35,9 @@ class RepoHome extends React.Component {
 
   handleBranchDialogOpen = () => {
     console.log('im called ////////////////////////////////////')
-    if(this.props.currentBranch !== '' && this.props.currentBranch !== 'master') {
     this.setState({
       isNewBranchDialogOpen: !this.state.isNewBranchDialogOpen,
     })
-  }
   }
   handleRenameBranch = () => {
     console.log(this.props.currentBranch);
