@@ -32,7 +32,8 @@ const style = {
   titleicon: {
     padding: 0,
     fontSize: 16,
-    transform: 'translateY(5px)',
+    marginRight: 5,
+    transform: 'translateY(3px)',
   },
   titleItem: {
     marginRight: 20,

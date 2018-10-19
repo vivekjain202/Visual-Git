@@ -52,8 +52,12 @@ class Changes extends React.Component {
   }
 
   onFileClick(file) {
-    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,null,file]);
-    this.props.onSelectFile(diff, file)
+    const diff = ipcRenderer.sendSync('git-diff-particular-file', [
+      this.props.currentRepoPath,
+      null,
+      file,
+    ]);
+    this.props.onSelectFile(diff, file);
   }
   onCommitButtonClick() {
     const { commitMessage } = this.state;
@@ -66,23 +70,25 @@ class Changes extends React.Component {
       console.log('commit done', temp);
     }
   }
-  handleChange = name => event => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
   };
-  componentDidUpdate(prevProps){
-    console.log("currentfile", this.props.currentFile, prevProps.currentFile)
-    if(this.props.currentFile !== prevProps.currentFile){
-      this.onFileClick(this.props.currentFile)
+  componentDidUpdate(prevProps) {
+    console.log('currentfile', this.props.currentFile, prevProps.currentFile);
+    if (this.props.currentFile !== prevProps.currentFile) {
+      this.onFileClick(this.props.currentFile);
     }
   }
   render() {
     const { classes, files, currentFile } = this.props;
     console.log('files', files);
-    if(!currentFile && currentFile === '' && files){
+    if (!currentFile && currentFile === '' && files) {
       const file = this.props.files[0];
-      this.onFileClick(file)
+      this.onFileClick(file);
+    } else {
+      this.onFileClick(currentFile);
     }
     return (
       <React.Fragment>
@@ -145,12 +151,13 @@ function mapStateToProps(state) {
   return {
     files: state.global ? state.global.changedFiles : [],
     currentRepoPath: state.global.currentRepoPath,
-    currentFile: state.diff.currentFile
+    currentFile: state.diff.currentFile,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (diff,currentFile) => dispatch({ type: CHANGED_FILE_SELECTED, payload: {diff,currentFile} }),
+    onSelectFile: (diff, currentFile) =>
+      dispatch({ type: CHANGED_FILE_SELECTED, payload: { diff, currentFile } }),
   };
 }
 
