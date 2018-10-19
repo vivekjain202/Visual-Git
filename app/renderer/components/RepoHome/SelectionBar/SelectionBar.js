@@ -16,9 +16,10 @@ import {
   CHANGE_BRANCH,
   SET_ALL_COMMITS,
   CURRENT_REPO_PATH,
+  ADD_REMOTE_ORIGIN,
 } from '../../../constants/actions';
 import { ipcRenderer } from 'electron'
-import { gitInit, gitBranch, gitLog  } from './renderer-menu-functions';
+import { gitInit, gitBranch, gitLog } from './renderer-menu-functions';
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#000' },
@@ -90,7 +91,10 @@ class SelectionBar extends Component {
     this.props.changeBranch('master')
     this.props.changeBranchCommits(gitLogs)
     this.props.addToOtherRepos(path)
-}
+    if (dirData.remotes.length)
+      this.props.setRemoteURL(dirData.remotes['0'].refs['fetch'])
+    else this.props.setRemoteURL("")
+  }
   componentDidUpdate(prevProps) {
     if (
       prevProps.branchName !== this.props.branchName ||
@@ -182,6 +186,7 @@ const mapDispatchToProps = (dispatch) => {
     updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
     changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
     addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo }),
+    setRemoteURL: (remoteURL) => dispatch({ type: ADD_REMOTE_ORIGIN, payload: remoteURL })
     // onChangedFilesLoaded: (payload) => dispatch({ type: CHANGED_FILES_LOADED, payload }),
   };
 };

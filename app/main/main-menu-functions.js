@@ -55,7 +55,7 @@ export const gitLocalRepo = async (event, path) => {
         .log(['--all'])
         .then(data => {
           simpleGit(path.toString())
-            .getRemotes(['--verbose'])
+            .getRemotes(true)
             .then(remotes => {
               data['path'] = path;
               data['remotes'] = remotes;

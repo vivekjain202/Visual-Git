@@ -7,7 +7,7 @@ import CreateRepoDialog from './CreateRepoDialog'
 import CloneRepository from './CloneRepository'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { ipcRenderer } from 'electron'
-import { CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY_BRANCHES, ADD_REMOTE_ORIGIN ,ADD_OTHER_REPO, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, CHANGE_BRANCH, SET_ALL_COMMITS, CURRENT_REPO_PATH } from '../../../constants/actions'
 import { connect } from 'react-redux'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
 import SnackBar from '../SelectionBar/PositionedSnackbar'
@@ -115,6 +115,7 @@ class Home extends React.Component {
     }
     initiateLocalRepoDialog = async () => {
         const temp = ipcRenderer.sendSync('git-local-repo')
+        console.log(temp.remotes['0'].refs['fetch'])
         const splitTemp = temp.path[0].split('/')
         this.props.updateCurrentRepoPath(temp.path[0])
         this.props.changeRepo(splitTemp[splitTemp.length - 1])
@@ -125,6 +126,9 @@ class Home extends React.Component {
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs)
         this.props.addToOtherRepos(temp.path[0])
+        if(temp.remotes.length)
+        this.props.setRemoteURL(temp.remotes['0'].refs['fetch'])
+        else this.props.setRemoteURL("")
     }
     
     render() {
@@ -183,7 +187,8 @@ const mapDispatchToProps = dispatch => {
         setAllCommits: (allCommits) => dispatch({ type: SET_ALL_COMMITS, payload: allCommits }),
         updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
         changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
-        addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo })
+        addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo }),
+        setRemoteURL: (remoteURL) => dispatch({type:ADD_REMOTE_ORIGIN, payload: remoteURL})
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Home))

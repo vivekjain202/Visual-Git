@@ -3,7 +3,7 @@ import { TextField, DialogContentText, DialogContent, ListItemText, Divider, Lis
 // import CheckIcon from '@material-ui/icons/Check'
 import { connect } from 'react-redux'
 import TvIcon from '@material-ui/icons/Tv'
-import { CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, ADD_REMOTE_ORIGIN, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
 // import { gitInit, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch } from './renderer-menu-functions.js';
 import { CustomDialog } from './CustomComponents'
 import { ipcRenderer } from 'electron';
@@ -40,6 +40,7 @@ class CurrentRepoDialog extends React.Component {
     }
     initializeRepoOnSelect = async (repoPath) => {
         const temp = ipcRenderer.sendSync('git-local-repo', repoPath);
+        console.log(temp, 'test for the switching remoteOrigin')
         const splitTemp = temp.path.split('/')
         const repoName = splitTemp[splitTemp.length - 1]
         this.props.updateCurrentRepoPath(temp.path)
@@ -50,6 +51,9 @@ class CurrentRepoDialog extends React.Component {
         const gitLogs = await gitLog(temp.path, 'master')
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs);
+        if (temp.remotes.length)
+            this.props.setRemoteURL(temp.remotes['0'].refs['fetch'])
+        else this.props.setRemoteURL("")
     }
     render() {
         return (
@@ -104,6 +108,7 @@ const mapDispatchToProps = dispatch => {
         setAllCommits: (allCommits) => dispatch({ type: SET_ALL_COMMITS, payload: allCommits }),
         updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
         changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
+        setRemoteURL: (remoteURL) => dispatch({ type: ADD_REMOTE_ORIGIN, payload: remoteURL })
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CurrentRepoDialog)
