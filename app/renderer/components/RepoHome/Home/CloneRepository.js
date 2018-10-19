@@ -95,19 +95,21 @@ class CloneRepository extends React.Component {
         this.setState({
             buttonValue: 'success'
         })
-        const splitTemp = temp.path.split('/')
-        this.props.updateCurrentRepoPath(temp.path)
-        this.props.changeRepo(splitTemp[splitTemp.length - 1])
-        this.props.setAllCommits(temp.all)
-        const branches = await gitBranch(temp.path)
-        this.props.changeBranches(branches.branches)
-        const gitLogs = await gitLog(temp.path, 'master')
-        this.props.changeBranch('master')
-        this.props.changeBranchCommits(gitLogs)
-        this.props.addToOtherRepos(temp.path)
-        if (temp.remotes.length)
-            this.props.setRemoteURL(temp.remotes[0].refs['fetch'])
-        else this.props.setRemoteURL("")
+        if(temp){
+            const splitTemp = temp.path.split('/')
+            this.props.updateCurrentRepoPath(temp.path)
+            this.props.changeRepo(splitTemp[splitTemp.length - 1])
+            this.props.setAllCommits(temp.all)
+            const branches = await gitBranch(temp.path)
+            this.props.changeBranches(branches.branches)
+            const gitLogs = await gitLog(temp.path, 'master')
+            this.props.changeBranch('master')
+            this.props.changeBranchCommits(gitLogs)
+            this.props.addToOtherRepos(temp.path)
+            if (temp.remotes.length)
+                this.props.setRemoteURL(temp.remotes[0].refs['fetch'])
+            else this.props.setRemoteURL("")                
+        }
     }
     render() {
         const { classes } = this.props
