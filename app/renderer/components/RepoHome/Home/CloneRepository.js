@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { ipcRenderer } from 'electron'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
 import FolderIcon from '@material-ui/icons/CreateNewFolder'
-import { CHANGE_REPOSITORY, CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY, CHANGE_REPOSITORY_BRANCHES, ADD_REMOTE_ORIGIN, ADD_OTHER_REPO, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
 import { connect } from 'react-redux';
 const { dialog } = require('electron').remote
 const styles = {
@@ -105,6 +105,9 @@ class CloneRepository extends React.Component {
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs)
         this.props.addToOtherRepos(temp.path)
+        if (temp.remotes.length)
+            this.props.setRemoteURL(temp.remotes[0].refs['fetch'])
+        else this.props.setRemoteURL("")
     }
     render() {
         const { classes } = this.props
@@ -163,6 +166,7 @@ const mapDispatchToProps = (dispatch) => {
         updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
         changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
         addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo }),
+        setRemoteURL: (remoteURL) => dispatch({ type: ADD_REMOTE_ORIGIN, payload: remoteURL })
     }
 }
 const mapStateToProps = () => { return {} }

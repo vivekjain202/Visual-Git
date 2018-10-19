@@ -115,7 +115,8 @@ class Home extends React.Component {
     }
     initiateLocalRepoDialog = async () => {
         const temp = ipcRenderer.sendSync('git-local-repo')
-        console.log(temp.remotes['0'].refs['fetch'])
+        console.log(temp)
+        console.log(temp.remotes[0].refs['fetch'])
         const splitTemp = temp.path[0].split('/')
         this.props.updateCurrentRepoPath(temp.path[0])
         this.props.changeRepo(splitTemp[splitTemp.length - 1])
@@ -127,7 +128,7 @@ class Home extends React.Component {
         this.props.changeBranchCommits(gitLogs)
         this.props.addToOtherRepos(temp.path[0])
         if(temp.remotes.length)
-        this.props.setRemoteURL(temp.remotes['0'].refs['fetch'])
+        this.props.setRemoteURL(temp.remotes[0].refs['fetch'])
         else this.props.setRemoteURL("")
     }
     
