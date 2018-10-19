@@ -4,7 +4,7 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Icon,
+  SvgIcon,
   Button,
   TextField,
   withStyles,
@@ -98,7 +98,7 @@ class Changes extends React.Component {
     }
   }
   render() {
-    const { classes, files, currentFile } = this.props;
+    const { classes, files, currentFile, currentBranch } = this.props;
     console.log('files', files);
     if (!currentFile && currentFile === '' && files) {
       const file = this.props.files[0];
@@ -117,7 +117,11 @@ class Changes extends React.Component {
                   selected={fileItem === currentFile}
                   onClick={() => this.onFileClick(fileItem)}
                   button>
-                  <Icon className="fa fa-file" classes={{ root: classes.listIcon }} />
+                  <SvgIcon classes={{ root: classes.listIcon }} viewBox="0 0 14 16">
+                    <path d="M13 1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1zm0 13H1V2h12v12zM4 8c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3-3-1.34-3-3z">
+                      <title>Modified</title>
+                    </path>
+                  </SvgIcon>
                   <ListItemText
                     classes={{
                       root: classes.listItemText,
@@ -153,9 +157,11 @@ class Changes extends React.Component {
             variant="contained"
             color="primary"
             fullWidth
+            style={{textTransform: 'none'}}
+            title={currentBranch}
             onClick={this.onCommitButtonClick}
             disabled={!(files && files.length > 0)}>
-            Commit
+            Commit to {currentBranch.length > 6 ? currentBranch.substring(0, 6) + '...' : currentBranch}
           </Button>
         </form>
         <CommitDialog
@@ -176,6 +182,7 @@ function mapStateToProps(state) {
     files: state.global ? state.global.changedFiles : [],
     currentRepoPath: state.global.currentRepoPath,
     currentFile: state.diff.currentFile,
+    currentBranch: state.global.currentBranch
   };
 }
 function mapDispatchToProps(dispatch) {
