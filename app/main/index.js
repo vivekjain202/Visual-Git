@@ -10,7 +10,7 @@ let tray = null;
 let mainWindow = null;
 let forceQuit = false;
 
-ipcMain.on('git-init', (event) => gitInit(event));
+ipcMain.on('git-init', (event, path) => gitInit(event, path));
 
 ipcMain.on('git-local-repo', (event,path) => gitLocalRepo(event,path));
 
