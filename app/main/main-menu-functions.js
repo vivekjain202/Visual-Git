@@ -283,11 +283,16 @@ export const gitCommit = (event, repoPath, message) => {
   try {
     if (message) {
       simpleGit(repoPath)
+      .add(['.'])
+      .then(()=>{
+        simpleGit(repoPath)
         .commit(message)
         .then(() => {
           event.returnValue = 'Successfully committed';
         })
         .catch(error => event.returnValue = error);
+      })
+      .catch(error => event.returnValue = error);
     } else {
       event.returnValue = 'Invalid Message';
     }
@@ -295,6 +300,7 @@ export const gitCommit = (event, repoPath, message) => {
     event.returnValue = error;
   }
 }
+
 
 export const gitPush = (event, repoPath, remote, branch) => {
   try {
