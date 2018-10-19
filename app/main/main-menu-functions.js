@@ -177,7 +177,7 @@ export const gitCheckout = (event, repo, branch) => {
 export const gitDeleteLocalBranch = (event, repo, branch) => {
   if (repo !== undefined && repo !== '') {
     try {
-      exec(`git branch -D ${branch}`, { cwd: repo.toString() }, (error, stdout) => {
+      exec(`git checkout master && git branch -D ${branch}`, { cwd: repo.toString() }, (error, stdout) => {
         if (error) {
           throw error;
         }
