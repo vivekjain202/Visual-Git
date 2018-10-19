@@ -228,7 +228,7 @@ app.on('ready', async () => {
     // 1. App should not terminate if window has been closed
     // 2. Click on icon in dock should re-open the window
     // 3. ⌘+Q should close the window and quit the app
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     if (process.platform === 'darwin') {
       mainWindow.on('close', function (e) {
