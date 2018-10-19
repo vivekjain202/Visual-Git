@@ -14,66 +14,66 @@ export const showDialog = () => {
   })
 };
 
-export const gitInit = async (event,path) => {
-  try {
-    if(!path){
-      const selectedPath = await showDialog();
-      if (selectedPath !== undefined) {
-        simpleGit(selectedPath.toString()).init().then(() => {
-          event.returnValue = selectedPath;
-        }).catch(err => { return event.returnValue = err })
-      }
-      else {
-        throw ('no path selected');
-      }  
-    }
-    else {
-      simpleGit(path.toString()).init().then(() => {
-        event.returnValue = path;
-      }).catch(err => { return event.returnValue = err })
-    }
-  }
-  catch (e) {
-    event.returnValue = e;
-  }
-};
 // export const gitInit = async (event,path) => {
 //   try {
 //     if(!path){
 //       const selectedPath = await showDialog();
 //       if (selectedPath !== undefined) {
 //         simpleGit(selectedPath.toString()).init().then(() => {
-//           fs.writeFile(`${selectedPath.toString()}/README.md`,'',(err) => { event.returnValue = err})
-//           simpleGit(selectedPath).add().then(()=>{
-//             simpleGit(selectedPath).commit('Initial Commit').then(()=> {
-//               gitLocalRepo(event,selectedPath);
-//             })
-//           })
+//           event.returnValue = selectedPath;
 //         }).catch(err => { return event.returnValue = err })
 //       }
 //       else {
 //         throw ('no path selected');
-//       }
+//       }  
 //     }
 //     else {
 //       simpleGit(path.toString()).init().then(() => {
-//         fs.writeFile(`${path.toString()}/README.md`,'',(err) => { event.returnValue = err})
-//         simpleGit(path).add().then(()=>{
-//           simpleGit(path).commit('Initial Commit').then(()=> {
-//             gitLocalRepo(event,path);
-//           })
-//         })
+//         event.returnValue = path;
 //       }).catch(err => { return event.returnValue = err })
 //     }
 //   }
 //   catch (e) {
 //     event.returnValue = e;
 //   }
-//  };
+// };
+export const gitInit = async (event,path) => {
+  try {
+    if(!path){
+      const selectedPath = await showDialog();
+      if (selectedPath !== undefined) {
+        simpleGit(selectedPath.toString()).init().then(() => {
+          fs.writeFile(`${selectedPath.toString()}/README.md`,'',(err) => { event.returnValue = err})
+          simpleGit(selectedPath.toString()).add(['.']).then(()=>{
+            simpleGit(selectedPath.toString()).commit('Initial Commit').then(()=> {
+              gitLocalRepo(event,selectedPath.toString());
+            })
+          })
+        }).catch(err => { return event.returnValue = err })
+      }
+      else {
+        throw ('no path selected');
+      }
+    }
+    else {
+      simpleGit(path.toString()).init().then(() => {
+        fs.writeFile(`${path.toString()}/README.md`,'',(err) => { event.returnValue = err})
+        simpleGit(path.toString()).add(['.']).then(()=>{
+          simpleGit(path.toString()).commit('Initial Commit').then(()=> {
+            gitLocalRepo(event,path.toString());
+          })
+        })
+      }).catch(err => { return event.returnValue = err })
+    }
+  }
+  catch (e) {
+    event.returnValue = e;
+  }
+ };
 
 export const gitLocalRepo = async (event,path) => {
   try {
-    if(path !== undefined && path !== ''){
+    if(path){
         simpleGit(path.toString())
         .log(['--all'])
         .then(data => {
@@ -133,27 +133,27 @@ export const gitDeleteRepo = async (event) => {
 
 export const gitClone = (event, arg) => {
   console.log(arg[0], arg[1]);
+ 
   if (arg[0] !== undefined && arg[1] !== '') {
-
+ 
     const gitUrl = arg[0].toString();
     const destination = arg[1].toString();
     try {
       simpleGit(destination)
         .clone(gitUrl)
         .then(() => {
-          return event.returnValue = 'true';
+          event.sender.send('success',true)
         })
-        .catch(err => console.error(err));
+        .catch(err => {console.error(err); return event.returnValue= 'false'});
     }
     catch (error) {
-      console.log(error);
-      event.returnValue = error;
+      event.returnValue = 'false';
     }
   }
   else {
     return event.returnValue = 'false';
   }
-};
+ };
 
 export const gitBranch = (event, path) => {
   if (path !== undefined && path !== '') {

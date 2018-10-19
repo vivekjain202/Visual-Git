@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { ipcRenderer } from 'electron'
 import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
 import FolderIcon from '@material-ui/icons/CreateNewFolder'
-import { CHANGE_REPOSITORY, CHANGE_REPOSITORY_BRANCHES, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
+import { CHANGE_REPOSITORY, CHANGE_REPOSITORY_BRANCHES, ADD_OTHER_REPO, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
 import { connect } from 'react-redux';
 const { dialog } = require('electron').remote
 const styles = {
@@ -38,7 +38,8 @@ class CloneRepository extends React.Component {
         url: '',
         path: '',
         isCloneDisabled: false,
-        loading: false
+        loading: false,
+        buttonValue: 'Clone'
     }
     handleClose = () => {
         this.setState({
@@ -78,26 +79,32 @@ class CloneRepository extends React.Component {
     }
     handleClone = async () => {
         this.setState({
-            loading: true,
+            buttonValue: 'Cloning...'
+        }, async () => {
+            ipcRenderer.send('git-clone', [this.state.url, this.state.path]);
+            ipcRenderer.on('success', () => {
+                const temp = this.state.url.split('/')
+                const reponame = temp[temp.length - 1]
+                this.initiateLocalRepoDialog(reponame)
+            })
         })
-        const isCloned = ipcRenderer.sendSync('git-clone', [this.state.url, this.state.path])
-        console.log(isCloned)
-        const temp = this.state.url.split('/')
-        const reponame = temp[temp.length - 1]
-        if (isCloned === "true") this.initiateLocalRepoDialog(reponame)
-    }
+    };
     initiateLocalRepoDialog = async (reponame) => {
         const temp = ipcRenderer.sendSync('git-local-repo', `${this.state.path}/${reponame.split('.')[0]}`)
-        const splitTemp = temp.path[0].split('/')
-        this.props.updateCurrentRepoPath(temp.path[0])
+        console.log(temp, 'temp')
+        this.setState({
+            buttonValue: 'success'
+        })
+        const splitTemp = temp.path.split('/')
+        this.props.updateCurrentRepoPath(temp.path)
         this.props.changeRepo(splitTemp[splitTemp.length - 1])
         this.props.setAllCommits(temp.all)
-        const branches = await gitBranch(temp.path[0])
+        const branches = await gitBranch(temp.path)
         this.props.changeBranches(branches.branches)
-        const gitLogs = await gitLog(temp.path[0], 'master')
+        const gitLogs = await gitLog(temp.path, 'master')
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs)
-        this.props.addToOtherRepos(temp.path[0])
+        this.props.addToOtherRepos(temp.path)
     }
     render() {
         const { classes } = this.props
@@ -135,8 +142,8 @@ class CloneRepository extends React.Component {
                         </div>
                         <div className={classNames(classes.displayflex, classes.flexSpaceBetween)}>
                             <Button variant="contained" color="secondary" disabled={this.state.isCloneDisabled} className={classes.cloneButtonMargin} onClick={this.handleClone}>
-                                Clone
-                    </Button>
+                                {this.state.buttonValue}
+                            </Button>
                             <Fade in={loading} style={{ transitionDelay: loading ? '800ms' : '0ms', }} unmountOnExit>
                                 <CircularProgress />
                             </Fade>
