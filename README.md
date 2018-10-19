@@ -1,77 +1,66 @@
-# electron-react-redux-boilerplate
-[![Build Status](https://api.travis-ci.org/jschr/electron-react-redux-boilerplate.svg)](https://travis-ci.org/jschr/electron-react-redux-boilerplate)
-[![dependencies Status](https://david-dm.org/jschr/electron-react-redux-boilerplate/status.svg)](https://david-dm.org/jschr/electron-react-redux-boilerplate)
-[![devDependencies Status](https://david-dm.org/jschr/electron-react-redux-boilerplate/dev-status.svg)](https://david-dm.org/jschr/electron-react-redux-boilerplate?type=dev)
+# [Visual Git](https://gitlab.com/mountblue/august-18-js/visual-git-using-electron)<img src="http://icons.iconarchive.com/icons/goodstuff-no-nonsense/free-space/64/astronaut-icon.png" />
 
-A minimal boilerplate to get started with [Electron](http://electron.atom.io/), [React](https://facebook.github.io/react/) and [Redux](http://redux.js.org/).
 
-Including:
 
-* [React Router](https://reacttraining.com/react-router/)
-* [Redux Thunk](https://github.com/gaearon/redux-thunk/)
-* [Redux Actions](https://github.com/acdlite/redux-actions/)
-* [Redux Local Storage](https://github.com/elgerlambert/redux-localstorage/)
-* [Electron Packager](https://github.com/electron-userland/electron-packager)
-* [Electron DevTools Installer](https://github.com/MarshallOfSound/electron-devtools-installer)
-* [Electron Mocha](https://github.com/jprichardson/electron-mocha)
-* [Browsersync](https://browsersync.io/)
+[![Travis](https://img.shields.io/travis/desktop/desktop.svg?style=flat-square&label=Travis+CI)](https://travis-ci.org/desktop/desktop)
+[![CircleCI](https://img.shields.io/circleci/project/github/desktop/desktop.svg?style=flat-square&label=CircleCI)](https://circleci.com/gh/desktop/desktop)
+[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/github-windows/desktop/master.svg?style=flat-square&label=AppVeyor&logo=appveyor)](https://ci.appveyor.com/project/github-windows/desktop/branch/master)
+[![Azure DevOps Pipelines Build Status](https://dev.azure.com/github/Desktop/_apis/build/status/Continuous%20Integration)](https://dev.azure.com/github/Desktop/_build/latest?definitionId=3)
+[![license](https://img.shields.io/github/license/desktop/desktop.svg?style=flat-square)](https://github.com/desktop/desktop/blob/master/LICENSE)
+![90+% javaScript](https://img.shields.io/github/languages/top/desktop/desktop.svg?style=flat-square&colorB=green)
 
-## Quick start
+Visual Git is an open source [Electron](https://electron.atom.io)-based
+Visual Git app. It is written in [Javascript](http://es6-features.org/#Constants) and
+uses [React](https://facebook.github.io/react/).
 
-Clone the repository
-```bash
-git clone --depth=1 git@github.com:jschr/electron-react-redux-boilerplate.git
-```
+![GitHub Desktop screenshot - Windows](https://balaji7694.gitlab.io/git-ui/home.png)
 
-Install dependencies
-```bash
-cd electron-react-redux-boilerplate
-npm install
-```
+![GitHub Desktop screenshot - Windows](https://balaji7694.gitlab.io/git-ui/changes.png)
 
-Development
-```bash
-npm run develop
-```
+![GitHub Desktop screenshot - Windows](https://balaji7694.gitlab.io/git-ui/history.png)
 
-## DevTools
 
-Toggle DevTools:
+## Where can I get it?
 
-* OSX: <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>I</kbd> or <kbd>F12</kbd>
-* Linux: <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> or <kbd>F12</kbd>
-* Windows: <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> or <kbd>F12</kbd>
+Download the official installer for your operating system:
 
-## Packaging
+ - [Linux](http://google.com)
+ - [macOS](https://central.github.com/deployments/desktop/desktop/latest/darwin)
+ - [Windows](https://central.github.com/deployments/desktop/desktop/latest/win32)
 
-Modify [electron-builder.yml](./electron-builder.yml) to edit package info.
+## Advantages ?
 
-For a full list of options see: https://github.com/electron-userland/electron-builder/wiki/Options.
+	~ No more terminal commands needed to follow basic github workflow.
+	~ All basic git command can be used smoothly with ui.
 
-Create a package for OSX, Windows and Linux
-```
-npm run pack
-```
+## What user can do with <span style="color:#9c9e68">Visual Git</span>
+	
+   - Create a new repository.
+   - Open a local repositroy.
+   - Clone a repository.
+   - Delete a repository.
+   - Create new branch.
+   - Rename branch.
+   - Delete branch.
+   - Switch between branches.
+   - See commit history.
+   - See changes in particular file at particular commit.
+   - Commit changes.
+   - Publish changes to remote repository.
 
-Or target a specific platform
-```
-npm run pack:mac
-npm run pack:win
-npm run pack:linux
-```
+## How can i contribute.
+  
+ It's a open source project you can directly make contribution to our project by making merge requests. We are glad to accept any valuable contribution.
+    
+## License
 
-## Tests
 
-```
-npm run test
-```
+**[MIT](LICENSE)**
 
-## Maintainers
+The MIT license grant is not for Visual Git trademarks, which include the logo
+designs. Visual Git reserves all trademark and copyright rights in and to all
+Visual Git trademarks. 
 
-- [@jschr](https://github.com/jschr)
-- [@pronebird](https://github.com/pronebird)
+Visual Git® and its stylized versions and the Invertocat mark are Visual Git's
+Trademarks or registered Trademarks.
 
-## Apps using this boilerplate
-
-- [Mullvad VPN app](https://github.com/mullvad/mullvadvpn-app)
-- [YouTube Downloader Electron](https://github.com/vanzylv/youtube-downloader-electron)
