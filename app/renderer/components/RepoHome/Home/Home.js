@@ -107,6 +107,7 @@ class Home extends React.Component {
         })
     }
     componentDidMount() {
+        ipcRenderer.on('git-init-appmenu', this.handleNewRepositoryDialogOpen)
         ipcRenderer.on('open-local-repo-appmenu', this.initiateLocalRepoDialog)
         ipcRenderer.on('clone-repo-appmenu', this.handleCloneRepositoryDialogOpen)
         ipcRenderer.on('git-new-branch-appmenu', () => this.handleError())

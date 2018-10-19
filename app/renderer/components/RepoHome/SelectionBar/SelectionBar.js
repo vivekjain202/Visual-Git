@@ -18,7 +18,7 @@ import {
   CURRENT_REPO_PATH,
 } from '../../../constants/actions';
 import { ipcRenderer } from 'electron'
-import { gitBranch, gitLog, } from './renderer-menu-functions';
+import { gitInit, gitBranch, gitLog  } from './renderer-menu-functions';
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#000' },
@@ -71,24 +71,26 @@ class SelectionBar extends Component {
     });
   };
   componentDidMount() {
-    ipcRenderer.on('git-switch-branch-appmenu',() => this.handleClickOpenCurrentBranch());
-    // ipcRenderer.on('open-local-repo-appmenu', async () => {
-    //   const temp = ipcRenderer.sendSync('git-local-repo');
-    //   const splitTemp = temp.path[0].split('/');
-    //   this.props.updateCurrentRepoPath(temp.path[0]);
-    //   this.props.changeRepo(splitTemp[splitTemp.length - 1]);
-    //   this.props.setAllCommits(temp.all);
-    //   const branches = await gitBranch(temp.path[0]);
-    //   console.log(branches.branches, 'from componentDidMount()/////////////////////////');
-    //   this.props.changeBranches(branches.branches);
-    //   const gitLogs = await gitLog(temp.path[0], 'master');
-    //   this.props.changeBranch('master');
-    //   this.props.changeBranchCommits(gitLogs);
-    //   // const changedFiles = getChangedFiles(temp.path[0]);
-    //   // this.props.onChangedFilesLoaded(changedFiles);
-    //   this.props.addToOtherRepos(temp.path[0]);
-    // });
+    ipcRenderer.on('git-switch-branch-appmenu', () => this.handleClickOpenCurrentBranch());
+    ipcRenderer.on('git-init-appmenu', async () => {
+      const dirInitInfo = await gitInit();
+      this.initiateNewRepo(dirInitInfo)
+    });
   }
+  initiateNewRepo = async (dirData) => {
+    const path = dirData.path[0]
+    console.log(path)
+    const splitPath = path.split('/')
+    this.props.updateCurrentRepoPath(path)
+    this.props.changeRepo(splitPath[splitPath.length - 1])
+    this.props.setAllCommits(dirData.all)
+    const branches = await gitBranch(path)
+    this.props.changeBranches(branches.branches)
+    const gitLogs = await gitLog(path, 'master')
+    this.props.changeBranch('master')
+    this.props.changeBranchCommits(gitLogs)
+    this.props.addToOtherRepos(path)
+}
   componentDidUpdate(prevProps) {
     if (
       prevProps.branchName !== this.props.branchName ||
