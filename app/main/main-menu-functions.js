@@ -231,7 +231,7 @@ export const gitDiff = (event, repoPath, hash) => {
 export const gitDiffStat = (event, repoPath, hash) => {
   try {
     simpleGit(repoPath)
-      .show(['--pretty=oneline', '--color', '--name-only', '--no-notes', hash])
+      .show(['--pretty=oneline', '--color', '--name-only', '--no-notes', '--diff-filter=AM',hash])
       .then(data => {
         event.returnValue = data;
       })
