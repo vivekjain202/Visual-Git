@@ -9,7 +9,7 @@
 [![license](https://img.shields.io/github/license/desktop/desktop.svg?style=flat-square)](https://github.com/desktop/desktop/blob/master/LICENSE)
 ![90+% javaScript](https://img.shields.io/github/languages/top/desktop/desktop.svg?style=flat-square&colorB=green)
 
-Visual Git is an open source [Electron](https://electron.atom.io)-based
+<span style="color:#9c9e68; font-size:20px">**Visual Git**</span> is an open source [Electron](https://electron.atom.io)-based
 Visual Git app. It is written in [Javascript](http://es6-features.org/#Constants) and
 uses [React](https://facebook.github.io/react/).
 
