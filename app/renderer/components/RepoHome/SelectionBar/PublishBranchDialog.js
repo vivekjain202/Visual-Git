@@ -4,6 +4,7 @@ import { CustomDialog } from './CustomComponents'
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { connect } from 'react-redux'
 import PositionedSnackbar from './PositionedSnackbar'
+import { ipcRenderer } from 'electron';
 
 const buttonStyle = {
     paddingRight: 10,
@@ -13,7 +14,8 @@ const buttonStyle = {
 const mapStateToProps = state => {
     return {
         remoteOrigin: state.global.remoteOrigin,
-        currentBranch: state.global.currentBranch
+        currentBranch: state.global.currentBranch,
+        repo: state.global.currentRepoPath,
     }
 }
 class PublishBranchDialog extends React.Component {
@@ -61,7 +63,7 @@ class PublishBranchDialog extends React.Component {
         }
     }
     handlePush = () => {
-        
+        const reply = ipcRenderer.sendSync('git-push',this.props.repo,this.state.userName,this.state.password,this.state.remoteOrigin);
     }
     render() {
         return (

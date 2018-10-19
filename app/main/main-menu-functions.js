@@ -340,12 +340,13 @@ export const gitPush = (event, repoPath, userName, password, remote) => {
   try {
     if (repoPath && userName && password && remote) {
       const url = remote.split('://')[1];
-      exec(`git push https://${userName}:${password}@${url} --all`, { cwd: repoPath.toString() }, (error, stdout) => {
+      exec(`git push https://${userName}:${password}@${url}`, { cwd: repoPath.toString() }, (error, stdout) => {
        if (error) {
          throw error;
        }
        else {
-         console.log(stdout);
+        console.log(stdout);
+        return event.returnValue = 'success';
        }
      })
     }
