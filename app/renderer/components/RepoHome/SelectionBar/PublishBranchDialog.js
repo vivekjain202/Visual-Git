@@ -45,11 +45,16 @@ class PublishBranchDialog extends React.Component {
             password: e.target.value,
         }, ()=>this.validateInput())
     }
+    handleURL = (e) => {
+        this.setState({
+            remoteOrigin: e.target.value,
+        }, ()=> this.validateInput())
+    }
     noBranchSelected = () => {
         return <PositionedSnackbar message={this.props.message} closeComponent= {this.props.close}></PositionedSnackbar>
     }
     validateInput = () => {
-        if(this.state.userName.length >= 4 && this.state.password.length >=4){
+        if(this.state.userName.length >= 4 && this.state.password.length >=4 && this.state.remoteOrigin){
             this.setState({
                 disabled: false,
             })
@@ -60,6 +65,7 @@ class PublishBranchDialog extends React.Component {
             })
         }
     }
+
     handlePush = () => {
         
     }
@@ -98,6 +104,7 @@ class PublishBranchDialog extends React.Component {
                         label="Remote Repository Link"
                         type="text"
                         fullWidth
+                        onChange={this.handleURL}
                         required
                     />}
                     <Button disabled = {this.state.disabled} variant="contained" onClick={this.handlePush}color="secondary" style={{ width: '200px', textAlign: 'center', margin: '0 auto', marginLeft: 'auto', marginRight: 'auto' }}>
