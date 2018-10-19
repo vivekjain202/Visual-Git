@@ -10,7 +10,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { CHANGED_FILE_SELECTED } from '../../../constants/actions';
+import { CHANGED_FILE_SELECTED, CHANGED_FILES_LOADED } from '../../../constants/actions';
 import { ipcRenderer } from 'electron';
 
 const styles = {
@@ -68,6 +68,10 @@ class Changes extends React.Component {
         this.state.commitMessage,
       );
       console.log('commit done', temp);
+      if(temp === 'Successfully committed') {
+        const changes = ipcRenderer.sendSync('get-changes', this.props.currentRepoPath);
+        this.props.dispatchChanges(changes);
+      }
     }
   }
   handleChange = (name) => (event) => {
@@ -158,6 +162,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onSelectFile: (diff, currentFile) =>
       dispatch({ type: CHANGED_FILE_SELECTED, payload: { diff, currentFile } }),
+    dispatchChanges: (changedFiles) =>
+      dispatch({ type: CHANGED_FILES_LOADED, payload: changedFiles }),
+  
   };
 }
 
