@@ -41,7 +41,7 @@ class CurrentRepoDialog extends React.Component {
     initializeRepoOnSelect = async (repoPath) => {
         const temp = ipcRenderer.sendSync('git-local-repo', repoPath);
         const splitTemp = temp.path.split('/')
-        let repoName = splitTemp[splitTemp.length - 1]
+        const repoName = splitTemp[splitTemp.length - 1]
         this.props.updateCurrentRepoPath(temp.path)
         this.props.changeRepo(repoName)
         this.props.setAllCommits(temp.all)

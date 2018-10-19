@@ -1,7 +1,7 @@
 import simpleGit from 'simple-git/promise';
 import { dialog } from 'electron';
 import { exec } from 'child_process';
-import fs from 'fs';
+import fs from 'fs'
 
 export const showDialog = () => {
   return new Promise((resolve, reject) => {
@@ -14,16 +14,49 @@ export const showDialog = () => {
   })
 };
 
+<<<<<<< HEAD
+=======
+// export const gitInit = async (event,path) => {
+//   try {
+//     if(!path){
+//       const selectedPath = await showDialog();
+//       if (selectedPath !== undefined) {
+//         simpleGit(selectedPath.toString()).init().then(() => {
+//           event.returnValue = selectedPath;
+//         }).catch(err => { return event.returnValue = err })
+//       }
+//       else {
+//         throw ('no path selected');
+//       }  
+//     }
+//     else {
+//       simpleGit(path.toString()).init().then(() => {
+//         event.returnValue = path;
+//       }).catch(err => { return event.returnValue = err })
+//     }
+//   }
+//   catch (e) {
+//     event.returnValue = e;
+//   }
+// };
+>>>>>>> a9e0ef5982779028aae7434081ad94860feb63a9
 export const gitInit = async (event,path) => {
   try {
     if(!path){
       const selectedPath = await showDialog();
       if (selectedPath !== undefined) {
         simpleGit(selectedPath.toString()).init().then(() => {
+<<<<<<< HEAD
           fs.writeFile(`${selectedPath.toString()}/README.md`,'Initial Commit',(err) => { if(err) event.returnValue = err})
           simpleGit(selectedPath.toString()).add(['.']).then(()=>{
             simpleGit(selectedPath.toString()).commit('Initial Commit').then(()=> {
               gitLocalRepo(event,selectedPath);
+=======
+          fs.writeFile(`${selectedPath.toString()}/README.md`,'',(err) => { event.returnValue = err})
+          simpleGit(selectedPath.toString()).add(['.']).then(()=>{
+            simpleGit(selectedPath.toString()).commit('Initial Commit').then(()=> {
+              gitLocalRepo(event,selectedPath.toString());
+>>>>>>> a9e0ef5982779028aae7434081ad94860feb63a9
             })
           })
         }).catch(err => { return event.returnValue = err })
@@ -34,10 +67,17 @@ export const gitInit = async (event,path) => {
     }
     else {
       simpleGit(path.toString()).init().then(() => {
+<<<<<<< HEAD
         fs.writeFile(`${path.toString()}/README.md`,'Initial Commit',(err) => { if(err) event.returnValue = err})
         simpleGit(path.toString()).add(['.']).then(()=>{
           simpleGit(path.toString()).commit('Initial Commit').then(()=> {
             gitLocalRepo(event,path);
+=======
+        fs.writeFile(`${path.toString()}/README.md`,'',(err) => { event.returnValue = err})
+        simpleGit(path.toString()).add(['.']).then(()=>{
+          simpleGit(path.toString()).commit('Initial Commit').then(()=> {
+            gitLocalRepo(event,path.toString());
+>>>>>>> a9e0ef5982779028aae7434081ad94860feb63a9
           })
         })
       }).catch(err => { return event.returnValue = err })
@@ -50,19 +90,19 @@ export const gitInit = async (event,path) => {
 
 export const gitLocalRepo = async (event, path) => {
   try {
-    if (path !== undefined && path !== '') {
-      simpleGit(path.toString())
+    if(path){
+        simpleGit(path.toString())
         .log(['--all'])
         .then(data => {
           simpleGit(path.toString())
-            .getRemotes(['--verbose'])
-            .then(remotes => {
-              data['path'] = path;
-              data['remotes'] = remotes;
-              console.log(data, 'data');
-              event.returnValue = data;
-            }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
-        })
+          .getRemotes(true)
+          .then(remotes => {
+            data['path'] = path;
+            data['remotes'] = remotes;
+            console.log(data, 'data');
+            event.returnValue = data;
+          }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
+      })
     }
     else if (path == undefined) {
       const selectedPath = await showDialog();
@@ -110,27 +150,27 @@ export const gitDeleteRepo = async (event) => {
 
 export const gitClone = (event, arg) => {
   console.log(arg[0], arg[1]);
+ 
   if (arg[0] !== undefined && arg[1] !== '') {
-
+ 
     const gitUrl = arg[0].toString();
     const destination = arg[1].toString();
     try {
       simpleGit(destination)
         .clone(gitUrl)
         .then(() => {
-          return event.returnValue = 'true';
+          event.sender.send('success',true)
         })
-        .catch(err => console.error(err));
+        .catch(err => {console.error(err); return event.returnValue= 'false'});
     }
     catch (error) {
-      console.log(error);
-      event.returnValue = error;
+      event.returnValue = 'false';
     }
   }
   else {
     return event.returnValue = 'false';
   }
-};
+ };
 
 export const gitBranch = (event, path) => {
   if (path !== undefined && path !== '') {

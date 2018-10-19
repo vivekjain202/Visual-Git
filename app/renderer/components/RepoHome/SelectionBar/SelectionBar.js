@@ -72,22 +72,22 @@ class SelectionBar extends Component {
   };
   componentDidMount() {
     ipcRenderer.on('git-switch-branch-appmenu',() => this.handleClickOpenCurrentBranch());
-    ipcRenderer.on('open-local-repo-appmenu', async () => {
-      const temp = ipcRenderer.sendSync('git-local-repo');
-      const splitTemp = temp.path[0].split('/');
-      this.props.updateCurrentRepoPath(temp.path[0]);
-      this.props.changeRepo(splitTemp[splitTemp.length - 1]);
-      this.props.setAllCommits(temp.all);
-      const branches = await gitBranch(temp.path[0]);
-      console.log(branches.branches, 'from componentDidMount()/////////////////////////');
-      this.props.changeBranches(branches.branches);
-      const gitLogs = await gitLog(temp.path[0], 'master');
-      this.props.changeBranch('master');
-      this.props.changeBranchCommits(gitLogs);
-      // const changedFiles = getChangedFiles(temp.path[0]);
-      // this.props.onChangedFilesLoaded(changedFiles);
-      this.props.addToOtherRepos(temp.path[0]);
-    });
+    // ipcRenderer.on('open-local-repo-appmenu', async () => {
+    //   const temp = ipcRenderer.sendSync('git-local-repo');
+    //   const splitTemp = temp.path[0].split('/');
+    //   this.props.updateCurrentRepoPath(temp.path[0]);
+    //   this.props.changeRepo(splitTemp[splitTemp.length - 1]);
+    //   this.props.setAllCommits(temp.all);
+    //   const branches = await gitBranch(temp.path[0]);
+    //   console.log(branches.branches, 'from componentDidMount()/////////////////////////');
+    //   this.props.changeBranches(branches.branches);
+    //   const gitLogs = await gitLog(temp.path[0], 'master');
+    //   this.props.changeBranch('master');
+    //   this.props.changeBranchCommits(gitLogs);
+    //   // const changedFiles = getChangedFiles(temp.path[0]);
+    //   // this.props.onChangedFilesLoaded(changedFiles);
+    //   this.props.addToOtherRepos(temp.path[0]);
+    // });
   }
   componentDidUpdate(prevProps) {
     if (

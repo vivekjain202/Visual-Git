@@ -2,7 +2,11 @@ import React, { Fragment } from 'react'
 import { DialogContent, TextField, DialogContentText, Button, withStyles } from '@material-ui/core'
 import classNames from 'classnames';
 import { CustomDialog } from '../SelectionBar/CustomComponents'
-import SelectPath from '@material-ui/icons/Create'
+import FolderIcon from '@material-ui/icons/CreateNewFolder'
+import { gitBranch, gitLog } from '../SelectionBar/renderer-menu-functions'
+import { ipcRenderer } from 'electron'
+import { CHANGE_REPOSITORY, ADD_OTHER_REPO, CHANGE_REPOSITORY_BRANCHES, CHANGE_BRANCH_COMMITS, SET_ALL_COMMITS, CURRENT_REPO_PATH, CHANGE_BRANCH } from '../../../constants/actions'
+import { connect } from 'react-redux'
 const { dialog } = require('electron').remote;
 
 const styles = {
@@ -64,25 +68,35 @@ class NewRepoDialog extends React.Component {
         })
     }
     componentWillUnmount() {
+        this.setState({
+            directoryPath: ""
+        })
         this.handleClose()
-    }
-    handleNameChange = (e) => {
-        this.setState({
-            name: e.target.value
-        })
-    }
-    handleDescriptionChange = (e) => {
-        this.setState({
-            description: e.target.value
-        })
     }
     handleRepositoryPathChange = (e) => {
         this.setState({
             directoryPath: e.target.value
         })
     }
-    handleCreate = () => {
-
+    handleCreate = async () => {
+        const path = await ipcRenderer.sendSync('git-init', this.state.directoryPath)
+        console.log(path)
+        // if (path) this.initiateLocalRepoDialog(path)
+    }
+    initiateLocalRepoDialog = async (path) => {
+        console.log(path[0])
+        // const temp = ipcRenderer.sendSync('git-local-repo', path[0])
+        // console.log(temp.path[0])
+        const splitPath = path[0].split('/')
+        this.props.updateCurrentRepoPath(path[0])
+        this.props.changeRepo(splitPath[splitPath.length - 1])
+        // this.props.setAllCommits(temp.all)
+        const branches = await gitBranch(path[0])
+        this.props.changeBranches(branches.branches)
+        const gitLogs = await gitLog(path[0], 'master')
+        this.props.changeBranch('master')
+        this.props.changeBranchCommits(gitLogs)
+        this.props.addToOtherRepos(path[0])
     }
     render() {
         const { classes } = this.props
@@ -94,26 +108,6 @@ class NewRepoDialog extends React.Component {
                 >
                     <DialogContent>
                         <DialogContentText style={{ fontSize: '24px' }}>Create Repository</DialogContentText>
-                        <TextField
-                            margin="dense"
-                            id="repoName"
-                            label="Name"
-                            type="text"
-                            fullWidth
-                            className={classes.inputField}
-                            onChange={this.handleNameChange}
-                            value={this.state.name}
-                        />
-                        <TextField
-                            margin="dense"
-                            id="repoDescription"
-                            label="Description"
-                            type="text"
-                            fullWidth
-                            className={classes.inputField}
-                            onChange={this.handleDescriptionChange}
-                            value={this.state.description}
-                        />
                         <div className={classNames(classes.displayflex, classes.flexDirectionRow, classes.flexSpaceBetween)}>
                             <TextField
                                 margin="dense"
@@ -125,10 +119,10 @@ class NewRepoDialog extends React.Component {
                                 className={classNames(classes.inputField, classes.inputFieldPartialWidth, classes.inputFieldPaddingRight)}
                                 onChange={this.handleRepositoryPathChange}
                             />
-                            <Button onClick={this.handlePath} className={classes.button}><SelectPath></SelectPath></Button>
+                            <Button onClick={this.handlePath} className={classes.button}><FolderIcon></FolderIcon></Button>
                         </div>
                         <Button variant="contained" color="secondary" className={classes.createButtonMargin} onClick={this.handleCreate}>
-                            Create
+                            Create Repository
                     </Button>
                     </DialogContent>
                 </CustomDialog>
@@ -136,5 +130,17 @@ class NewRepoDialog extends React.Component {
         )
     }
 }
-export default withStyles(styles)(NewRepoDialog)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        changeRepo: (repoName) => dispatch({ type: CHANGE_REPOSITORY, payload: repoName }),
+        changeBranches: (branches) => dispatch({ type: CHANGE_REPOSITORY_BRANCHES, payload: branches }),
+        changeBranchCommits: (commits) => dispatch({ type: CHANGE_BRANCH_COMMITS, payload: commits }),
+        setAllCommits: (allCommits) => dispatch({ type: SET_ALL_COMMITS, payload: allCommits }),
+        updateCurrentRepoPath: (path) => dispatch({ type: CURRENT_REPO_PATH, payload: path }),
+        changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
+        addToOtherRepos: (pathToRepo) => dispatch({ type: ADD_OTHER_REPO, payload: pathToRepo }),
+    }
+}
+const mapStateToProps = () => {return{}}
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(NewRepoDialog))
 // style={{ width: '200px', textAlign: 'center', margin: '0 auto', marginLeft: 'auto', marginRight: 'auto' }}
