@@ -1,7 +1,7 @@
 import React from 'react'
 import { ipcRenderer } from 'electron'
 import { CustomDialog } from './SelectionBar/CustomComponents'
-import { DialogContent, DialogContentText, TextField, withStyles, Button } from '@material-ui/core'
+import { DialogContent, DialogContentText, CHANGE_BRANCH, TextField, withStyles, Button } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { UPDATE_BRANCHES } from '../../constants/actions'
 
@@ -30,12 +30,14 @@ class RenameBranch extends React.Component {
     state = {
         open: false,
         isCreateButtonDisabled: false,
-        branchName:''
+        branchName: ''
     }
     handleCreate = () => {
         const branches = ipcRenderer.sendSync('git-rename-branch', this.props.repo, this.props.branch, this.state.branchName);
+        if(!this.state.branchName) this.props.changeBranch(this.state.branchName);
+        this.setState({ open: false });
         this.props.updateBranches(branches.branches);
-        this.setState({open:false});
+        
     }
     componentDidMount() {
         this.setState({
@@ -82,10 +84,11 @@ class RenameBranch extends React.Component {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateBranches: (branch) => dispatch({ type: UPDATE_BRANCHES, payload: branch })
+        updateBranches: (branch) => dispatch({ type: UPDATE_BRANCHES, payload: branch }),
+        changeBranch: (branchName) => dispatch({ type: CHANGE_BRANCH, payload: branchName }),
     }
 }
-const mapStateToProps = (state) => { return { branch:state.global.currentBranch, repo:state.global.currentRepoPath } }
+const mapStateToProps = (state) => { return { branch: state.global.currentBranch, repo: state.global.currentRepoPath } }
 export default connect(
     mapStateToProps,
     mapDispatchToProps

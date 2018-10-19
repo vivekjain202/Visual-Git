@@ -7,7 +7,8 @@ import PositionedSnackbar from './PositionedSnackbar'
 
 const buttonStyle = {
     paddingRight: 10,
-    color: 'white'
+    color: 'white',
+    disabled: true,
 }
 const mapStateToProps = state => {
     return {
@@ -18,7 +19,11 @@ const mapStateToProps = state => {
 class PublishBranchDialog extends React.Component {
     state = {
         open: this.props.openStatus,
-        remoteOrigin: this.props.remoteOrigin
+        remoteOrigin: this.props.remoteOrigin,
+        userName: '',
+        password: '',
+        disabled: true,
+        buttonValue: 'Push'
     }
     handleClose = () => {
         this.setState({ open: false });
@@ -30,8 +35,33 @@ class PublishBranchDialog extends React.Component {
     componentWillMount = () => {
         // console.log('unmounting publish branch dialog')
     }
+    handleUsername = (e) => {
+        this.setState({
+           userName: e.target.value,
+        },()=>this.validateInput())
+    }
+    handlePassword = (e) => {
+        this.setState({
+            password: e.target.value,
+        }, ()=>this.validateInput())
+    }
     noBranchSelected = () => {
         return <PositionedSnackbar message={this.props.message} closeComponent= {this.props.close}></PositionedSnackbar>
+    }
+    validateInput = () => {
+        if(this.state.userName.length >= 4 && this.state.password.length >=4){
+            this.setState({
+                disabled: false,
+            })
+        }
+        else{
+            this.setState({
+                disabled: true,
+            })
+        }
+    }
+    handlePush = () => {
+        
     }
     render() {
         return (
@@ -49,6 +79,8 @@ class PublishBranchDialog extends React.Component {
                         type="text"
                         fullWidth
                         required
+                        value={this.state.userName}
+                        onChange={this.handleUsername}
                     />
                     <TextField
                         margin="normal"
@@ -57,6 +89,8 @@ class PublishBranchDialog extends React.Component {
                         type="password"
                         fullWidth
                         required
+                        value={this.state.password}
+                        onChange = {this.handlePassword}
                     />
                     {this.props.remoteOrigin ? null : <TextField
                         margin="normal"
@@ -66,8 +100,8 @@ class PublishBranchDialog extends React.Component {
                         fullWidth
                         required
                     />}
-                    <Button variant="contained" color="secondary" style={{ width: '200px', textAlign: 'center', margin: '0 auto', marginLeft: 'auto', marginRight: 'auto' }}>
-                        <span style={{ paddingRight: '23px' }}> Push</span>
+                    <Button disabled = {this.state.disabled} variant="contained" onClick={this.handlePush}color="secondary" style={{ width: '200px', textAlign: 'center', margin: '0 auto', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <span style={{ paddingRight: '23px' }}> {this.state.buttonValue}</span>
                         <CloudUpload style={buttonStyle} />
                     </Button>
                 </DialogContent>
