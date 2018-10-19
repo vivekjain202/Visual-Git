@@ -8,6 +8,7 @@ const initialState = {
   files: '',
   currentCommitHash: '',
   diffDetails: '',
+  currentFile: ''
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -24,7 +25,7 @@ export default (state = initialState, action) => {
       state = { ...state, diffDetails: action.payload };
       break;
     case CHANGED_FILE_SELECTED:
-      state = { ...state, diffDetails: action.payload };
+      state = { ...state, diffDetails: action.payload.diff, currentFile: action.payload.currentFile };
       break;
   }
   return state;

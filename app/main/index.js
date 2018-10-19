@@ -1,6 +1,7 @@
 import path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain, Tray } from 'electron';
 import { gitInit, gitLocalRepo, gitClone, gitNewBranch, gitBranch, gitDeleteRepo, gitCheckout, gitDeleteLocalBranch, gitRenameBranch, gitLog, gitDiff, gitDiffStat, gitParticularFileDiff, gitCommit, getChanges, gitPush } from './main-menu-functions.js';
+import fs from 'fs';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -12,7 +13,7 @@ let forceQuit = false;
 
 ipcMain.on('git-init', (event, path) => gitInit(event, path));
 
-ipcMain.on('git-local-repo', (event,path) => gitLocalRepo(event,path));
+ipcMain.on('git-local-repo', (event, path) => gitLocalRepo(event, path));
 
 ipcMain.on('git-clone', (event, arg) => gitClone(event, arg));
 
@@ -30,17 +31,31 @@ ipcMain.on('git-rename-branch', (event, repo, oldName, newName) => gitRenameBran
 
 ipcMain.on('git-log-of-branch', (event, repo, branch) => gitLog(event, repo, branch));
 
-ipcMain.on('git-diff',(event, path, hash) => gitDiff(event, path, hash));
+ipcMain.on('git-diff', (event, path, hash) => gitDiff(event, path, hash));
 
-ipcMain.on('git-diff-summary',(event, arg) => gitDiffStat(event, arg[0], arg[1]));
+ipcMain.on('git-diff-summary', (event, arg) => gitDiffStat(event, arg[0], arg[1]));
 
-ipcMain.on('git-diff-particular-file',(event, arg) => gitParticularFileDiff(event, arg[0], arg[1], arg[2]));
+ipcMain.on('git-diff-particular-file', (event, arg) => gitParticularFileDiff(event, arg[0], arg[1], arg[2]));
 
-ipcMain.on('git-commit',(event,path,message) => gitCommit(event,path,message));
+ipcMain.on('git-commit', (event, path, message) => gitCommit(event, path, message));
 
-ipcMain.on('get-changes',(event,path) => getChanges(event,path));
+ipcMain.on('get-changes', (event, path) => getChanges(event, path));
 
-ipcMain.on('git-push',(event,repoPath,remote,branch) => gitPush(event,repoPath,remote,branch))
+ipcMain.on('git-push', (event, repoPath, remote, branch) => gitPush(event, repoPath, remote, branch))
+
+ipcMain.on('closed', (event, arg) => {
+  
+  let recent = arg.reduce((output,current,index)=>{
+    output.push({[index]:current})
+    return output;
+  },[])
+  fs.writeFileSync('recent.json', JSON.stringify(recent), [{ encoding: 'utf8' }]);
+  console.log(event, 'event', arg, 'arg');
+  mainWindow = null;
+  if (process.platform != 'darwin') {
+    app.quit();
+  }
+})
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -62,9 +77,10 @@ crashReporter.start({
   uploadToServer: false,
 });
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -237,6 +253,14 @@ app.on('ready', async () => {
     }
   });
 
+  mainWindow.on('close', (e) => {
+    if (mainWindow) {
+      e.preventDefault();
+      mainWindow.webContents.send('app-close')
+    }
+    // console.log(e,'here before closeing ///////////////////////');
+  })
+
   if (isDevelopment) {
     // auto-open dev tools
     // mainWindow.webContents.openDevTools();
@@ -254,6 +278,7 @@ app.on('ready', async () => {
     });
   }
 });
+
 
 process.on('uncaughtException', function (exception) {
   console.log(exception, "caught an exception in main process check this one out");

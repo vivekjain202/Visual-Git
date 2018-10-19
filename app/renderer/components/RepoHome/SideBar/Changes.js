@@ -4,13 +4,14 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Checkbox,
+  Icon,
   Button,
   TextField,
   withStyles,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { CHANGED_FILE_SELECTED } from '../../../constants/actions';
+import CommitDialog from './CommitDialog';
+import { CHANGED_FILE_SELECTED, CHANGED_FILES_LOADED } from '../../../constants/actions';
 import { ipcRenderer } from 'electron';
 
 const styles = {
@@ -39,6 +40,11 @@ const styles = {
     bottom: 0,
     padding: 20,
   },
+  listIcon: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    color: '#000055',
+  },
 };
 
 class Changes extends React.Component {
@@ -48,12 +54,18 @@ class Changes extends React.Component {
     this.onCommitButtonClick = this.onCommitButtonClick.bind(this);
     this.state = {
       commitMessage: '',
+      showCommitDialog: false,
+      commitResult: '',
     };
   }
 
   onFileClick(file) {
-    const diff = ipcRenderer.sendSync('git-diff-particular-file',[this.props.currentRepoPath,null,file]);
-    this.props.onSelectFile(diff)
+    const diff = ipcRenderer.sendSync('git-diff-particular-file', [
+      this.props.currentRepoPath,
+      null,
+      file,
+    ]);
+    this.props.onSelectFile(diff, file);
   }
   onCommitButtonClick() {
     const { commitMessage } = this.state;
@@ -63,17 +75,37 @@ class Changes extends React.Component {
         this.props.currentRepoPath,
         this.state.commitMessage,
       );
+      this.setState({ showCommitDialog: true, commitResult: temp });
       console.log('commit done', temp);
+      if (temp === 'Successfully committed') {
+        const changes = ipcRenderer.sendSync('get-changes', this.props.currentRepoPath);
+        this.props.dispatchChanges(changes);
+      }
     }
   }
-  handleChange = name => event => {
+  handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
   };
+  handleCloseCommitDialog = (value) => {
+    this.setState({ commitResult: value, showCommitDialog: false });
+  };
+  componentDidUpdate(prevProps) {
+    console.log('currentfile', this.props.currentFile, prevProps.currentFile);
+    if (this.props.currentFile !== prevProps.currentFile) {
+      this.onFileClick(this.props.currentFile);
+    }
+  }
   render() {
-    const { classes, files } = this.props;
+    const { classes, files, currentFile } = this.props;
     console.log('files', files);
+    if (!currentFile && currentFile === '' && files) {
+      const file = this.props.files[0];
+      this.onFileClick(file);
+    } else {
+      this.onFileClick(currentFile);
+    }
     return (
       <React.Fragment>
         <List component="nav" className={classes.list}>
@@ -82,9 +114,10 @@ class Changes extends React.Component {
               <Fragment key={fileItem}>
                 <ListItem
                   className={classes.listItem}
+                  selected={fileItem === currentFile}
                   onClick={() => this.onFileClick(fileItem)}
                   button>
-                  <Checkbox tabIndex={-1} disableRipple />
+                  <Icon className="fa fa-file" classes={{ root: classes.listIcon }} />
                   <ListItemText
                     classes={{
                       root: classes.listItemText,
@@ -125,6 +158,14 @@ class Changes extends React.Component {
             Commit
           </Button>
         </form>
+        <CommitDialog
+          classes={{
+            paper: classes.paper,
+          }}
+          open={this.state.showCommitDialog}
+          onClose={this.handleCloseCommitDialog}
+          value={this.state.commitResult}
+        />
       </React.Fragment>
     );
   }
@@ -134,11 +175,15 @@ function mapStateToProps(state) {
   return {
     files: state.global ? state.global.changedFiles : [],
     currentRepoPath: state.global.currentRepoPath,
+    currentFile: state.diff.currentFile,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectFile: (diff) => dispatch({ type: CHANGED_FILE_SELECTED, payload: diff }),
+    onSelectFile: (diff, currentFile) =>
+      dispatch({ type: CHANGED_FILE_SELECTED, payload: { diff, currentFile } }),
+    dispatchChanges: (changedFiles) =>
+      dispatch({ type: CHANGED_FILES_LOADED, payload: changedFiles }),
   };
 }
 

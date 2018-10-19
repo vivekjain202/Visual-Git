@@ -4,12 +4,12 @@ import { exec } from 'child_process';
 import fs from 'fs'
 
 export const showDialog = () => {
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     dialog.showOpenDialog({ properties: ['openDirectory'] }, (path) => {
-      if(path)
-      resolve(path);
+      if (path)
+        resolve(path);
       else
-      reject('No path selected');
+        reject('No path selected');
     })
   })
 };
@@ -71,7 +71,7 @@ export const gitInit = async (event,path) => {
   }
  };
 
-export const gitLocalRepo = async (event,path) => {
+export const gitLocalRepo = async (event, path) => {
   try {
     if(path){
         simpleGit(path.toString())
@@ -87,22 +87,22 @@ export const gitLocalRepo = async (event,path) => {
           }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
       })
     }
-    else if(path == undefined) {
+    else if (path == undefined) {
       const selectedPath = await showDialog();
-    if (selectedPath !== undefined) {
-      simpleGit(selectedPath.toString())
-      .log(['--all'])
-      .then(data => {
-          simpleGit(selectedPath.toString())
-          .getRemotes(true)
-          .then(remotes => {
-            data['path'] = selectedPath;
-            data['remotes'] = remotes;
-            console.log(remotes, 'remotes');
-            return event.returnValue = data;
-          })
-        }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
-    }
+      if (selectedPath !== undefined) {
+        simpleGit(selectedPath.toString())
+          .log(['--all'])
+          .then(data => {
+            simpleGit(selectedPath.toString())
+              .getRemotes(true)
+              .then(remotes => {
+                data['path'] = selectedPath;
+                data['remotes'] = remotes;
+                console.log(remotes, 'remotes');
+                return event.returnValue = data;
+              })
+          }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
+      }
     }
     else {
       throw ('no path selected');
@@ -233,156 +233,131 @@ export const gitRenameBranch = (event, repo, oldName, newName) => {
   }
 };
 
-export const gitLog = (event,repo,branch) => {
+export const gitLog = (event, repo, branch) => {
   try {
     simpleGit(repo.toString())
-    .log([branch])
-    .then(commits => event.returnValue = commits)
-    .catch(error => event.returnValue = error);
+      .log([branch])
+      .then(commits => event.returnValue = commits)
+      .catch(error => event.returnValue = error);
   }
   catch (error) {
     event.returnValue = error;
   }
- }
+}
 
- export const gitDiff = (event,repoPath,hash) => {
-   try{
-    if(hash.length === 0 && hash.length !== undefined) {
+export const gitDiff = (event, repoPath, hash) => {
+  try {
+    if (hash.length === 0 && hash.length !== undefined) {
       simpleGit(repoPath).diff()
-      .then(diff => {
-        console.log(diff);
-        event.returnValue = diff;
-      })
-      .catch(error => event.returnValue = error);
+        .then(diff => {
+          console.log(diff);
+          event.returnValue = diff;
+        })
+        .catch(error => event.returnValue = error);
     }
-    else if(hash.length !== undefined) {
+    else if (hash.length !== undefined) {
       simpleGit(repoPath).diff([hash])
-      .then(diff => {
-        console.log(diff);
-        event.returnValue = diff;
-      })
-      .catch(error => event.returnValue = error);
+        .then(diff => {
+          console.log(diff);
+          event.returnValue = diff;
+        })
+        .catch(error => event.returnValue = error);
     }
-   }
-  catch(error) {
-    event.returnValue = error;
   }
- }
-
- export const gitDiffStat = (event, repoPath, hash) => {
-  try{
-    // if(hash.length === 0 && hash.length !== undefined) {
-    //   simpleGit(repoPath.toString()).diff(['--stat'])
-    //   .then(diff => {
-    //     console.log(diff,'/////////////////// in diff stat');
-    //     event.returnValue = diff;
-    //   })
-    //   .catch(error => event.returnValue = error);
-    // }
-    // else if(hash.length !== undefined) {
-    //   simpleGit(repoPath).diff(['--stat',hash])
-    //   .then(diff => {
-    //     console.log(diff,'in diff state else //////////');
-    //     event.returnValue = diff;
-    //   })
-    //   .catch(error => event.returnValue = error);
-    // }
-    simpleGit(repoPath)
-    .show(['--pretty=oneline','--color','--name-only','--no-notes',hash])
-    .then(data=>{
-      event.returnValue =data;
-    })
-    .catch(error=> event.returnValue=error);
-   }
-  catch(error) {
+  catch (error) {
     event.returnValue = error;
-  }
- }
-
- export const gitParticularFileDiff = (event,cwd,hash,fileName)=>{
-  try{
-    if(hash == null)
-    {
-      console.log(cwd,hash,fileName);
-      simpleGit(cwd)
-      .diff(['--color',fileName])
-      .then(data=> { console.log(data); event.returnValue =data})
-      .catch(error=> event.returnValue= error)
-    }
-    else{
-    simpleGit(cwd)
-    .show(['--color',hash, fileName])
-    .then(data =>event.returnValue=data)
-    .catch(error=>event.returnValue=error);
-//     exec(`git diff ${hash} ${fileName}| gawk 'match($0,"^@@ -([0-9]+),[0-9]+ [+]([0-9]+),[0-9]+ @@",a){left=a[1];right=a[2];next};\
-//     /^(---|\+\+\+|[^-+ ])/{print;next};\
-//     {line=substr($0,2)};\
-//     /^[-]/{print "-" left++ ":" line;next};\
-//     /^[+]/{print "+" right++ ":" line;next};\
-//     {print "|" left++ "," right++ "|:"line}'`,{cwd:cwd.toString()},(error, stdout) => {
-//   if (error) {
-//     throw error;
-//   }
-//   else {
-//     console.log(stdout);
-//     event.returnValue = stdout;
-//   }
-// })
   }
 }
-  catch(error){
+
+export const gitDiffStat = (event, repoPath, hash) => {
+  try {
+    simpleGit(repoPath)
+      .show(['--pretty=oneline', '--color', '--name-only', '--no-notes', '--diff-filter=AM',hash])
+      .then(data => {
+        event.returnValue = data;
+      })
+      .catch(error => event.returnValue = error);
+  }
+  catch (error) {
     event.returnValue = error;
   }
- }
+}
 
- export const getChanges = (event,repoPath) => {
-    try{
-      if(repoPath){
-        simpleGit(repoPath)
+export const gitParticularFileDiff = (event, cwd, hash, fileName) => {
+  try {
+    if (hash == null) {
+      console.log(cwd, hash, fileName);
+      simpleGit(cwd)
+        .diff(['--color', fileName])
+        .then(data => { console.log(data); event.returnValue = data })
+        .catch(error => event.returnValue = error)
+    }
+    else {
+      simpleGit(cwd)
+        .show(['--color', hash, fileName])
+        .then(data => event.returnValue = data)
+        .catch(error => event.returnValue = error);
+    }
+  }
+  catch (error) {
+    event.returnValue = error;
+  }
+}
+
+export const getChanges = (event, repoPath) => {
+  try {
+    if (repoPath) {
+      simpleGit(repoPath)
         .diff(['--name-only'])
         .then((changedFiles) => {
           event.returnValue = changedFiles.split('\n').filter(fileName => fileName !== '');
         })
         .catch(error => event.returnValue = error);
-      }
     }
-    catch(error) {
-      event.returnValue = error;
-    }
- }
+  }
+  catch (error) {
+    event.returnValue = error;
+  }
+}
 
-export const gitCommit = (event,repoPath,message) => {
+export const gitCommit = (event, repoPath, message) => {
   try {
-    if(message) {
+    if (message) {
       simpleGit(repoPath)
-      .commit(message)
+      .add(['.'])
       .then(()=>{
-        event.returnValue = 'Successfully committed';
+        simpleGit(repoPath)
+        .commit(message)
+        .then(() => {
+          event.returnValue = 'Successfully committed';
+        })
+        .catch(error => event.returnValue = error);
       })
       .catch(error => event.returnValue = error);
     } else {
       event.returnValue = 'Invalid Message';
     }
-  } catch(error) {
+  } catch (error) {
     event.returnValue = error;
   }
 }
 
-export const gitPush = (event,repoPath,remote,branch) => {
+
+export const gitPush = (event, repoPath, remote, branch) => {
   try {
-    if(repoPath && remote && branch){
+    if (repoPath && remote && branch) {
       simpleGit(repoPath)
-      .push(remote,branch)
-      .then(() => {
-        event.returnValue = 'Successfully Published';
-      })
-      .catch(error => event.returnValue = error);
+        .push(remote, branch)
+        .then(() => {
+          event.returnValue = 'Successfully Published';
+        })
+        .catch(error => event.returnValue = error);
     }
     else {
       event.returnValue = 'Invalid Arguements to Push';
     }
   }
-  catch(error) {
+  catch (error) {
     event.returnValue = error;
   }
 }
