@@ -98,7 +98,7 @@ class Changes extends React.Component {
     }
   }
   render() {
-    const { classes, files, currentFile } = this.props;
+    const { classes, files, currentFile, currentBranch } = this.props;
     console.log('files', files);
     if (!currentFile && currentFile === '' && files) {
       const file = this.props.files[0];
@@ -157,9 +157,11 @@ class Changes extends React.Component {
             variant="contained"
             color="primary"
             fullWidth
+            style={{textTransform: 'none'}}
+            title={currentBranch}
             onClick={this.onCommitButtonClick}
             disabled={!(files && files.length > 0)}>
-            Commit
+            Commit to {currentBranch.length > 6 ? currentBranch.substring(0, 6) + '...' : currentBranch}
           </Button>
         </form>
         <CommitDialog
@@ -180,6 +182,7 @@ function mapStateToProps(state) {
     files: state.global ? state.global.changedFiles : [],
     currentRepoPath: state.global.currentRepoPath,
     currentFile: state.diff.currentFile,
+    currentBranch: state.global.currentBranch
   };
 }
 function mapDispatchToProps(dispatch) {
