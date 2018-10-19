@@ -4,7 +4,7 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Icon,
+  SvgIcon,
   Button,
   TextField,
   withStyles,
@@ -117,7 +117,11 @@ class Changes extends React.Component {
                   selected={fileItem === currentFile}
                   onClick={() => this.onFileClick(fileItem)}
                   button>
-                  <Icon className="fa fa-file" classes={{ root: classes.listIcon }} />
+                  <SvgIcon classes={{ root: classes.listIcon }} viewBox="0 0 14 16">
+                    <path d="M13 1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1zm0 13H1V2h12v12zM4 8c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3-3-1.34-3-3z">
+                      <title>Modified</title>
+                    </path>
+                  </SvgIcon>
                   <ListItemText
                     classes={{
                       root: classes.listItemText,
