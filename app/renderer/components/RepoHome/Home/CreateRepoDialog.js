@@ -79,24 +79,25 @@ class NewRepoDialog extends React.Component {
         })
     }
     handleCreate = async () => {
-        const path = await ipcRenderer.sendSync('git-init', this.state.directoryPath)
-        console.log(path)
-        // if (path) this.initiateLocalRepoDialog(path)
+        const dirData = await ipcRenderer.sendSync('git-init', this.state.directoryPath)
+        console.log(dirData)
+        if (dirData) this.initiateLocalRepoDialog(dirData)
     }
-    initiateLocalRepoDialog = async (path) => {
-        console.log(path[0])
+    initiateLocalRepoDialog = async (dirData) => {
+        const path = dirData.path[0]
+        console.log(path)
         // const temp = ipcRenderer.sendSync('git-local-repo', path[0])
         // console.log(temp.path[0])
-        const splitPath = path[0].split('/')
-        this.props.updateCurrentRepoPath(path[0])
+        const splitPath = path.split('/')
+        this.props.updateCurrentRepoPath(path)
         this.props.changeRepo(splitPath[splitPath.length - 1])
-        // this.props.setAllCommits(temp.all)
-        const branches = await gitBranch(path[0])
+        this.props.setAllCommits(dirData.all)
+        const branches = await gitBranch(path)
         this.props.changeBranches(branches.branches)
-        const gitLogs = await gitLog(path[0], 'master')
+        const gitLogs = await gitLog(path, 'master')
         this.props.changeBranch('master')
         this.props.changeBranchCommits(gitLogs)
-        this.props.addToOtherRepos(path[0])
+        this.props.addToOtherRepos(path)
     }
     render() {
         const { classes } = this.props
