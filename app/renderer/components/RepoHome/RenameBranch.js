@@ -1,9 +1,9 @@
 import React from 'react'
 import { ipcRenderer } from 'electron'
 import { CustomDialog } from './SelectionBar/CustomComponents'
-import { DialogContent, DialogContentText, CHANGE_BRANCH, TextField, withStyles, Button } from '@material-ui/core'
+import { DialogContent, DialogContentText, TextField, withStyles, Button } from '@material-ui/core'
 import { connect } from 'react-redux'
-import { UPDATE_BRANCHES } from '../../constants/actions'
+import { UPDATE_BRANCHES, CHANGE_BRANCH } from '../../constants/actions'
 
 const styles = {
     inputField: {
@@ -33,11 +33,15 @@ class RenameBranch extends React.Component {
         branchName: ''
     }
     handleCreate = () => {
-        const branches = ipcRenderer.sendSync('git-rename-branch', this.props.repo, this.props.branch, this.state.branchName);
-        if(!this.state.branchName) this.props.changeBranch(this.state.branchName);
-        this.setState({ open: false });
-        this.props.updateBranches(branches.branches);
-        
+        if (this.props.branch !== 'master') {
+            const branches = ipcRenderer.sendSync('git-rename-branch', this.props.repo, this.props.branch, this.state.branchName);
+            // if(!this.state.branchName) this.props.changeBranch(this.state.branchName);
+            this.setState({ open: false }, () => {
+                this.props.updateBranches(branches.branches);
+                this.props.changeBranch(this.state.branchName);
+            });
+        }
+
     }
     componentDidMount() {
         this.setState({
@@ -49,6 +53,9 @@ class RenameBranch extends React.Component {
             open: false,
         })
         this.props.close()
+    }
+    componentWillUnmount = () =>{
+        this.handleClose()
     }
     handleBranchInputChange = (e) => {
         this.setState({
@@ -73,6 +80,7 @@ class RenameBranch extends React.Component {
                         className={classes.inputField}
                         onChange={this.handleBranchInputChange}
                         value={this.state.branchName}
+                        autoFocus
                     />
                     <Button variant="contained" color="secondary" disabled={this.state.isCreateButtonDisabled} className={classes.cloneButtonMargin} onClick={this.handleCreate}>
                         Rename Branch

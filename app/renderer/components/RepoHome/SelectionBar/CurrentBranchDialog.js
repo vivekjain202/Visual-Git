@@ -134,7 +134,7 @@ class CurrentBranchDialog extends React.Component {
                                     {iconToDisplay}
                                     <ListItemText primary={branch}></ListItemText>
                                 </ListItem>
-                                {branch !== 'master'&& !branch.includes('remote') ? <DeleteIcon style={{ color: 'black', cursor: 'pointer' }} onClick={() => this.handleDeleteBranch(branch)}></DeleteIcon> : null}
+                                {branch !== 'master' && !branch.includes('remote') ? <DeleteIcon style={{ color: 'black', cursor: 'pointer' }} onClick={() => this.handleDeleteBranch(branch)}></DeleteIcon> : null}
                             </div>
                         </React.Fragment>
                     }) : this.state.branches.map((branch) => {

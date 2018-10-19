@@ -28,6 +28,7 @@ class RepoHome extends React.Component {
   }
 
   handleRenameBranchDialogClose = () => {
+    console.log('getting called after renaming/////////////////')
     this.setState({
       isRenameBranchDialogOpen: false,
     })
@@ -39,23 +40,30 @@ class RepoHome extends React.Component {
       isNewBranchDialogOpen: !this.state.isNewBranchDialogOpen,
     })
   }
+
   handleRenameBranch = () => {
     console.log(this.props.currentBranch);
-    if(this.props.currentBranch !== '' && this.props.currentBranch !== 'master') {
-      console.log('hello');
+    console.log(this.props.currentBranch !== '' && this.props.currentBranch !== 'master','///',this.props.currentBranch )
+    if (this.props.currentBranch !== '' && this.props.currentBranch !== 'master') {
+      console.log('im here ')
       this.setState({
         isRenameBranchDialogOpen: !this.state.isRenameBranchDialogOpen,
       })
     }
-  } 
+  }
   componentDidMount() {
     ipcRenderer.on('git-new-branch-appmenu', () => this.handleBranchDialogOpen())
-    ipcRenderer.on('git-rename-branch-appmenu',() => this.handleRenameBranch())
+    ipcRenderer.on('git-rename-branch-appmenu', () => this.handleRenameBranch())
     console.log(this.props.branches);
   }
+  displayContent = () => {
+    if (this.state.isNewBranchDialogOpen)
+      return <NewBranchDialog openStatus={this.state.isNewBranchDialogOpen} close={this.handleBranchDialogClose}></NewBranchDialog>
+    else if (this.state.isRenameBranchDialogOpen)
+      return <RenameBranchDialog openStatus={this.state.isRenameBranchDialogOpen} close={this.handleRenameBranchDialogClose}></RenameBranchDialog>
+  }
   render() {
-    const contentToDisplay = ((this.state.isNewBranchDialogOpen) ? <NewBranchDialog openStatus={this.state.isNewBranchDialogOpen} close={this.handleBranchDialogClose}></NewBranchDialog> : null
-    || (this.state.isRenameBranchDialogOpen) ? <RenameBranchDialog openStatus={this.state.isRenameBranchDialogOpen} close={this.handleBranchDialogClose}></RenameBranchDialog> : null )
+    const contentToDisplay = this.displayContent()
     return (
       <Fragment>
         <MuiThemeProvider theme={theme}>
@@ -68,7 +76,9 @@ class RepoHome extends React.Component {
               <Details />
             </Grid>
           </Grid>
-          {contentToDisplay}
+          {
+            contentToDisplay
+          }
         </MuiThemeProvider>
       </Fragment>
     );
@@ -77,8 +87,8 @@ class RepoHome extends React.Component {
 
 const mapStateToProps = state => {
   return {
-      currentBranch: state.global.currentBranch,
-      branches: state.global.branches,
+    currentBranch: state.global.currentBranch,
+    branches: state.global.branches,
   }
 }
 const mapDispatchToProps = dispatch => {
