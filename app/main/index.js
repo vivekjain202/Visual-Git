@@ -172,12 +172,6 @@ app.on('ready', async () => {
           }
         },
         {
-          label: "Delete branch",
-          click: (menuItem, mainWindow) => {
-            mainWindow.webContents.send('git-delete-branch-appmenu');
-          }
-        },
-        {
           label: "Rename branch",
           click: (menuItem, mainWindow) => {
             mainWindow.webContents.send('git-rename-branch-appmenu');

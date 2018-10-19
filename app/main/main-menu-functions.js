@@ -177,14 +177,16 @@ export const gitCheckout = (event, repo, branch) => {
 export const gitDeleteLocalBranch = (event, repo, branch) => {
   if (repo !== undefined && repo !== '') {
     try {
-      simpleGit(repo).checkout('master').then(
-        simpleGit(repo).deleteLocalBranch(branch)
-          .then(() => {
-            simpleGit(repo).branch().then(branches => event.returnValue = branches)
-          })
-      )
-        .catch(error => event.returnValue = error);
-    }
+      exec(`git branch -D ${branch}`, { cwd: repo.toString() }, (error, stdout) => {
+        if (error) {
+          throw error;
+        }
+        else {
+          simpleGit(repo).branch().then(branches => event.returnValue = branches)
+          console.log(stdout);
+        }
+    })
+  }
     catch (error) {
       event.returnValue = error;
     }
@@ -200,7 +202,8 @@ export const gitRenameBranch = (event, repo, oldName, newName) => {
         }
         else {
           console.log(stdout);
-          event.returnValue = stdout;
+          simpleGit(repo).branch().then(branch => event.returnValue = branch)
+          .catch(err => event.returnValue = err);
         }
       })
     }

@@ -43,6 +43,7 @@ class History extends React.Component {
       .sendSync('git-diff-summary', [this.props.currentRepoPath, commit.hash])
       .split('\n')
       .map((data) => data.split('|')[0].trim());
+      console.log("changed files raw: ",filteredFileName)
     filteredFileName = filteredFileName.slice(1, filteredFileName.length - 1);
     filteredFileName = filteredFileName.filter(filename=> filename!='');
     console.log(filteredFileName);

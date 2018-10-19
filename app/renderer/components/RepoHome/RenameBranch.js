@@ -1,8 +1,8 @@
 import React from 'react'
+import { ipcRenderer } from 'electron'
 import { CustomDialog } from './SelectionBar/CustomComponents'
 import { DialogContent, DialogContentText, TextField, withStyles, Button } from '@material-ui/core'
 import { connect } from 'react-redux'
-import { ipcRenderer } from 'electron'
 import { UPDATE_BRANCHES } from '../../constants/actions'
 
 const styles = {
@@ -26,14 +26,14 @@ const styles = {
         paddingRight: '10px'
     }
 }
-class NewBranch extends React.Component {
+class RenameBranch extends React.Component {
     state = {
         open: false,
         isCreateButtonDisabled: false,
         branchName:''
     }
     handleCreate = () => {
-        const branches = ipcRenderer.sendSync('git-new-branch', this.props.repo, this.state.branchName);
+        const branches = ipcRenderer.sendSync('git-rename-branch', this.props.repo, this.props.branch, this.state.branchName);
         this.props.updateBranches(branches.branches);
         this.setState({open:false});
     }
@@ -61,7 +61,7 @@ class NewBranch extends React.Component {
                 onClose={this.handleClose}
             >
                 <DialogContent>
-                    <DialogContentText style={{ fontSize: '24px' }}>Create branch</DialogContentText>
+                    <DialogContentText style={{ fontSize: '24px' }}>Rename branch</DialogContentText>
                     <TextField
                         margin="dense"
                         id="repoName"
@@ -70,10 +70,10 @@ class NewBranch extends React.Component {
                         fullWidth
                         className={classes.inputField}
                         onChange={this.handleBranchInputChange}
-                        value={this.state.url}
+                        value={this.state.branchName}
                     />
                     <Button variant="contained" color="secondary" disabled={this.state.isCreateButtonDisabled} className={classes.cloneButtonMargin} onClick={this.handleCreate}>
-                        Create Branch
+                        Rename Branch
                     </Button>
                 </DialogContent>
             </CustomDialog>
@@ -89,4 +89,4 @@ const mapStateToProps = (state) => { return { branch:state.global.currentBranch,
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(styles)(NewBranch))
+)(withStyles(styles)(RenameBranch))
