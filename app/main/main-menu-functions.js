@@ -175,22 +175,35 @@ export const gitCheckout = (event, repo, branch) => {
   }
 };
 export const gitDeleteLocalBranch = (event, repo, branch) => {
-  if (repo !== undefined && repo !== '') {
-    try {
-      exec(`git checkout master && git branch -D ${branch}`, { cwd: repo.toString() }, (error, stdout) => {
-        if (error) {
-          throw error;
+dialog.showMessageBox(
+  {
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Confirm',
+      message: `Are you sure you want to delete ${branch} branch?`
+  },(response) => {
+      if(response === 0) {
+        if (repo !== undefined && repo !== '') {
+          try {
+            exec(`git checkout master && git branch -D ${branch}`, { cwd: repo.toString() }, (error, stdout) => {
+              if (error) {
+                throw error;
+              }
+              else {
+                simpleGit(repo).branch().then(branches => event.returnValue = branches)
+                console.log(stdout);
+              }
+          })
         }
-        else {
-          simpleGit(repo).branch().then(branches => event.returnValue = branches)
-          console.log(stdout);
+          catch (error) {
+            event.returnValue = error;
+          }
         }
-    })
-  }
-    catch (error) {
-      event.returnValue = error;
-    }
-  }
+      }
+      else {
+        simpleGit(repo).branch().then(branches => event.returnValue = branches)
+      }
+    });
 };
 
 export const gitRenameBranch = (event, repo, oldName, newName) => {
@@ -326,12 +339,14 @@ export const gitCommit = (event, repoPath, message) => {
 export const gitPush = (event, repoPath, remote, branch) => {
   try {
     if (repoPath && remote && branch) {
-      simpleGit(repoPath)
-        .push(remote, branch)
-        .then(() => {
-          event.returnValue = 'Successfully Published';
-        })
-        .catch(error => event.returnValue = error);
+      exec(`git push https://username:password@myrepository.biz/file.git --all`, { cwd: repoPath.toString() }, (error, stdout) => {
+       if (error) {
+         throw error;
+       }
+       else {
+         console.log(stdout);
+       }
+     })
     }
     else {
       event.returnValue = 'Invalid Arguements to Push';
