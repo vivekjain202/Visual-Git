@@ -110,6 +110,7 @@ class Home extends React.Component {
         ipcRenderer.on('open-local-repo-appmenu', this.initiateLocalRepoDialog)
         ipcRenderer.on('clone-repo-appmenu', this.handleCloneRepositoryDialogOpen)
         ipcRenderer.on('git-new-branch-appmenu', () => this.handleError())
+        ipcRenderer.on('git-rename-branch-appmenu',() => this.handleError())
     }
     initiateLocalRepoDialog = async () => {
         const temp = ipcRenderer.sendSync('git-local-repo')

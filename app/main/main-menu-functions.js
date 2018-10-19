@@ -200,7 +200,8 @@ export const gitRenameBranch = (event, repo, oldName, newName) => {
         }
         else {
           console.log(stdout);
-          event.returnValue = stdout;
+          simpleGit(repo).branch().then(branch => event.returnValue = branch)
+          .catch(err => event.returnValue = err);
         }
       })
     }
