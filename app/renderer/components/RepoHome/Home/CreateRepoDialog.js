@@ -85,9 +85,6 @@ class NewRepoDialog extends React.Component {
     }
     initiateLocalRepoDialog = async (dirData) => {
         const path = dirData.path[0]
-        console.log(path)
-        // const temp = ipcRenderer.sendSync('git-local-repo', path[0])
-        // console.log(temp.path[0])
         const splitPath = path.split('/')
         this.props.updateCurrentRepoPath(path)
         this.props.changeRepo(splitPath[splitPath.length - 1])

@@ -81,7 +81,7 @@ class CurrentRepoDialog extends React.Component {
                             const repoName = tempArray[tempArray.length - 1]
                             return <ListItem key={repoName} button onClick={() => this.handleRepoClick(repoName, repo)}>
                                 <TvIcon style={buttonStyle} />
-                                <ListItemText primary={repoName} secondary="3 days ago"></ListItemText>
+                                <ListItemText primary={repoName}></ListItemText>
                             </ListItem>
                         })}
                     </List>}
