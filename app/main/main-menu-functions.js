@@ -1,7 +1,7 @@
 import simpleGit from 'simple-git/promise';
 import { dialog } from 'electron';
 import { exec } from 'child_process';
-import fs from 'fs'
+import fs from 'fs';
 
 export const showDialog = () => {
   return new Promise((resolve, reject) => {
@@ -14,39 +14,16 @@ export const showDialog = () => {
   })
 };
 
-// export const gitInit = async (event,path) => {
-//   try {
-//     if(!path){
-//       const selectedPath = await showDialog();
-//       if (selectedPath !== undefined) {
-//         simpleGit(selectedPath.toString()).init().then(() => {
-//           event.returnValue = selectedPath;
-//         }).catch(err => { return event.returnValue = err })
-//       }
-//       else {
-//         throw ('no path selected');
-//       }  
-//     }
-//     else {
-//       simpleGit(path.toString()).init().then(() => {
-//         event.returnValue = path;
-//       }).catch(err => { return event.returnValue = err })
-//     }
-//   }
-//   catch (e) {
-//     event.returnValue = e;
-//   }
-// };
 export const gitInit = async (event,path) => {
   try {
     if(!path){
       const selectedPath = await showDialog();
       if (selectedPath !== undefined) {
         simpleGit(selectedPath.toString()).init().then(() => {
-          fs.writeFile(`${selectedPath.toString()}/README.md`,'',(err) => { event.returnValue = err})
+          fs.writeFile(`${selectedPath.toString()}/README.md`,'Initial Commit',(err) => { if(err) event.returnValue = err})
           simpleGit(selectedPath.toString()).add(['.']).then(()=>{
             simpleGit(selectedPath.toString()).commit('Initial Commit').then(()=> {
-              gitLocalRepo(event,selectedPath.toString());
+              gitLocalRepo(event,selectedPath);
             })
           })
         }).catch(err => { return event.returnValue = err })
@@ -57,10 +34,10 @@ export const gitInit = async (event,path) => {
     }
     else {
       simpleGit(path.toString()).init().then(() => {
-        fs.writeFile(`${path.toString()}/README.md`,'',(err) => { event.returnValue = err})
+        fs.writeFile(`${path.toString()}/README.md`,'Initial Commit',(err) => { if(err) event.returnValue = err})
         simpleGit(path.toString()).add(['.']).then(()=>{
           simpleGit(path.toString()).commit('Initial Commit').then(()=> {
-            gitLocalRepo(event,path.toString());
+            gitLocalRepo(event,path);
           })
         })
       }).catch(err => { return event.returnValue = err })
@@ -73,19 +50,19 @@ export const gitInit = async (event,path) => {
 
 export const gitLocalRepo = async (event, path) => {
   try {
-    if(path){
-        simpleGit(path.toString())
+    if (path !== undefined && path !== '') {
+      simpleGit(path.toString())
         .log(['--all'])
         .then(data => {
           simpleGit(path.toString())
-          .getRemotes(true)
-          .then(remotes => {
-            data['path'] = path;
-            data['remotes'] = remotes;
-            console.log(data, 'data');
-            event.returnValue = data;
-          }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
-      })
+            .getRemotes(['--verbose'])
+            .then(remotes => {
+              data['path'] = path;
+              data['remotes'] = remotes;
+              console.log(data, 'data');
+              event.returnValue = data;
+            }).catch(err => { console.log(err, 'error'); return event.returnValue = err; })
+        })
     }
     else if (path == undefined) {
       const selectedPath = await showDialog();
@@ -223,7 +200,8 @@ export const gitRenameBranch = (event, repo, oldName, newName) => {
         }
         else {
           console.log(stdout);
-          event.returnValue = stdout;
+          simpleGit(repo).branch().then(branch => event.returnValue = branch)
+          .catch(err => event.returnValue = err);
         }
       })
     }

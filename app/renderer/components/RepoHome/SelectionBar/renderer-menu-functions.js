@@ -2,10 +2,11 @@ const { dialog } = require('electron').remote;
 import { ipcRenderer } from 'electron';
 import dialogs from 'dialogs';
 
-export const gitInit = () => {
+export const gitInit = async () => {
   console.log('test');
-  const temp = ipcRenderer.sendSync('git-init');
+  const temp = await ipcRenderer.sendSync('git-init');
   console.log(temp);
+  return temp
 };
 
 export const openLocalRepo = async () => {
@@ -17,7 +18,7 @@ export const cloneRepo = async () => {
   try {
     let gitUrl = '';
     const dialogBox = dialogs({ ok: 'ok', cancel: 'cancel' });
-    dialogBox.prompt('Enter git url to be cloned', function(ok) {
+    dialogBox.prompt('Enter git url to be cloned', function (ok) {
       console.log(ok);
       gitUrl = ok;
       try {
@@ -51,7 +52,7 @@ export const createNewBranch = (repo) => {
   try {
     let newBranch = '';
     const dialogBox = dialogs({ ok: 'ok', cancel: 'cancel' });
-    dialogBox.prompt('Enter new Branch name', function(ok) {
+    dialogBox.prompt('Enter new Branch name', function (ok) {
       console.log(ok);
       newBranch = ok;
       try {
@@ -86,6 +87,7 @@ export const switchBranch = (repo, branch) => {
 export const deleteBranch = (repo, branch) => {
   const temp = ipcRenderer.sendSync('git-delete-branch', repo, branch);
   console.log(temp);
+  return temp
 };
 
 export const renameBranch = (repo, oldName, newName) => {
