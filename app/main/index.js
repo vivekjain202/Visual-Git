@@ -41,7 +41,7 @@ ipcMain.on('git-commit', (event, path, message) => gitCommit(event, path, messag
 
 ipcMain.on('get-changes', (event, path) => getChanges(event, path));
 
-ipcMain.on('git-push', (event, repoPath, remote, branch) => gitPush(event, repoPath, remote, branch))
+ipcMain.on('git-push', (event, repoPath, userName, password, remote) => gitPush(event, repoPath, userName, password, remote))
 
 ipcMain.on('closed', (event, arg) => {
   
