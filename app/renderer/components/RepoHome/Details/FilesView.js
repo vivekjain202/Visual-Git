@@ -32,6 +32,7 @@ const styles = {
   listIcon: {
     paddingLeft: 10,
     paddingRight: 10,
+    color: '#000055',
   },
 };
 class FilesView extends Component {
@@ -79,8 +80,7 @@ class FilesView extends Component {
                     selected={currentFile === fileItem}
                     onClick={() => this.showDiff(fileItem)}
                     button>
-                    <Icon className="fa fa-file" classes={{ root: classes.listIcon }}>
-                    </Icon>
+                    <Icon className="fa fa-file" classes={{ root: classes.listIcon }} />
                     <ListItemText
                       classes={{
                         root: classes.listItemText,

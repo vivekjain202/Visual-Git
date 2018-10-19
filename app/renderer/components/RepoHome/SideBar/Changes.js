@@ -10,8 +10,8 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { CHANGED_FILE_SELECTED } from '../../../constants/actions';
 import CommitDialog from './CommitDialog';
+import { CHANGED_FILE_SELECTED, CHANGED_FILES_LOADED } from '../../../constants/actions';
 import { ipcRenderer } from 'electron';
 
 const styles = {
@@ -43,6 +43,7 @@ const styles = {
   listIcon: {
     paddingLeft: 10,
     paddingRight: 10,
+    color: '#000055',
   },
 };
 
@@ -75,6 +76,11 @@ class Changes extends React.Component {
         this.state.commitMessage,
       );
       this.setState({ showCommitDialog: true, commitResult: temp });
+      console.log('commit done', temp);
+      if (temp === 'Successfully committed') {
+        const changes = ipcRenderer.sendSync('get-changes', this.props.currentRepoPath);
+        this.props.dispatchChanges(changes);
+      }
     }
   }
   handleChange = (name) => (event) => {
@@ -111,8 +117,7 @@ class Changes extends React.Component {
                   selected={fileItem === currentFile}
                   onClick={() => this.onFileClick(fileItem)}
                   button>
-                    <Icon className="fa fa-file" classes={{ root: classes.listIcon }}>
-                    </Icon>
+                  <Icon className="fa fa-file" classes={{ root: classes.listIcon }} />
                   <ListItemText
                     classes={{
                       root: classes.listItemText,
@@ -177,6 +182,8 @@ function mapDispatchToProps(dispatch) {
   return {
     onSelectFile: (diff, currentFile) =>
       dispatch({ type: CHANGED_FILE_SELECTED, payload: { diff, currentFile } }),
+    dispatchChanges: (changedFiles) =>
+      dispatch({ type: CHANGED_FILES_LOADED, payload: changedFiles }),
   };
 }
 
