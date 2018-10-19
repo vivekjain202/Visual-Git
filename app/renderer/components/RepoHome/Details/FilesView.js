@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { List, ListItem, ListItemText, Divider, withStyles } from '@material-ui/core';
+import { List, ListItem, ListItemText, Divider, Icon, withStyles } from '@material-ui/core';
 import { HISTORY_FILE_SELECTED } from '../../../constants/actions';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
@@ -12,11 +12,11 @@ const styles = {
     borderRadius: '0px',
     boxShadow: 'none',
     boxSizing: 'border-box',
-    overflow: 'auto'
+    overflow: 'auto',
   },
-  listItem:{
-    padding:0,
-    paddingLeft: 10
+  listItem: {
+    padding: 0,
+    paddingLeft: 10,
   },
   listItemText: {
     padding: '0',
@@ -29,12 +29,16 @@ const styles = {
   listItemTextSecondary: {
     fontSize: 13,
   },
+  listIcon: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
 };
 class FilesView extends Component {
   constructor(props) {
     super(props);
     this.showDiff = this.showDiff.bind(this);
-    this.state={currentFile:props.files ? props.files[0]:''}
+    this.state = { currentFile: props.files ? props.files[0] : '' };
   }
 
   showDiff(file) {
@@ -46,24 +50,23 @@ class FilesView extends Component {
     ]);
     console.log(diff, 'In renderer');
     this.props.onSelectFile(diff);
-    this.setState({currentFile:file})
+    this.setState({ currentFile: file });
   }
-  componentDidUpdate(prevProps){
-    const {files,onSelectFile} = this.props
-    if(this.state.currentFile === '' || files !== prevProps.files){
-      const file = files ? files[0]: ''
-      if(file !== ''){
-        this.showDiff(file)
-      }
-      else{
-        onSelectFile('')
+  componentDidUpdate(prevProps) {
+    const { files, onSelectFile } = this.props;
+    if (this.state.currentFile === '' || files !== prevProps.files) {
+      const file = files ? files[0] : '';
+      if (file !== '') {
+        this.showDiff(file);
+      } else {
+        onSelectFile('');
       }
     }
   }
   render() {
     const { classes, files } = this.props;
-    const {currentFile} = this.state
-    console.log("files", files)
+    const { currentFile } = this.state;
+    console.log('files', files);
     return (
       <Fragment>
         <div color="primary" className={classes.root}>
@@ -73,20 +76,18 @@ class FilesView extends Component {
                 <Fragment key={fileItem}>
                   <ListItem
                     className={classes.listItem}
-                    selected={currentFile===fileItem}
+                    selected={currentFile === fileItem}
                     onClick={() => this.showDiff(fileItem)}
                     button>
+                    <Icon className="fa fa-file" classes={{ root: classes.listIcon }}>
+                    </Icon>
                     <ListItemText
                       classes={{
                         root: classes.listItemText,
                         primary: classes.listItemTextPrimary,
                         secondary: classes.listItemTextSecondary,
                       }}
-                      primary={
-                        fileItem.length > 30
-                          ? fileItem.substring(0, 30) + '...'
-                          : fileItem
-                      }
+                      primary={fileItem.length > 30 ? fileItem.substring(0, 30) + '...' : fileItem}
                       title={fileItem}
                     />
                   </ListItem>

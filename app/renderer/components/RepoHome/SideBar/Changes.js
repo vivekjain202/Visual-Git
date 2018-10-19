@@ -4,13 +4,14 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Checkbox,
+  Icon,
   Button,
   TextField,
   withStyles,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { CHANGED_FILE_SELECTED } from '../../../constants/actions';
+import CommitDialog from './CommitDialog';
 import { ipcRenderer } from 'electron';
 
 const styles = {
@@ -39,6 +40,10 @@ const styles = {
     bottom: 0,
     padding: 20,
   },
+  listIcon: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
 };
 
 class Changes extends React.Component {
@@ -48,6 +53,8 @@ class Changes extends React.Component {
     this.onCommitButtonClick = this.onCommitButtonClick.bind(this);
     this.state = {
       commitMessage: '',
+      showCommitDialog: false,
+      commitResult: '',
     };
   }
 
@@ -67,13 +74,16 @@ class Changes extends React.Component {
         this.props.currentRepoPath,
         this.state.commitMessage,
       );
-      console.log('commit done', temp);
+      this.setState({ showCommitDialog: true, commitResult: temp });
     }
   }
   handleChange = (name) => (event) => {
     this.setState({
       [name]: event.target.value,
     });
+  };
+  handleCloseCommitDialog = (value) => {
+    this.setState({ commitResult: value, showCommitDialog: false });
   };
   componentDidUpdate(prevProps) {
     console.log('currentfile', this.props.currentFile, prevProps.currentFile);
@@ -101,7 +111,8 @@ class Changes extends React.Component {
                   selected={fileItem === currentFile}
                   onClick={() => this.onFileClick(fileItem)}
                   button>
-                  <Checkbox tabIndex={-1} disableRipple />
+                    <Icon className="fa fa-file" classes={{ root: classes.listIcon }}>
+                    </Icon>
                   <ListItemText
                     classes={{
                       root: classes.listItemText,
@@ -142,6 +153,14 @@ class Changes extends React.Component {
             Commit
           </Button>
         </form>
+        <CommitDialog
+          classes={{
+            paper: classes.paper,
+          }}
+          open={this.state.showCommitDialog}
+          onClose={this.handleCloseCommitDialog}
+          value={this.state.commitResult}
+        />
       </React.Fragment>
     );
   }
