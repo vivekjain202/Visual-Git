@@ -87,6 +87,7 @@ export const switchBranch = (repo, branch) => {
 export const deleteBranch = (repo, branch) => {
   const temp = ipcRenderer.sendSync('git-delete-branch', repo, branch);
   console.log(temp);
+  return temp
 };
 
 export const renameBranch = (repo, oldName, newName) => {

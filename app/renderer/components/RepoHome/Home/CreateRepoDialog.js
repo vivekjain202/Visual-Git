@@ -80,7 +80,6 @@ class NewRepoDialog extends React.Component {
     }
     handleCreate = async () => {
         const dirData = await ipcRenderer.sendSync('git-init', this.state.directoryPath)
-        console.log(dirData)
         if (dirData) this.initiateLocalRepoDialog(dirData)
     }
     initiateLocalRepoDialog = async (dirData) => {

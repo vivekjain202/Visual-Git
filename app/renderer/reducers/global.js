@@ -1,4 +1,4 @@
-import { CHANGE_BRANCH, ADD_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO, CHANGE_TO_HISTORY_VIEW, CHANGED_FILES_LOADED } from '../constants/actions'
+import { CHANGE_BRANCH, UPDATE_BRANCHES, ADD_BRANCH, CHANGE_BRANCH_COMMITS, CHANGE_REPOSITORY_BRANCHES, CHANGE_REPOSITORY, SET_ALL_COMMITS, CURRENT_REPO_PATH, ADD_OTHER_REPO, CHANGE_TO_HISTORY_VIEW, CHANGED_FILES_LOADED } from '../constants/actions'
 // import {gitInit, openLocalRepo, cloneRepo, renameRepo, deleteRepo, createNewBranch, switchBranch, deleteBranch, renameBranch} from '../components/RepoHome/SelectionBar/renderer-menu-functions';
 const initialState = {
     currentRepo: '',
@@ -10,12 +10,13 @@ const initialState = {
     currentRepoPath: "",
     otherRepos: [],
     isHistoryView: false,
-    latestBranchCommit:{},
-    remoteOrigin:"",
-    changedFiles:[]
+    latestBranchCommit: {},
+    remoteOrigin: "",
+    changedFiles: []
 };
 // , branches: updateBranches(state.branches, action.payload)
 export default (state = initialState, action) => {
+    console.log(action.payload,'for testing ')
     switch (action.type) {
         case CHANGE_BRANCH:
             state = { ...state, currentBranch: action.payload }
@@ -44,8 +45,10 @@ export default (state = initialState, action) => {
         case CHANGED_FILES_LOADED:
             state = { ...state, changedFiles: action.payload };
             break;
-        case ADD_BRANCH:
-            state = { branches: action.payload}
+        case UPDATE_BRANCHES:
+            state = { ...state, branches: action.payload }
+            break;
+
     }
     return state;
 }
