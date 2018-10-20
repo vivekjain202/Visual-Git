@@ -90,17 +90,14 @@ export const gitLocalRepo = async (event, path) => {
   }
 };
 
-export const gitDeleteRepo = async (event) => {
-  console.log('here in main');
-  const selectedDirPath = await showDialog();
-  console.log('selected path', selectedDirPath);
+export const gitDeleteRepo = (event) => {
+  const selectedDirPath = showDialog();
   if (selectedDirPath !== undefined) {
     exec('rm -rf .git ', { cwd: selectedDirPath.toString() }, (error, stdout) => {
       if (error) {
         throw error;
       }
       else {
-        console.log(stdout);
         event.returnValue = stdout;
       }
     })
