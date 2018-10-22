@@ -27,9 +27,11 @@ dmg:
 mac:
  target: dmg
  category: public.app-category.tools
+ icon: dist-assets/icon/visualGit.png
 
 win:
  target: nsis
+ icon: dist-assets/icon/visualGit.png
 
 linux:
  target:

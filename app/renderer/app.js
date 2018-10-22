@@ -4,13 +4,11 @@ import App from './components/App';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import { ipcRenderer } from 'electron';
-import path from 'path';
 
-import {gitInit, cloneRepo, deleteRepo, deleteBranch, renameBranch} from '../renderer/components/RepoHome/SelectionBar/renderer-menu-functions.js';
+import { deleteRepo } from '../renderer/components/RepoHome/SelectionBar/renderer-menu-functions.js';
 
 // ipcRenderer.on('git-init-appmenu', gitInit);
 ipcRenderer.on('git-repo-delete-appmenu',deleteRepo);
-ipcRenderer.on('git-delete-branch-appmenu',() => deleteBranch(path.join(__dirname,'../../../../trello-todo-shashank'),'newName'));
 
 const rootElement = document.querySelector(document.currentScript.getAttribute('data-container'));
 
